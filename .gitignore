@@ -1,0 +1,38 @@
+"
+# Python / Django
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.env
+venv/
+env/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+
+# Node / JS
+node_modules/
+.npm/
+
+# Système
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Blockchain
+.secret
+hardhat.config.js.bak
+artifacts/
+cache/" 
