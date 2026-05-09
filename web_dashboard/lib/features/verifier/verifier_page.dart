@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/services/mvp_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -98,7 +99,7 @@ class _VerifierPageState extends State<VerifierPage> {
     });
     await Future.delayed(const Duration(seconds: 1));
     final id = _controller.text.trim().toUpperCase();
-    final lot = _demoLots[id];
+    final lot = await MvpStore.getLot(id) ?? _demoLots[id];
     setState(() {
       _loading = false;
       _result = lot;

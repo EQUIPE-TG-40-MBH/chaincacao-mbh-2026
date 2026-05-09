@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/services/mvp_store.dart';
 import '../../core/widgets/dashboard_shell.dart';
 import 'eudr_certificate_page.dart';
 
@@ -13,52 +14,37 @@ class ExporterDashboard extends StatefulWidget {
 }
 
 class _ExporterDashboardState extends State<ExporterDashboard> {
-  final List<Map<String, dynamic>> _lots = [
-    {
-      'lotId': 'TG-2026-0468',
-      'farmerName': 'Mensah Koffi',
-      'cooperativeName': 'CAPRK Kpalime',
-      'weightVerified': 178.0,
-      'cultureType': 'Cacao',
-      'status': 'VALIDATED',
-      'gps': '6.8945 N, 0.6521 E',
-      'registeredAt': '08 Mai 2026',
-      'blockchainHash': '0x4D8E2A11...C93f',
-      'selected': false,
-    },
-    {
-      'lotId': 'TG-2026-0465',
-      'farmerName': 'Kofi Amevor',
-      'cooperativeName': 'CAPRK Kpalime',
-      'weightVerified': 220.0,
-      'cultureType': 'Cacao',
-      'status': 'VALIDATED',
-      'gps': '6.8912 N, 0.6498 E',
-      'registeredAt': '07 Mai 2026',
-      'blockchainHash': '0x8B2F4D33...A12e',
-      'selected': false,
-    },
-    {
-      'lotId': 'TG-2026-0462',
-      'farmerName': 'Yawa Dossou',
-      'cooperativeName': 'CAPRK Kpalime',
-      'weightVerified': 195.0,
-      'cultureType': 'Cacao',
-      'status': 'VALIDATED',
-      'gps': '6.8934 N, 0.6511 E',
-      'registeredAt': '06 Mai 2026',
-      'blockchainHash': '0x3C9A1E44...D85b',
-      'selected': false,
-    },
-  ];
+  List<Map<String, dynamic>> _lots = [];
+  List<Map<String, dynamic>> _exports = [];
+  bool _loading = true;
 
   List<Map<String, dynamic>> get _selectedLots =>
       _lots.where((lot) => lot['selected'] == true).toList();
 
   double get _totalSelectedKg => _selectedLots.fold(
     0,
-    (sum, lot) => sum + (lot['weightVerified'] as double),
+    (sum, lot) => sum + ((lot['weightVerified'] ?? 0) as num).toDouble(),
   );
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final lots = await MvpStore.getLots();
+    final exports = await MvpStore.getExports();
+    if (!mounted) return;
+    setState(() {
+      _lots = lots
+          .where((lot) => lot['status'] == 'VALIDATED')
+          .map((lot) => {...lot, 'selected': false})
+          .toList();
+      _exports = exports;
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,63 +69,72 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
                       totalKg: _totalSelectedKg,
                     ),
                   ),
-                );
+                ).then((_) => _load());
               },
             ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final columns = constraints.maxWidth < 680 ? 1 : 2;
-              return GridView.count(
-                crossAxisCount: columns,
-                childAspectRatio: columns == 1 ? 4.2 : 1.9,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  AnimatedAppear(
-                    index: 0,
-                    child: _StatCard(
-                      title: 'Lots disponibles',
-                      value: '${_lots.length}',
-                      icon: Icons.inventory_2_outlined,
-                      color: AppColors.orChaud,
+      child: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final columns = constraints.maxWidth < 680 ? 1 : 2;
+                    return GridView.count(
+                      crossAxisCount: columns,
+                      childAspectRatio: columns == 1 ? 4.2 : 1.9,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        AnimatedAppear(
+                          index: 0,
+                          child: _StatCard(
+                            title: 'Lots disponibles',
+                            value: '${_lots.length}',
+                            icon: Icons.inventory_2_outlined,
+                            color: AppColors.orChaud,
+                          ),
+                        ),
+                        AnimatedAppear(
+                          index: 1,
+                          child: _StatCard(
+                            title: 'Lots selectionnes',
+                            value: '${_selectedLots.length}',
+                            icon: Icons.check_circle_outline,
+                            color: AppColors.vertFeuille,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                ..._lots.asMap().entries.map(
+                  (entry) => AnimatedAppear(
+                    index: 2 + entry.key,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _LotCard(
+                        lot: entry.value,
+                        onTap: () => setState(
+                          () => _lots[entry.key]['selected'] =
+                              !(_lots[entry.key]['selected'] as bool),
+                        ),
+                      ),
                     ),
-                  ),
-                  AnimatedAppear(
-                    index: 1,
-                    child: _StatCard(
-                      title: 'Lots selectionnes',
-                      value: '${_selectedLots.length}',
-                      icon: Icons.check_circle_outline,
-                      color: AppColors.vertFeuille,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          ..._lots.asMap().entries.map(
-            (entry) => AnimatedAppear(
-              index: 2 + entry.key,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _LotCard(
-                  lot: entry.value,
-                  onTap: () => setState(
-                    () => _lots[entry.key]['selected'] =
-                        !(_lots[entry.key]['selected'] as bool),
                   ),
                 ),
-              ),
+                if (_exports.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  AnimatedAppear(
+                    index: 8,
+                    child: _ExportHistoryCard(exports: _exports),
+                  ),
+                ],
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -350,6 +345,63 @@ class _ExportActionBar extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ExportHistoryCard extends StatelessWidget {
+  final List<Map<String, dynamic>> exports;
+
+  const _ExportHistoryCard({required this.exports});
+
+  @override
+  Widget build(BuildContext context) {
+    return PremiumCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Historique des exports', style: AppTextStyles.h2),
+          const SizedBox(height: 12),
+          ...exports
+              .take(5)
+              .map(
+                (export) => Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.creme,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.description_outlined,
+                        color: AppColors.orChaud,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              export['certificateId'],
+                              style: AppTextStyles.hash.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              '${(export['lotIds'] as List).length} lot(s) - ${(export['totalKg'] as num).toInt()} kg - ${export['createdAt']}',
+                              style: AppTextStyles.bodySecondary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+        ],
       ),
     );
   }

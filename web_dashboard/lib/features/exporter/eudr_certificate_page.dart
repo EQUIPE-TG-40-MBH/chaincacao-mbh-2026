@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/services/mvp_store.dart';
+import '../../core/services/pdf_service.dart';
 import '../../core/widgets/dashboard_shell.dart';
 
 class EudrCertificatePage extends StatefulWidget {
@@ -25,7 +27,16 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
 
   Future<void> _generateCertificate() async {
     setState(() => _generating = true);
-    await Future.delayed(const Duration(seconds: 2));
+    await ChainCacaoPdfService.downloadEudrCertificate(
+      certificateId: _certId,
+      lots: widget.lots,
+      totalKg: widget.totalKg,
+    );
+    await MvpStore.recordExport(
+      certificateId: _certId,
+      lots: widget.lots,
+      totalKg: widget.totalKg,
+    );
     setState(() {
       _generating = false;
       _generated = true;
@@ -268,14 +279,12 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('PDF téléchargé — $_certId.pdf'),
-                            backgroundColor: AppColors.vertFeuille,
+                      onPressed: () =>
+                          ChainCacaoPdfService.downloadEudrCertificate(
+                            certificateId: _certId,
+                            lots: widget.lots,
+                            totalKg: widget.totalKg,
                           ),
-                        );
-                      },
                       icon: const Icon(Icons.download),
                       label: const Text('Télécharger le PDF'),
                     ),

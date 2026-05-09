@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/services/mvp_store.dart';
+import '../../core/services/pdf_service.dart';
 import '../../core/widgets/dashboard_shell.dart';
 import 'lot_validation_page.dart';
 
@@ -13,41 +15,9 @@ class CooperativeDashboard extends StatefulWidget {
 }
 
 class _CooperativeDashboardState extends State<CooperativeDashboard> {
-  final List<Map<String, dynamic>> _lots = [
-    {
-      'lotId': 'TG-2026-0471',
-      'farmerName': 'Koami Agbeko',
-      'weightDeclared': 250.0,
-      'weightVerified': 0.0,
-      'cultureType': 'Cacao',
-      'status': 'REGISTERED',
-      'gps': '6.8913 N, 0.6502 E',
-      'registeredAt': '09 Mai 2026 - 08:32',
-      'blockchainHash': '0x72c5B327...948dc',
-    },
-    {
-      'lotId': 'TG-2026-0469',
-      'farmerName': 'Akosua Mensah',
-      'weightDeclared': 350.0,
-      'weightVerified': 310.0,
-      'cultureType': 'Cacao',
-      'status': 'FRAUD_ALERT',
-      'gps': '6.8900 N, 0.6489 E',
-      'registeredAt': '09 Mai 2026 - 07:15',
-      'blockchainHash': '0x9A3F1C22...B71e',
-    },
-    {
-      'lotId': 'TG-2026-0468',
-      'farmerName': 'Mensah Koffi',
-      'weightDeclared': 180.0,
-      'weightVerified': 178.0,
-      'cultureType': 'Cafe',
-      'status': 'VALIDATED',
-      'gps': '6.8945 N, 0.6521 E',
-      'registeredAt': '08 Mai 2026 - 16:45',
-      'blockchainHash': '0x4D8E2A11...C93f',
-    },
-  ];
+  List<Map<String, dynamic>> _lots = [];
+  List<String> _scanHistory = [];
+  bool _loading = true;
 
   final List<_ProductionPoint> _weeklyProduction = const [
     _ProductionPoint('Lun', 180),
@@ -58,6 +28,23 @@ class _CooperativeDashboardState extends State<CooperativeDashboard> {
     _ProductionPoint('Sam', 430),
     _ProductionPoint('Dim', 260),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final lots = await MvpStore.getLots();
+    final scanHistory = await MvpStore.getScanHistory();
+    if (!mounted) return;
+    setState(() {
+      _lots = lots;
+      _scanHistory = scanHistory;
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,86 +77,123 @@ class _CooperativeDashboardState extends State<CooperativeDashboard> {
             label: const Text('Scanner QR'),
           ),
         ),
+        SizedBox(
+          width: 240,
+          child: OutlinedButton.icon(
+            onPressed: _lots.isEmpty
+                ? null
+                : () => ChainCacaoPdfService.downloadDailyReport(lots: _lots),
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            label: const Text('Rapport PDF'),
+          ),
+        ),
       ],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final columns = constraints.maxWidth < 760 ? 1 : 3;
-              return GridView.count(
-                crossAxisCount: columns,
-                childAspectRatio: columns == 1 ? 4.4 : 1.45,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
+      child: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final columns = constraints.maxWidth < 760 ? 1 : 3;
+                    return GridView.count(
+                      crossAxisCount: columns,
+                      childAspectRatio: columns == 1 ? 4.4 : 1.45,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        AnimatedAppear(
+                          index: 0,
+                          child: _StatCard(
+                            title: 'Lots en attente',
+                            value: '$pendingLots',
+                            icon: Icons.inventory_2_outlined,
+                            color: AppColors.orChaud,
+                          ),
+                        ),
+                        AnimatedAppear(
+                          index: 1,
+                          child: _StatCard(
+                            title: 'Total collecte',
+                            value: '${totalKg.toInt()} kg',
+                            icon: Icons.scale_outlined,
+                            color: AppColors.vertFeuille,
+                          ),
+                        ),
+                        AnimatedAppear(
+                          index: 2,
+                          child: _StatCard(
+                            title: 'Alertes fraude',
+                            value: '$fraudAlerts',
+                            icon: Icons.warning_amber_outlined,
+                            color: AppColors.rougeErreur,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                AnimatedAppear(
+                  index: 3,
+                  child: _ProductionChart(points: _weeklyProduction),
+                ),
+                if (_scanHistory.isNotEmpty) ...[
+                  const SizedBox(height: 24),
                   AnimatedAppear(
-                    index: 0,
-                    child: _StatCard(
-                      title: 'Lots en attente',
-                      value: '$pendingLots',
-                      icon: Icons.inventory_2_outlined,
-                      color: AppColors.orChaud,
-                    ),
-                  ),
-                  AnimatedAppear(
-                    index: 1,
-                    child: _StatCard(
-                      title: 'Total collecte',
-                      value: '${totalKg.toInt()} kg',
-                      icon: Icons.scale_outlined,
-                      color: AppColors.vertFeuille,
-                    ),
-                  ),
-                  AnimatedAppear(
-                    index: 2,
-                    child: _StatCard(
-                      title: 'Alertes fraude',
-                      value: '$fraudAlerts',
-                      icon: Icons.warning_amber_outlined,
-                      color: AppColors.rougeErreur,
+                    index: 4,
+                    child: _ScanHistoryCard(
+                      scans: _scanHistory,
+                      onTap: (lotId) => _openLotById(context, lotId),
                     ),
                   ),
                 ],
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          AnimatedAppear(
-            index: 3,
-            child: _ProductionChart(points: _weeklyProduction),
-          ),
-          const SizedBox(height: 32),
-          Row(
-            children: [
-              Text('Lots recents', style: AppTextStyles.h2),
-              const SizedBox(width: 12),
-              _StatusBadge(status: 'REGISTERED'),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ..._lots.asMap().entries.map(
-            (entry) => AnimatedAppear(
-              index: 4 + entry.key,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _LotCard(
-                  lot: entry.value,
-                  onValidate: () {
-                    Navigator.push(
-                      context,
-                      premiumRoute(LotValidationPage(lot: entry.value)),
-                    ).then((_) => setState(() {}));
-                  },
+                const SizedBox(height: 32),
+                Row(
+                  children: [
+                    Text('Lots recents', style: AppTextStyles.h2),
+                    const SizedBox(width: 12),
+                    _StatusBadge(status: 'REGISTERED'),
+                  ],
                 ),
-              ),
+                const SizedBox(height: 16),
+                ..._lots.asMap().entries.map(
+                  (entry) => AnimatedAppear(
+                    index: 4 + entry.key,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _LotCard(
+                        lot: entry.value,
+                        onValidate: () {
+                          Navigator.push(
+                            context,
+                            premiumRoute(LotValidationPage(lot: entry.value)),
+                          ).then((_) => _load());
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
+  }
+
+  Future<void> _openLotById(BuildContext context, String lotId) async {
+    final lot = await MvpStore.getLot(lotId);
+    if (!context.mounted) return;
+    if (lot == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Lot non trouve')));
+      return;
+    }
+    Navigator.push(
+      context,
+      premiumRoute(LotValidationPage(lot: lot)),
+    ).then((_) => _load());
   }
 
   void _showScanDialog(BuildContext context) {
@@ -181,7 +205,7 @@ class _CooperativeDashboardState extends State<CooperativeDashboard> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Entrez l ID du lot manuellement pour la demo :'),
+            const Text('Entrez l ID du lot ou scannez le QR du sac :'),
             const SizedBox(height: 16),
             TextField(
               controller: controller,
@@ -205,10 +229,11 @@ class _CooperativeDashboardState extends State<CooperativeDashboard> {
                 orElse: () => {},
               );
               if (lot.isNotEmpty) {
+                MvpStore.addScan(lot['lotId']);
                 Navigator.push(
                   context,
                   premiumRoute(LotValidationPage(lot: lot)),
-                );
+                ).then((_) => _load());
               } else {
                 ScaffoldMessenger.of(
                   context,
@@ -389,6 +414,41 @@ class _StatusBadge extends StatelessWidget {
           color: AppColors.blanc,
           fontWeight: FontWeight.w600,
         ),
+      ),
+    );
+  }
+}
+
+class _ScanHistoryCard extends StatelessWidget {
+  final List<String> scans;
+  final ValueChanged<String> onTap;
+
+  const _ScanHistoryCard({required this.scans, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return PremiumCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('5 derniers QR scannes', style: AppTextStyles.h2),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: scans
+                .map(
+                  (lotId) => ActionChip(
+                    onPressed: () => onTap(lotId),
+                    avatar: const Icon(Icons.qr_code_2_outlined, size: 18),
+                    label: Text(lotId, style: AppTextStyles.hash),
+                    backgroundColor: AppColors.creme,
+                    side: const BorderSide(color: Color(0xFFE0D5C8)),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
       ),
     );
   }

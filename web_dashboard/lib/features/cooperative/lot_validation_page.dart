@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/services/mvp_store.dart';
 import '../../core/widgets/dashboard_shell.dart';
 
 class LotValidationPage extends StatefulWidget {
@@ -19,6 +20,7 @@ class _LotValidationPageState extends State<LotValidationPage> {
   bool _loading = false;
   bool _flash = false;
   String? _hash;
+  String? _rangeError;
 
   bool get _hasFraud {
     final declared = widget.lot['weightDeclared'] as double;
@@ -29,14 +31,27 @@ class _LotValidationPageState extends State<LotValidationPage> {
   }
 
   Future<void> _validate() async {
+    final verified = double.tryParse(_weightController.text) ?? 0;
+    if (verified < 1 || verified > 500) {
+      setState(() {
+        _rangeError =
+            'Ce poids semble inhabituel. Confirmez une valeur entre 1 kg et 500 kg.';
+      });
+      return;
+    }
+
     setState(() => _loading = true);
-    await Future.delayed(const Duration(milliseconds: 900));
+    final updatedLot = await MvpStore.validateLot(
+      lotId: widget.lot['lotId'],
+      weightVerified: verified,
+    );
     if (!mounted) return;
     setState(() {
       _loading = false;
       _validated = true;
       _flash = true;
-      _hash = '0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc';
+      _hash = updatedLot['blockchainHash'];
+      _rangeError = null;
     });
     await Future.delayed(const Duration(milliseconds: 300));
     if (mounted) setState(() => _flash = false);
@@ -45,49 +60,76 @@ class _LotValidationPageState extends State<LotValidationPage> {
   @override
   Widget build(BuildContext context) {
     final lot = widget.lot;
-    return Stack(
-      children: [
-        DashboardShell(
-          currentRoute: '/cooperative',
-          pageTitle: _validated ? 'Lot valide' : 'Validation du lot',
-          pageSubtitle: '${lot['lotId']} - controle de reception cooperative',
-          userName: 'CAPRK Kpalime',
-          userRole: 'Cooperative',
-          actions: [
-            SizedBox(
-              width: 180,
-              child: OutlinedButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('Retour'),
-              ),
+    return PopScope(
+      canPop: _validated || _weightController.text.isEmpty,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop || _validated || _weightController.text.isEmpty) return;
+        final leave = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Quitter la validation ?'),
+            content: const Text(
+              'Un poids a ete saisi mais le lot n est pas encore valide.',
             ),
-          ],
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 400),
-            switchInCurve: Curves.easeOut,
-            switchOutCurve: Curves.ease,
-            child: _validated
-                ? _SuccessView(hash: _hash ?? '')
-                : _ValidationForm(
-                    key: const ValueKey('form'),
-                    lot: lot,
-                    weightController: _weightController,
-                    hasFraud: _hasFraud,
-                    loading: _loading,
-                    onChanged: () => setState(() {}),
-                    onValidate: _validate,
-                  ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Rester'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Quitter'),
+              ),
+            ],
           ),
-        ),
-        IgnorePointer(
-          child: AnimatedOpacity(
-            opacity: _flash ? 0.22 : 0,
-            duration: const Duration(milliseconds: 300),
-            child: Container(color: AppColors.vertFeuille),
+        );
+        if (leave == true && context.mounted) Navigator.pop(context);
+      },
+      child: Stack(
+        children: [
+          DashboardShell(
+            currentRoute: '/cooperative',
+            pageTitle: _validated ? 'Lot valide' : 'Validation du lot',
+            pageSubtitle: '${lot['lotId']} - controle de reception cooperative',
+            userName: 'CAPRK Kpalime',
+            userRole: 'Cooperative',
+            actions: [
+              SizedBox(
+                width: 180,
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Retour'),
+                ),
+              ),
+            ],
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.ease,
+              child: _validated
+                  ? _SuccessView(hash: _hash ?? '')
+                  : _ValidationForm(
+                      key: const ValueKey('form'),
+                      lot: lot,
+                      weightController: _weightController,
+                      hasFraud: _hasFraud,
+                      rangeError: _rangeError,
+                      loading: _loading,
+                      onChanged: () => setState(() => _rangeError = null),
+                      onValidate: _validate,
+                    ),
+            ),
           ),
-        ),
-      ],
+          IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _flash ? 0.22 : 0,
+              duration: const Duration(milliseconds: 300),
+              child: Container(color: AppColors.vertFeuille),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -96,6 +138,7 @@ class _ValidationForm extends StatelessWidget {
   final Map<String, dynamic> lot;
   final TextEditingController weightController;
   final bool hasFraud;
+  final String? rangeError;
   final bool loading;
   final VoidCallback onChanged;
   final VoidCallback onValidate;
@@ -105,6 +148,7 @@ class _ValidationForm extends StatelessWidget {
     required this.lot,
     required this.weightController,
     required this.hasFraud,
+    required this.rangeError,
     required this.loading,
     required this.onChanged,
     required this.onValidate,
@@ -119,6 +163,7 @@ class _ValidationForm extends StatelessWidget {
         final form = _WeightFormCard(
           weightController: weightController,
           hasFraud: hasFraud,
+          rangeError: rangeError,
           loading: loading,
           onChanged: onChanged,
           onValidate: onValidate,
@@ -176,6 +221,7 @@ class _LotDetailsCard extends StatelessWidget {
 class _WeightFormCard extends StatelessWidget {
   final TextEditingController weightController;
   final bool hasFraud;
+  final String? rangeError;
   final bool loading;
   final VoidCallback onChanged;
   final VoidCallback onValidate;
@@ -183,6 +229,7 @@ class _WeightFormCard extends StatelessWidget {
   const _WeightFormCard({
     required this.weightController,
     required this.hasFraud,
+    required this.rangeError,
     required this.loading,
     required this.onChanged,
     required this.onValidate,
@@ -218,39 +265,23 @@ class _WeightFormCard extends StatelessWidget {
           ),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
-            child: hasFraud
+            child: rangeError != null
+                ? Padding(
+                    key: const ValueKey('range'),
+                    padding: const EdgeInsets.only(top: 16),
+                    child: _AlertBox(
+                      color: AppColors.orangeAlerte,
+                      text: rangeError!,
+                    ),
+                  )
+                : hasFraud
                 ? Padding(
                     key: const ValueKey('fraud'),
                     padding: const EdgeInsets.only(top: 16),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFEF2F2),
-                        borderRadius: BorderRadius.circular(8),
-                        border: const Border(
-                          left: BorderSide(
-                            color: AppColors.rougeErreur,
-                            width: 4,
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.warning_amber_outlined,
-                            color: AppColors.rougeErreur,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Alerte fraude detectee - ecart superieur a 5% entre poids declare et poids verifie.',
-                              style: AppTextStyles.bodySecondary.copyWith(
-                                color: AppColors.rougeErreur,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: _AlertBox(
+                      color: AppColors.rougeErreur,
+                      text:
+                          'Alerte fraude detectee - ecart superieur a 5% entre poids declare et poids verifie.',
                     ),
                   )
                 : const SizedBox.shrink(key: ValueKey('empty')),
@@ -274,6 +305,39 @@ class _WeightFormCard extends StatelessWidget {
               loading
                   ? 'Validation en cours...'
                   : 'Valider le transfert sur blockchain',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AlertBox extends StatelessWidget {
+  final Color color;
+  final String text;
+
+  const _AlertBox({required this.color, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color == AppColors.rougeErreur
+            ? const Color(0xFFFEF2F2)
+            : const Color(0xFFFFF7ED),
+        borderRadius: BorderRadius.circular(8),
+        border: Border(left: BorderSide(color: color, width: 4)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.warning_amber_outlined, color: color),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTextStyles.bodySecondary.copyWith(color: color),
             ),
           ),
         ],
