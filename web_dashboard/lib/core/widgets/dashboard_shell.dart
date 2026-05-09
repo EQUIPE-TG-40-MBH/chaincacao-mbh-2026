@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
@@ -72,6 +73,7 @@ class DashboardShell extends StatelessWidget {
                 currentRoute: currentRoute,
                 userName: userName,
                 userRole: userRole,
+                destinations: _destinationsForRole(userRole),
               ),
               Expanded(
                 child: Stack(
@@ -122,6 +124,30 @@ class DashboardShell extends StatelessWidget {
       },
     );
   }
+
+  List<DashboardDestination> _destinationsForRole(String role) {
+    final normalized = role.toLowerCase();
+    if (normalized.contains('cooperative')) {
+      return dashboardDestinations
+          .where(
+            (item) => item.route == '/cooperative' || item.route == '/verifier',
+          )
+          .toList();
+    }
+    if (normalized.contains('exportateur')) {
+      return dashboardDestinations
+          .where(
+            (item) => item.route == '/exportateur' || item.route == '/verifier',
+          )
+          .toList();
+    }
+    if (normalized.contains('verificateur')) {
+      return dashboardDestinations
+          .where((item) => item.route == '/verifier')
+          .toList();
+    }
+    return dashboardDestinations;
+  }
 }
 
 class _Header extends StatelessWidget {
@@ -167,6 +193,7 @@ class _Sidebar extends StatelessWidget {
   final String currentRoute;
   final String userName;
   final String userRole;
+  final List<DashboardDestination> destinations;
 
   const _Sidebar({
     required this.width,
@@ -174,6 +201,7 @@ class _Sidebar extends StatelessWidget {
     required this.currentRoute,
     required this.userName,
     required this.userRole,
+    required this.destinations,
   });
 
   @override
@@ -199,7 +227,7 @@ class _Sidebar extends StatelessWidget {
         children: [
           _Brand(compact: compact),
           const SizedBox(height: 40),
-          ...dashboardDestinations.map(
+          ...destinations.map(
             (destination) => _NavItem(
               destination: destination,
               selected: currentRoute == destination.route,
@@ -390,7 +418,10 @@ class _LogoutButton extends StatelessWidget {
     return Tooltip(
       message: 'Deconnexion',
       child: OutlinedButton(
-        onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+        onPressed: () async {
+          await AuthService.logout();
+          if (context.mounted) Navigator.pushReplacementNamed(context, '/');
+        },
         style: OutlinedButton.styleFrom(
           minimumSize: Size(double.infinity, compact ? 48 : 56),
           foregroundColor: AppColors.blanc,

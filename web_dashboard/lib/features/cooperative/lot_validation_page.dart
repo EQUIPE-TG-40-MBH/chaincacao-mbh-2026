@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/services/auth_service.dart';
 import '../../core/services/mvp_store.dart';
 import '../../core/widgets/dashboard_shell.dart';
 
@@ -21,6 +22,7 @@ class _LotValidationPageState extends State<LotValidationPage> {
   bool _flash = false;
   String? _hash;
   String? _rangeError;
+  EntityAccount? _account;
 
   bool get _hasFraud {
     final declared = widget.lot['weightDeclared'] as double;
@@ -58,6 +60,14 @@ class _LotValidationPageState extends State<LotValidationPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    AuthService.currentAccount().then((account) {
+      if (mounted) setState(() => _account = account);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final lot = widget.lot;
     return PopScope(
@@ -91,8 +101,8 @@ class _LotValidationPageState extends State<LotValidationPage> {
             currentRoute: '/cooperative',
             pageTitle: _validated ? 'Lot valide' : 'Validation du lot',
             pageSubtitle: '${lot['lotId']} - controle de reception cooperative',
-            userName: 'CAPRK Kpalime',
-            userRole: 'Cooperative',
+            userName: _account?.entityName ?? 'Cooperative',
+            userRole: _account?.roleLabel ?? 'Cooperative',
             actions: [
               SizedBox(
                 width: 180,

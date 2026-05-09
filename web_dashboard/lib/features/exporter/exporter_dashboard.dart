@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/services/auth_service.dart';
 import '../../core/services/mvp_store.dart';
 import '../../core/widgets/dashboard_shell.dart';
 import 'eudr_certificate_page.dart';
@@ -17,6 +18,7 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
   List<Map<String, dynamic>> _lots = [];
   List<Map<String, dynamic>> _exports = [];
   bool _loading = true;
+  EntityAccount? _account;
 
   List<Map<String, dynamic>> get _selectedLots =>
       _lots.where((lot) => lot['selected'] == true).toList();
@@ -35,6 +37,7 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
   Future<void> _load() async {
     final lots = await MvpStore.getLots();
     final exports = await MvpStore.getExports();
+    final account = await AuthService.currentAccount();
     if (!mounted) return;
     setState(() {
       _lots = lots
@@ -42,6 +45,7 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
           .map((lot) => {...lot, 'selected': false})
           .toList();
       _exports = exports;
+      _account = account;
       _loading = false;
     });
   }
@@ -53,8 +57,8 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
       pageTitle: 'Lots disponibles a l export',
       pageSubtitle:
           'Selectionnez les lots consolides pour generer un certificat EUDR',
-      userName: 'ChainCacao Export',
-      userRole: 'Exportateur',
+      userName: _account?.entityName ?? 'Exportateur',
+      userRole: _account?.roleLabel ?? 'Exportateur',
       floatingAction: _selectedLots.isEmpty
           ? null
           : _ExportActionBar(

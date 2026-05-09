@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'core/widgets/auth_gate.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/login_page.dart';
 import 'features/cooperative/cooperative_dashboard.dart';
@@ -21,8 +22,14 @@ class ChainCacaoApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
-        '/cooperative': (context) => const CooperativeDashboard(),
-        '/exportateur': (context) => const ExporterDashboard(),
+        '/cooperative': (context) => const AuthGate(
+          requiredRole: 'cooperative',
+          child: CooperativeDashboard(),
+        ),
+        '/exportateur': (context) => const AuthGate(
+          requiredRole: 'exportateur',
+          child: ExporterDashboard(),
+        ),
         '/verifier': (context) => const VerifierPage(),
       },
     );

@@ -15,7 +15,7 @@ void main() {
   ) async {
     await tester.pumpWidget(const ChainCacaoApp());
 
-    expect(find.text('ChainCacao'), findsOneWidget);
-    expect(find.text('Connexion'), findsOneWidget);
+    expect(find.text('Connexion'), findsWidgets);
+    expect(find.text('Inscription'), findsOneWidget);
   });
 }

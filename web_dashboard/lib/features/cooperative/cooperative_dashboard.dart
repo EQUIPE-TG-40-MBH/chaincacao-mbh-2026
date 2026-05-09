@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/services/auth_service.dart';
 import '../../core/services/mvp_store.dart';
 import '../../core/services/pdf_service.dart';
 import '../../core/widgets/dashboard_shell.dart';
@@ -18,6 +19,7 @@ class _CooperativeDashboardState extends State<CooperativeDashboard> {
   List<Map<String, dynamic>> _lots = [];
   List<String> _scanHistory = [];
   bool _loading = true;
+  EntityAccount? _account;
 
   final List<_ProductionPoint> _weeklyProduction = const [
     _ProductionPoint('Lun', 180),
@@ -38,10 +40,12 @@ class _CooperativeDashboardState extends State<CooperativeDashboard> {
   Future<void> _load() async {
     final lots = await MvpStore.getLots();
     final scanHistory = await MvpStore.getScanHistory();
+    final account = await AuthService.currentAccount();
     if (!mounted) return;
     setState(() {
       _lots = lots;
       _scanHistory = scanHistory;
+      _account = account;
       _loading = false;
     });
   }
@@ -64,10 +68,10 @@ class _CooperativeDashboardState extends State<CooperativeDashboard> {
 
     return DashboardShell(
       currentRoute: '/cooperative',
-      pageTitle: 'Bonjour, CAPRK Kpalime',
+      pageTitle: 'Bonjour, ${_account?.entityName ?? 'Cooperative'}',
       pageSubtitle: '09 Mai 2026 - reception, controle et validation des lots',
-      userName: 'CAPRK Kpalime',
-      userRole: 'Cooperative',
+      userName: _account?.entityName ?? 'Cooperative',
+      userRole: _account?.roleLabel ?? 'Cooperative',
       actions: [
         SizedBox(
           width: 220,
