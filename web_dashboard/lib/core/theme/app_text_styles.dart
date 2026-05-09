@@ -11,7 +11,14 @@ class AppTextStyles {
 
   static const TextStyle h2 = TextStyle(
     fontFamily: 'PlayfairDisplay',
-    fontSize: 24,
+    fontSize: 26,
+    fontWeight: FontWeight.w600,
+    color: AppColors.cacao,
+  );
+
+  static const TextStyle h3 = TextStyle(
+    fontFamily: 'Epilogue',
+    fontSize: 20,
     fontWeight: FontWeight.w600,
     color: AppColors.cacao,
   );
@@ -43,4 +50,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     color: AppColors.cacao,
   );
+
+  static const TextStyle hashBlockchain = hash;
 }

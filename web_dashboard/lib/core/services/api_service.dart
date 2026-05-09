@@ -22,7 +22,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Lot>> getCooperativeLots(String cooperativeId, String token) async {
+  static Future<List<Lot>> getCooperativeLots(
+    String cooperativeId,
+    String token,
+  ) async {
     try {
       final response = await http.get(
         Uri.parse('$demoBaseUrl/api/cooperatives/$cooperativeId/lots/'),

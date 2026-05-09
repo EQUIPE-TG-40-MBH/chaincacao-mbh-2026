@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/widgets/dashboard_shell.dart';
 
 class LotValidationPage extends StatefulWidget {
   final Map<String, dynamic> lot;
+
   const LotValidationPage({super.key, required this.lot});
 
   @override
@@ -14,6 +17,7 @@ class _LotValidationPageState extends State<LotValidationPage> {
   final _weightController = TextEditingController();
   bool _validated = false;
   bool _loading = false;
+  bool _flash = false;
   String? _hash;
 
   bool get _hasFraud {
@@ -26,190 +30,367 @@ class _LotValidationPageState extends State<LotValidationPage> {
 
   Future<void> _validate() async {
     setState(() => _loading = true);
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
     setState(() {
       _loading = false;
       _validated = true;
-      _hash = '0x72c5B327...948dc';
+      _flash = true;
+      _hash = '0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc';
     });
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (mounted) setState(() => _flash = false);
   }
 
   @override
   Widget build(BuildContext context) {
     final lot = widget.lot;
-    return Scaffold(
-      appBar: AppBar(title: const Text('Validation du lot')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: _validated ? _buildSuccess() : _buildForm(lot),
+    return Stack(
+      children: [
+        DashboardShell(
+          currentRoute: '/cooperative',
+          pageTitle: _validated ? 'Lot valide' : 'Validation du lot',
+          pageSubtitle: '${lot['lotId']} - controle de reception cooperative',
+          userName: 'CAPRK Kpalime',
+          userRole: 'Cooperative',
+          actions: [
+            SizedBox(
+              width: 180,
+              child: OutlinedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Retour'),
+              ),
+            ),
+          ],
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 400),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.ease,
+            child: _validated
+                ? _SuccessView(hash: _hash ?? '')
+                : _ValidationForm(
+                    key: const ValueKey('form'),
+                    lot: lot,
+                    weightController: _weightController,
+                    hasFraud: _hasFraud,
+                    loading: _loading,
+                    onChanged: () => setState(() {}),
+                    onValidate: _validate,
+                  ),
+          ),
+        ),
+        IgnorePointer(
+          child: AnimatedOpacity(
+            opacity: _flash ? 0.22 : 0,
+            duration: const Duration(milliseconds: 300),
+            child: Container(color: AppColors.vertFeuille),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ValidationForm extends StatelessWidget {
+  final Map<String, dynamic> lot;
+  final TextEditingController weightController;
+  final bool hasFraud;
+  final bool loading;
+  final VoidCallback onChanged;
+  final VoidCallback onValidate;
+
+  const _ValidationForm({
+    super.key,
+    required this.lot,
+    required this.weightController,
+    required this.hasFraud,
+    required this.loading,
+    required this.onChanged,
+    required this.onValidate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final twoColumns = constraints.maxWidth >= 900;
+        final details = _LotDetailsCard(lot: lot);
+        final form = _WeightFormCard(
+          weightController: weightController,
+          hasFraud: hasFraud,
+          loading: loading,
+          onChanged: onChanged,
+          onValidate: onValidate,
+        );
+
+        if (!twoColumns) {
+          return Column(
+            children: [
+              AnimatedAppear(index: 0, child: details),
+              const SizedBox(height: 24),
+              AnimatedAppear(index: 1, child: form),
+            ],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: AnimatedAppear(index: 0, child: details)),
+            const SizedBox(width: 24),
+            Expanded(child: AnimatedAppear(index: 1, child: form)),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _LotDetailsCard extends StatelessWidget {
+  final Map<String, dynamic> lot;
+
+  const _LotDetailsCard({required this.lot});
+
+  @override
+  Widget build(BuildContext context) {
+    return PremiumCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Fiche du lot', style: AppTextStyles.h2),
+          const Divider(height: 32),
+          _InfoRow('ID Lot', lot['lotId']),
+          _InfoRow('Agriculteur', lot['farmerName']),
+          _InfoRow('Culture', lot['cultureType']),
+          _InfoRow('Poids declare', '${lot['weightDeclared'].toInt()} kg'),
+          _InfoRow('GPS', lot['gps']),
+          _InfoRow('Enregistre le', lot['registeredAt']),
+          _InfoRow('Hash blockchain', lot['blockchainHash']),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildForm(Map<String, dynamic> lot) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Fiche du lot
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppColors.blanc,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 12,
-              )
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Fiche du lot', style: AppTextStyles.h2),
-              const Divider(height: 24),
-              _buildInfoRow('ID Lot', lot['lotId']),
-              _buildInfoRow('Agriculteur', lot['farmerName']),
-              _buildInfoRow('Culture', lot['cultureType']),
-              _buildInfoRow('Poids déclaré', '${lot['weightDeclared'].toInt()} kg'),
-              _buildInfoRow('GPS', lot['gps']),
-              _buildInfoRow('Enregistré le', lot['registeredAt']),
-              _buildInfoRow('Hash blockchain', lot['blockchainHash']),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
+class _WeightFormCard extends StatelessWidget {
+  final TextEditingController weightController;
+  final bool hasFraud;
+  final bool loading;
+  final VoidCallback onChanged;
+  final VoidCallback onValidate;
 
-        // Saisie poids vérifié
-        Text('Poids vérifié à la coopérative',
-            style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _weightController,
-          keyboardType: TextInputType.number,
-          onChanged: (_) => setState(() {}),
-          decoration: const InputDecoration(
-            hintText: 'Entrez le poids réel pesé',
-            suffixText: 'kg',
-            prefixIcon: Icon(Icons.scale),
-          ),
-        ),
+  const _WeightFormCard({
+    required this.weightController,
+    required this.hasFraud,
+    required this.loading,
+    required this.onChanged,
+    required this.onValidate,
+  });
 
-        // Alerte fraude
-        if (_hasFraud) ...[
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFEF2F2),
-              borderRadius: BorderRadius.circular(8),
-              border: const Border(
-                left: BorderSide(color: AppColors.rougeErreur, width: 4),
-              ),
+  @override
+  Widget build(BuildContext context) {
+    return PremiumCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Controle de reception', style: AppTextStyles.h2),
+          const SizedBox(height: 8),
+          Text(
+            'Saisissez le poids reel pese avant validation blockchain.',
+            style: AppTextStyles.bodySecondary,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Poids verifie a la cooperative',
+            style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: weightController,
+            keyboardType: TextInputType.number,
+            onChanged: (_) => onChanged(),
+            decoration: const InputDecoration(
+              hintText: 'Entrez le poids reel pese',
+              suffixText: 'kg',
+              prefixIcon: Icon(Icons.scale_outlined),
             ),
-            child: Row(
-              children: [
-                const Icon(Icons.warning_amber,
-                    color: AppColors.rougeErreur, size: 20),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    '⚠ Alerte fraude détectée — Écart supérieur à 5% entre le poids déclaré et le poids vérifié.',
-                    style: AppTextStyles.bodySecondary
-                        .copyWith(color: AppColors.rougeErreur),
-                  ),
-                ),
-              ],
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: hasFraud
+                ? Padding(
+                    key: const ValueKey('fraud'),
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEF2F2),
+                        borderRadius: BorderRadius.circular(8),
+                        border: const Border(
+                          left: BorderSide(
+                            color: AppColors.rougeErreur,
+                            width: 4,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.warning_amber_outlined,
+                            color: AppColors.rougeErreur,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Alerte fraude detectee - ecart superieur a 5% entre poids declare et poids verifie.',
+                              style: AppTextStyles.bodySecondary.copyWith(
+                                color: AppColors.rougeErreur,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(key: ValueKey('empty')),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: weightController.text.isEmpty || loading
+                ? null
+                : onValidate,
+            icon: loading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: AppColors.blanc,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(Icons.link),
+            label: Text(
+              loading
+                  ? 'Validation en cours...'
+                  : 'Valider le transfert sur blockchain',
             ),
           ),
         ],
-        const SizedBox(height: 24),
-
-        ElevatedButton(
-          onPressed: _weightController.text.isEmpty ? null : _validate,
-          child: _loading
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                      color: AppColors.blanc, strokeWidth: 2),
-                )
-              : const Text('Valider le transfert sur blockchain'),
-        ),
-      ],
+      ),
     );
   }
+}
 
-  Widget _buildSuccess() {
-    return Column(
-      children: [
-        const SizedBox(height: 40),
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: AppColors.vertFeuille,
-            borderRadius: BorderRadius.circular(40),
-          ),
-          child: const Icon(Icons.check, color: AppColors.blanc, size: 48),
-        ),
-        const SizedBox(height: 24),
-        Text('Lot validé !', style: AppTextStyles.h1),
-        const SizedBox(height: 8),
-        Text('Transaction enregistrée sur la blockchain Polygon',
-            style: AppTextStyles.bodySecondary, textAlign: TextAlign.center),
-        const SizedBox(height: 32),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.blanc,
-            borderRadius: BorderRadius.circular(12),
-          ),
+class _SuccessView extends StatelessWidget {
+  final String hash;
+
+  const _SuccessView({required this.hash});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 640),
+        child: PremiumCard(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Hash de transaction',
-                  style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
-              Text(_hash ?? '',
-                  style: AppTextStyles.hash),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                  'Voir sur Polygonscan →',
-                  style: AppTextStyles.body.copyWith(
-                      color: AppColors.bleuTransit,
-                      decoration: TextDecoration.underline),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeOutBack,
+                builder: (context, value, child) {
+                  return Transform.scale(scale: value, child: child);
+                },
+                child: Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    color: AppColors.vertFeuille,
+                    borderRadius: BorderRadius.circular(44),
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    color: AppColors.blanc,
+                    size: 52,
+                  ),
                 ),
+              ),
+              const SizedBox(height: 24),
+              Text('Lot valide !', style: AppTextStyles.h1),
+              const SizedBox(height: 8),
+              Text(
+                'Transaction enregistree sur la blockchain Polygon',
+                style: AppTextStyles.bodySecondary,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.creme,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hash de transaction',
+                      style: AppTextStyles.body.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(hash, style: AppTextStyles.hashBlockchain),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Voir sur Polygonscan',
+                      style: AppTextStyles.body.copyWith(
+                        color: AppColors.bleuTransit,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Retour au dashboard'),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Retour au dashboard'),
-        ),
-      ],
+      ),
     );
   }
+}
 
-  Widget _buildInfoRow(String label, String value) {
+class _InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _InfoRow(this.label, this.value);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 140,
-            child: Text(label,
-                style: AppTextStyles.bodySecondary
-                    .copyWith(fontWeight: FontWeight.w600)),
+            width: 150,
+            child: Text(
+              label,
+              style: AppTextStyles.bodySecondary.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-          Expanded(
-            child: Text(value, style: AppTextStyles.body),
-          ),
+          Expanded(child: Text(value, style: AppTextStyles.body)),
         ],
       ),
     );

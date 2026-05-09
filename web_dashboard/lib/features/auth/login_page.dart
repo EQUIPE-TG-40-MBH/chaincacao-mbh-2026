@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -104,10 +103,10 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
+                        color: Colors.black.withValues(alpha: 0.15),
                         blurRadius: 32,
                         offset: const Offset(0, 8),
-                      )
+                      ),
                     ],
                   ),
                   child: Column(
@@ -122,9 +121,12 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 24),
 
                       // Email
-                      Text('Email professionnel',
-                          style: AppTextStyles.body.copyWith(
-                              fontWeight: FontWeight.w600)),
+                      Text(
+                        'Email professionnel',
+                        style: AppTextStyles.body.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _emailController,
@@ -137,9 +139,12 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 16),
 
                       // Mot de passe
-                      Text('Mot de passe',
-                          style: AppTextStyles.body.copyWith(
-                              fontWeight: FontWeight.w600)),
+                      Text(
+                        'Mot de passe',
+                        style: AppTextStyles.body.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _passwordController,
@@ -160,17 +165,25 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(8),
                             border: const Border(
                               left: BorderSide(
-                                  color: AppColors.rougeErreur, width: 4),
+                                color: AppColors.rougeErreur,
+                                width: 4,
+                              ),
                             ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.warning_amber,
-                                  color: AppColors.rougeErreur, size: 16),
+                              const Icon(
+                                Icons.warning_amber,
+                                color: AppColors.rougeErreur,
+                                size: 16,
+                              ),
                               const SizedBox(width: 8),
-                              Text(_error!,
-                                  style: AppTextStyles.bodySecondary.copyWith(
-                                      color: AppColors.rougeErreur)),
+                              Text(
+                                _error!,
+                                style: AppTextStyles.bodySecondary.copyWith(
+                                  color: AppColors.rougeErreur,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -202,14 +215,19 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Comptes de démo :',
-                                style: AppTextStyles.bodySecondary.copyWith(
-                                    fontWeight: FontWeight.w600)),
+                            Text(
+                              'Comptes de démo :',
+                              style: AppTextStyles.bodySecondary.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                             const SizedBox(height: 4),
                             Text(
                               'cooperative@chaincacao.tg / demo123\nexportateur@chaincacao.tg / demo123',
                               style: AppTextStyles.bodySecondary.copyWith(
-                                  fontFamily: 'JetBrainsMono', fontSize: 12),
+                                fontFamily: 'JetBrainsMono',
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),

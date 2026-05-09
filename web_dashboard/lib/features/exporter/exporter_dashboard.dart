@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/widgets/dashboard_shell.dart';
 import 'eudr_certificate_page.dart';
 
 class ExporterDashboard extends StatefulWidget {
@@ -15,11 +17,11 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
     {
       'lotId': 'TG-2026-0468',
       'farmerName': 'Mensah Koffi',
-      'cooperativeName': 'CAPRK Kpalimé',
+      'cooperativeName': 'CAPRK Kpalime',
       'weightVerified': 178.0,
       'cultureType': 'Cacao',
       'status': 'VALIDATED',
-      'gps': '6.8945° N, 0.6521° E',
+      'gps': '6.8945 N, 0.6521 E',
       'registeredAt': '08 Mai 2026',
       'blockchainHash': '0x4D8E2A11...C93f',
       'selected': false,
@@ -27,11 +29,11 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
     {
       'lotId': 'TG-2026-0465',
       'farmerName': 'Kofi Amevor',
-      'cooperativeName': 'CAPRK Kpalimé',
+      'cooperativeName': 'CAPRK Kpalime',
       'weightVerified': 220.0,
       'cultureType': 'Cacao',
       'status': 'VALIDATED',
-      'gps': '6.8912° N, 0.6498° E',
+      'gps': '6.8912 N, 0.6498 E',
       'registeredAt': '07 Mai 2026',
       'blockchainHash': '0x8B2F4D33...A12e',
       'selected': false,
@@ -39,11 +41,11 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
     {
       'lotId': 'TG-2026-0462',
       'farmerName': 'Yawa Dossou',
-      'cooperativeName': 'CAPRK Kpalimé',
+      'cooperativeName': 'CAPRK Kpalime',
       'weightVerified': 195.0,
       'cultureType': 'Cacao',
       'status': 'VALIDATED',
-      'gps': '6.8934° N, 0.6511° E',
+      'gps': '6.8934 N, 0.6511 E',
       'registeredAt': '06 Mai 2026',
       'blockchainHash': '0x3C9A1E44...D85b',
       'selected': false,
@@ -51,49 +53,177 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
   ];
 
   List<Map<String, dynamic>> get _selectedLots =>
-      _lots.where((l) => l['selected'] == true).toList();
+      _lots.where((lot) => lot['selected'] == true).toList();
 
   double get _totalSelectedKg => _selectedLots.fold(
-      0, (sum, l) => sum + (l['weightVerified'] as double));
+    0,
+    (sum, lot) => sum + (lot['weightVerified'] as double),
+  );
 
-  Widget _buildLotCard(Map<String, dynamic> lot, int index) {
+  @override
+  Widget build(BuildContext context) {
+    return DashboardShell(
+      currentRoute: '/exportateur',
+      pageTitle: 'Lots disponibles a l export',
+      pageSubtitle:
+          'Selectionnez les lots consolides pour generer un certificat EUDR',
+      userName: 'ChainCacao Export',
+      userRole: 'Exportateur',
+      floatingAction: _selectedLots.isEmpty
+          ? null
+          : _ExportActionBar(
+              selectedLots: _selectedLots.length,
+              totalKg: _totalSelectedKg,
+              onGenerate: () {
+                Navigator.push(
+                  context,
+                  premiumRoute(
+                    EudrCertificatePage(
+                      lots: _selectedLots,
+                      totalKg: _totalSelectedKg,
+                    ),
+                  ),
+                );
+              },
+            ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final columns = constraints.maxWidth < 680 ? 1 : 2;
+              return GridView.count(
+                crossAxisCount: columns,
+                childAspectRatio: columns == 1 ? 4.2 : 1.9,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  AnimatedAppear(
+                    index: 0,
+                    child: _StatCard(
+                      title: 'Lots disponibles',
+                      value: '${_lots.length}',
+                      icon: Icons.inventory_2_outlined,
+                      color: AppColors.orChaud,
+                    ),
+                  ),
+                  AnimatedAppear(
+                    index: 1,
+                    child: _StatCard(
+                      title: 'Lots selectionnes',
+                      value: '${_selectedLots.length}',
+                      icon: Icons.check_circle_outline,
+                      color: AppColors.vertFeuille,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          ..._lots.asMap().entries.map(
+            (entry) => AnimatedAppear(
+              index: 2 + entry.key,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: _LotCard(
+                  lot: entry.value,
+                  onTap: () => setState(
+                    () => _lots[entry.key]['selected'] =
+                        !(_lots[entry.key]['selected'] as bool),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _StatCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PremiumCard(
+      child: Row(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(value, style: AppTextStyles.h2.copyWith(color: color)),
+              Text(title, style: AppTextStyles.bodySecondary),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LotCard extends StatelessWidget {
+  final Map<String, dynamic> lot;
+  final VoidCallback onTap;
+
+  const _LotCard({required this.lot, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
     final isSelected = lot['selected'] == true;
-    return GestureDetector(
-      onTap: () => setState(() => _lots[index]['selected'] = !isSelected),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: AppColors.blanc,
-          borderRadius: BorderRadius.circular(12),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        child: PremiumCard(
           border: Border.all(
             color: isSelected ? AppColors.orChaud : Colors.transparent,
             width: 2,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 2),
-            )
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              // Checkbox
-              Container(
-                width: 24,
-                height: 24,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.orChaud : AppColors.creme,
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: isSelected ? AppColors.orChaud : AppColors.grisTexte,
+                    color: isSelected
+                        ? AppColors.orChaud
+                        : const Color(0xFFE0D5C8),
+                    width: 1.5,
                   ),
                 ),
                 child: isSelected
-                    ? const Icon(Icons.check, color: AppColors.blanc, size: 16)
+                    ? const Icon(Icons.check, color: AppColors.blanc, size: 18)
                     : null,
               ),
               const SizedBox(width: 16),
@@ -101,46 +231,50 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.spaceBetween,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
                           lot['lotId'],
-                          style: AppTextStyles.body.copyWith(
+                          style: AppTextStyles.hash.copyWith(
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'JetBrainsMono',
+                            fontSize: 15,
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 3),
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.vertFeuille,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            '✓ Validé',
+                            'Valide',
                             style: AppTextStyles.bodySecondary.copyWith(
-                                color: AppColors.blanc,
-                                fontWeight: FontWeight.w600),
+                              color: AppColors.blanc,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 10),
+                    Text(lot['farmerName'], style: AppTextStyles.h3),
                     const SizedBox(height: 4),
                     Text(
-                      lot['farmerName'],
-                      style: AppTextStyles.body
-                          .copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${lot['cultureType']} · ${lot['weightVerified'].toInt()} kg · ${lot['cooperativeName']}',
+                      '${lot['cultureType']} - ${lot['weightVerified'].toInt()} kg - ${lot['cooperativeName']}',
                       style: AppTextStyles.bodySecondary,
                     ),
-                    const SizedBox(height: 2),
-                    Text(lot['registeredAt'],
-                        style: AppTextStyles.bodySecondary),
+                    const SizedBox(height: 4),
+                    Text(
+                      lot['registeredAt'],
+                      style: AppTextStyles.bodySecondary,
+                    ),
                   ],
                 ),
               ),
@@ -150,167 +284,72 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
       ),
     );
   }
+}
+
+class _ExportActionBar extends StatelessWidget {
+  final int selectedLots;
+  final double totalKg;
+  final VoidCallback onGenerate;
+
+  const _ExportActionBar({
+    required this.selectedLots,
+    required this.totalKg,
+    required this.onGenerate,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('ChainCacao — Exportateur'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => Navigator.pushReplacementNamed(context, '/'),
-          )
-        ],
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
-            child: Column(
+    return AnimatedSlide(
+      offset: Offset.zero,
+      duration: const Duration(milliseconds: 200),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.cacao,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.cacao.withValues(alpha: 0.25),
+              blurRadius: 32,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Lots disponibles à l\'export', style: AppTextStyles.h2),
-                const SizedBox(height: 4),
                 Text(
-                  'Sélectionnez les lots à consolider pour générer le certificat EUDR',
-                  style: AppTextStyles.bodySecondary,
+                  '$selectedLots lot(s) selectionne(s)',
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.blanc,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                const SizedBox(height: 24),
-
-                // Stats
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.blanc,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
-                              blurRadius: 12,
-                            )
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.inventory_2,
-                                color: AppColors.orChaud),
-                            const SizedBox(height: 8),
-                            Text('${_lots.length}',
-                                style: AppTextStyles.h2
-                                    .copyWith(color: AppColors.orChaud)),
-                            Text('Lots disponibles',
-                                style: AppTextStyles.bodySecondary),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.blanc,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
-                              blurRadius: 12,
-                            )
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.check_circle,
-                                color: AppColors.vertFeuille),
-                            const SizedBox(height: 8),
-                            Text('${_selectedLots.length}',
-                                style: AppTextStyles.h2.copyWith(
-                                    color: AppColors.vertFeuille)),
-                            Text('Lots sélectionnés',
-                                style: AppTextStyles.bodySecondary),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  '${totalKg.toInt()} kg total',
+                  style: AppTextStyles.bodySecondary.copyWith(
+                    color: AppColors.grisTexte,
+                  ),
                 ),
-                const SizedBox(height: 24),
-
-                // Liste des lots
-                ..._lots.asMap().entries.map(
-                      (e) => _buildLotCard(e.value, e.key),
-                    ),
               ],
             ),
-          ),
-
-          // Bouton flottant
-          if (_selectedLots.isNotEmpty)
-            Positioned(
-              bottom: 24,
-              left: 24,
-              right: 24,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.cacao,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 20,
-                      offset: const Offset(0, 4),
-                    )
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${_selectedLots.length} lot(s) sélectionné(s)',
-                            style: AppTextStyles.body
-                                .copyWith(color: AppColors.blanc),
-                          ),
-                          Text(
-                            '${_totalSelectedKg.toInt()} kg total',
-                            style: AppTextStyles.bodySecondary
-                                .copyWith(color: AppColors.grisTexte),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => EudrCertificatePage(
-                              lots: _selectedLots,
-                              totalKg: _totalSelectedKg,
-                            ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.orChaud,
-                        minimumSize: const Size(0, 48),
-                      ),
-                      child: const Text('Générer certificat EUDR'),
-                    ),
-                  ],
-                ),
+            SizedBox(
+              width: 260,
+              child: ElevatedButton.icon(
+                onPressed: onGenerate,
+                icon: const Icon(Icons.description_outlined),
+                label: const Text('Generer certificat EUDR'),
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

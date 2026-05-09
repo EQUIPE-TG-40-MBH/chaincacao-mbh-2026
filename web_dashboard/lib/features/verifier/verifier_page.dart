@@ -122,11 +122,7 @@ class _VerifierPageState extends State<VerifierPage> {
               child: const Icon(Icons.check, color: AppColors.blanc, size: 18),
             ),
             if (!isLast)
-              Container(
-                width: 2,
-                height: 40,
-                color: AppColors.vertFeuille,
-              ),
+              Container(width: 2, height: 40, color: AppColors.vertFeuille),
           ],
         ),
         const SizedBox(width: 16),
@@ -138,13 +134,17 @@ class _VerifierPageState extends State<VerifierPage> {
               children: [
                 Text(
                   step['step'],
-                  style: AppTextStyles.body
-                      .copyWith(fontWeight: FontWeight.w600),
+                  style: AppTextStyles.body.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Text(step['actor'], style: AppTextStyles.bodySecondary),
-                Text(step['date'],
-                    style: AppTextStyles.bodySecondary
-                        .copyWith(color: AppColors.grisTexte)),
+                Text(
+                  step['date'],
+                  style: AppTextStyles.bodySecondary.copyWith(
+                    color: AppColors.grisTexte,
+                  ),
+                ),
               ],
             ),
           ),
@@ -169,21 +169,22 @@ class _VerifierPageState extends State<VerifierPage> {
           ),
           child: Row(
             children: [
-              const Icon(Icons.verified,
-                  color: AppColors.vertFeuille, size: 32),
+              const Icon(
+                Icons.verified,
+                color: AppColors.vertFeuille,
+                size: 32,
+              ),
               const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'LOT VÉRIFIÉ ✓',
-                    style: AppTextStyles.h2
-                        .copyWith(color: AppColors.vertFeuille),
+                    style: AppTextStyles.h2.copyWith(
+                      color: AppColors.vertFeuille,
+                    ),
                   ),
-                  Text(
-                    lot['lotId'],
-                    style: AppTextStyles.hash,
-                  ),
+                  Text(lot['lotId'], style: AppTextStyles.hash),
                 ],
               ),
             ],
@@ -199,9 +200,9 @@ class _VerifierPageState extends State<VerifierPage> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 12,
-              )
+              ),
             ],
           ),
           child: Column(
@@ -213,10 +214,8 @@ class _VerifierPageState extends State<VerifierPage> {
               _buildInfoRow('📍 Localisation', '${lot['region']}'),
               _buildInfoRow('🗺 GPS', lot['gps']),
               _buildInfoRow('🍫 Culture', lot['cultureType']),
-              _buildInfoRow(
-                  '⚖ Poids déclaré', '${lot['weightDeclared']} kg'),
-              _buildInfoRow(
-                  '✅ Poids vérifié', '${lot['weightVerified']} kg'),
+              _buildInfoRow('⚖ Poids déclaré', '${lot['weightDeclared']} kg'),
+              _buildInfoRow('✅ Poids vérifié', '${lot['weightVerified']} kg'),
               _buildInfoRow('🏭 Coopérative', lot['cooperativeName']),
               _buildInfoRow('🚢 Exportateur', lot['exporterName']),
             ],
@@ -232,9 +231,9 @@ class _VerifierPageState extends State<VerifierPage> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 12,
-              )
+              ),
             ],
           ),
           child: Column(
@@ -243,15 +242,18 @@ class _VerifierPageState extends State<VerifierPage> {
               Text('Historique blockchain', style: AppTextStyles.h2),
               const SizedBox(height: 16),
               ...(lot['history'] as List).asMap().entries.map(
-                    (e) => _buildHistoryStep(
-                      e.value,
-                      e.key == (lot['history'] as List).length - 1,
-                    ),
-                  ),
+                (e) => _buildHistoryStep(
+                  e.value,
+                  e.key == (lot['history'] as List).length - 1,
+                ),
+              ),
               const Divider(height: 24),
-              Text('Hash de transaction',
-                  style: AppTextStyles.bodySecondary
-                      .copyWith(fontWeight: FontWeight.w600)),
+              Text(
+                'Hash de transaction',
+                style: AppTextStyles.bodySecondary.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(lot['blockchainHash'], style: AppTextStyles.hash),
               const SizedBox(height: 8),
@@ -277,19 +279,24 @@ class _VerifierPageState extends State<VerifierPage> {
             decoration: BoxDecoration(
               color: const Color(0xFFF0FDF4),
               borderRadius: BorderRadius.circular(12),
-              border:
-                  const Border(left: BorderSide(color: AppColors.vertFeuille, width: 4)),
+              border: const Border(
+                left: BorderSide(color: AppColors.vertFeuille, width: 4),
+              ),
             ),
             child: Row(
               children: [
-                const Icon(Icons.verified_user,
-                    color: AppColors.vertFeuille, size: 24),
+                const Icon(
+                  Icons.verified_user,
+                  color: AppColors.vertFeuille,
+                  size: 24,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Certificat EUDR émis — Ce lot est conforme au Règlement UE 2023/1115 sur la déforestation',
-                    style: AppTextStyles.bodySecondary
-                        .copyWith(color: AppColors.vertFeuille),
+                    style: AppTextStyles.bodySecondary.copyWith(
+                      color: AppColors.vertFeuille,
+                    ),
                   ),
                 ),
               ],
@@ -321,9 +328,12 @@ class _VerifierPageState extends State<VerifierPage> {
         children: [
           SizedBox(
             width: 160,
-            child: Text(label,
-                style: AppTextStyles.bodySecondary
-                    .copyWith(fontWeight: FontWeight.w600)),
+            child: Text(
+              label,
+              style: AppTextStyles.bodySecondary.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           Expanded(child: Text(value, style: AppTextStyles.body)),
         ],
@@ -334,9 +344,7 @@ class _VerifierPageState extends State<VerifierPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ChainCacao — Vérification publique'),
-      ),
+      appBar: AppBar(title: const Text('ChainCacao — Vérification publique')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -366,7 +374,9 @@ class _VerifierPageState extends State<VerifierPage> {
                       height: 20,
                       width: 20,
                       child: CircularProgressIndicator(
-                          color: AppColors.blanc, strokeWidth: 2),
+                        color: AppColors.blanc,
+                        strokeWidth: 2,
+                      ),
                     )
                   : const Text('Vérifier'),
             ),
@@ -380,17 +390,21 @@ class _VerifierPageState extends State<VerifierPage> {
                   color: const Color(0xFFFEF2F2),
                   borderRadius: BorderRadius.circular(12),
                   border: const Border(
-                      left: BorderSide(color: AppColors.rougeErreur, width: 4)),
+                    left: BorderSide(color: AppColors.rougeErreur, width: 4),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.error_outline,
-                        color: AppColors.rougeErreur),
+                    const Icon(
+                      Icons.error_outline,
+                      color: AppColors.rougeErreur,
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       'Lot non trouvé. Vérifiez l\'ID saisi.',
-                      style: AppTextStyles.bodySecondary
-                          .copyWith(color: AppColors.rougeErreur),
+                      style: AppTextStyles.bodySecondary.copyWith(
+                        color: AppColors.rougeErreur,
+                      ),
                     ),
                   ],
                 ),

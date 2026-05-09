@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/widgets/dashboard_shell.dart';
 
 class EudrCertificatePage extends StatefulWidget {
   final List<Map<String, dynamic>> lots;
@@ -41,13 +42,12 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
             width: 160,
             child: Text(
               label,
-              style: AppTextStyles.bodySecondary
-                  .copyWith(fontWeight: FontWeight.w600),
+              style: AppTextStyles.bodySecondary.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-          Expanded(
-            child: Text(value, style: AppTextStyles.body),
-          ),
+          Expanded(child: Text(value, style: AppTextStyles.body)),
         ],
       ),
     );
@@ -55,10 +55,24 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Certificat EUDR')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+    return DashboardShell(
+      currentRoute: '/exportateur',
+      pageTitle: 'Certificat EUDR',
+      pageSubtitle: 'Conformite deforestation et tracabilite export',
+      userName: 'ChainCacao Export',
+      userRole: 'Exportateur',
+      actions: [
+        SizedBox(
+          width: 180,
+          child: OutlinedButton.icon(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back),
+            label: const Text('Retour'),
+          ),
+        ),
+      ],
+      child: AnimatedAppear(
+        index: 0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,8 +94,9 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                   const SizedBox(height: 4),
                   Text(
                     'Règlement UE 2023/1115 — Déforestation',
-                    style: AppTextStyles.bodySecondary
-                        .copyWith(color: AppColors.grisTexte),
+                    style: AppTextStyles.bodySecondary.copyWith(
+                      color: AppColors.grisTexte,
+                    ),
                   ),
                 ],
               ),
@@ -96,9 +111,9 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 12,
-                  )
+                  ),
                 ],
               ),
               child: Column(
@@ -127,9 +142,9 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 12,
-                  )
+                  ),
                 ],
               ),
               child: Column(
@@ -137,43 +152,47 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                 children: [
                   Text('Lots inclus et traçabilité', style: AppTextStyles.h2),
                   const Divider(height: 24),
-                  ...widget.lots.map((lot) => Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.creme,
-                          borderRadius: BorderRadius.circular(8),
-                          border: const Border(
-                            left: BorderSide(
-                                color: AppColors.vertFeuille, width: 3),
+                  ...widget.lots.map(
+                    (lot) => Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.creme,
+                        borderRadius: BorderRadius.circular(8),
+                        border: const Border(
+                          left: BorderSide(
+                            color: AppColors.vertFeuille,
+                            width: 3,
                           ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              lot['lotId'],
-                              style: AppTextStyles.body.copyWith(
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'JetBrainsMono',
-                              ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            lot['lotId'],
+                            style: AppTextStyles.body.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'JetBrainsMono',
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${lot['farmerName']} · ${lot['weightVerified'].toInt()} kg',
-                              style: AppTextStyles.body,
-                            ),
-                            Text(
-                              'GPS : ${lot['gps']}',
-                              style: AppTextStyles.bodySecondary,
-                            ),
-                            Text(
-                              'Hash : ${lot['blockchainHash']}',
-                              style: AppTextStyles.hash,
-                            ),
-                          ],
-                        ),
-                      )),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${lot['farmerName']} · ${lot['weightVerified'].toInt()} kg',
+                            style: AppTextStyles.body,
+                          ),
+                          Text(
+                            'GPS : ${lot['gps']}',
+                            style: AppTextStyles.bodySecondary,
+                          ),
+                          Text(
+                            'Hash : ${lot['blockchainHash']}',
+                            style: AppTextStyles.hash,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -191,8 +210,9 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
               ),
               child: Text(
                 'Je soussigné certifie que les produits couverts par ce document ont été produits sans contribuer à la déforestation ni à la dégradation des forêts, conformément au Règlement (UE) 2023/1115.',
-                style: AppTextStyles.bodySecondary
-                    .copyWith(fontStyle: FontStyle.italic),
+                style: AppTextStyles.bodySecondary.copyWith(
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -206,12 +226,16 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
-                            color: AppColors.blanc, strokeWidth: 2),
+                          color: AppColors.blanc,
+                          strokeWidth: 2,
+                        ),
                       )
                     : const Icon(Icons.picture_as_pdf),
-                label: Text(_generating
-                    ? 'Génération en cours...'
-                    : 'Générer le PDF EUDR'),
+                label: Text(
+                  _generating
+                      ? 'Génération en cours...'
+                      : 'Générer le PDF EUDR',
+                ),
               ),
 
             // Succès
@@ -225,12 +249,18 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                 ),
                 child: Column(
                   children: [
-                    const Icon(Icons.check_circle,
-                        color: AppColors.vertFeuille, size: 48),
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.vertFeuille,
+                      size: 48,
+                    ),
                     const SizedBox(height: 12),
-                    Text('Certificat généré avec succès',
-                        style: AppTextStyles.h2
-                            .copyWith(color: AppColors.vertFeuille)),
+                    Text(
+                      'Certificat généré avec succès',
+                      style: AppTextStyles.h2.copyWith(
+                        color: AppColors.vertFeuille,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     const Text(
                       'Signé cryptographiquement · Enregistré sur Polygon',
@@ -254,8 +284,9 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content:
-                                Text('Lien envoyé à l\'importateur européen'),
+                            content: Text(
+                              'Lien envoyé à l\'importateur européen',
+                            ),
                           ),
                         );
                       },
