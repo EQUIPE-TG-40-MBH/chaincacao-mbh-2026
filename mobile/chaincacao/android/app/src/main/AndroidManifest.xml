@@ -42,4 +42,7 @@
             <data android:mimeType="text/plain"/>
         </intent>
     </queries>
+//just_audio
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application ... android:usesCleartextTraffic="true">
 </manifest>
