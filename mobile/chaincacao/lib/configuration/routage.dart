@@ -1,21 +1,146 @@
-// lib/configuration/routage.dart
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../configuration/constantes.dart';
+import '../configuration/theme.dart';
 
-// ─── 1. NOMS DES ROUTES ───────────────────────────────────────────────────
+import '../fonctionnalités/connexion/ecran_splash.dart';
+import '../fonctionnalités/connexion/ecran_selection_langue.dart';
+import '../fonctionnalités/connexion/ecran_connexion.dart';
+import '../fonctionnalités/connexion/ecran_scan_profil.dart';
+import '../fonctionnalités/connexion/ecran_saisie_id.dart';
+import '../fonctionnalités/accueil/ecran_accueil.dart';
+import '../fonctionnalités/recolte/ecran_scan_sac.dart';
+import '../fonctionnalités/recolte/ecran_pesee.dart';
+import '../fonctionnalités/historique/ecran_mes_scans.dart';
+
+
+// ───NOMS DES ROUTES
 class CCRoutes {
   CCRoutes._();
 
   // Connexion (publiques)
-  static const connexion   = '/connexion';
-  static const scanProfil  = '/connexion/scan-profil';
-  static const saisieId    = '/connexion/saisie-id';
+  static const splash = '/splash';
+  static const selectionLangue = '/selection-langue';
+  static const connexion = '/connexion';
+  static const scanProfil = '/connexion/scan-profil';
+  static const saisieId = '/connexion/saisie-id';
 
   // Espace agriculteur (protégées)
   static const accueil     = '/accueil';
   static const scanSac     = '/recolte/scan-sac';
   static const pesee       = '/recolte/pesee';
   static const mesScans    = '/historique';
+}
+
+// ─── GUARD
+Future<String?> _gardeRedirection(
+  BuildContext context,
+  GoRouterState state,
+) async {
+  final prefs = await SharedPreferences.getInstance();
+  final langue = prefs.getString(CCStockage.langue);
+  final token = prefs.getString(CCStockage.token);
+  final localisation = state.matchedLocation;
+
+  // Routes accessibles sans connexion
+  const publiques = [
+    CCRoutes.splash,
+    CCRoutes.selectionLangue,
+    CCRoutes.connexion,
+    CCRoutes.scanProfil,
+    CCRoutes.saisieId,
+  ];
+
+  final estPublique = publiques.contains(localisation);
+
+  // Pas de langue → sélection de langue
+  if (langue == null && localisation != CCRoutes.selectionLangue) {
+    return CCRoutes.selectionLangue;
+  }
+
+  // Pas de token sur une route protégée → connexion
+  if (token == null && !estPublique) {
+    return CCRoutes.connexion;
+  }
+
+  // // Déjà connecté sur une route publique → accueil
+  if (token != null && estPublique && localisation != CCRoutes.splash) {
+    return CCRoutes.accueil;
+  }
+
+  return null; // Pas de redirection
+}
+
+// ─── 3. ROUTER
+class CCRoutage {
+  CCRoutage._();
+
+  static final router = GoRouter(
+    initialLocation: CCRoutes.splash,
+    redirect: _gardeRedirection,
+    routes: [
+      // ── Splash
+      GoRoute(path: CCRoutes.splash, builder: (_, __) => const EcranSplash()),
+
+      // ── Sélection de langue
+      GoRoute(
+        path: CCRoutes.selectionLangue,
+        builder: (_, __) => const EcranSelectionLangue(),
+      ),
+
+      // // ── Connexion
+      GoRoute(
+        path: CCRoutes.connexion,
+        builder: (_, __) => const EcranConnexion(),
+        routes: [
+          GoRoute(
+            path: 'scan-profil',
+            builder: (_, __) => const EcranScanProfil(),
+          ),
+          GoRoute(
+            path: 'saisie-id',
+            builder: (_, __) => const EcranSaisieId(),
+          ),
+        ],
+      ),
+
+      // ── Accueil (protégé)
+      GoRoute(
+        path: CCRoutes.accueil,
+        builder: (_, __) => const EcranAccueil(),
+      ),
+
+      // // ── Récolte (protégé)
+      GoRoute(
+        path: CCRoutes.scanSac,
+        builder: (_, __) => const EcranScanSac(),
+      ),
+      GoRoute(
+        path: CCRoutes.pesee,
+        builder: (context, state) {
+          // L'ID du sac scanné est passé en extra depuis EcranScanSac
+          final idSac = state.extra as String? ?? '';
+          return EcranPesee(idSac: idSac);
+        },
+      ),
+
+      // ── Historique (protégé)
+      GoRoute(
+        path: CCRoutes.mesScans,
+        builder: (_, __) => const EcranMesScans(),
+      ),
+    ],
+
+    // Page d'erreur
+    errorBuilder: (context, state) => Scaffold(
+      backgroundColor: CCCouleurs.vertProfond,
+      body: Center(
+        child: Text(
+          'Page introuvable',
+          style: TextStyle(color: CCCouleurs.feuilleClaire),
+        ),
+      ),
+    ),
+  );
 }

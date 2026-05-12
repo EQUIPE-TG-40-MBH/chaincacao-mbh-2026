@@ -3,152 +3,262 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// ───COULEURS 
+// ───COULEURS
 class CCCouleurs {
   CCCouleurs._();
 
   // Principales
-  static const limeVif       = Color(0xFFD1F811); // Accent, CTA, badges
-  static const limePale      = Color(0xFFEBF97F); // Hover, états actifs
-  static const vertForet     = Color(0xFF076653); // Boutons, liens, primaire
-  static const vertMoyen     = Color(0xFF3D9E7A); // Variante intermédiaire
-  static const vertProfond   = Color(0xFF02403D); // App bar, splash, headers
-  static const vertSombre    = Color(0xFF012B29); // Fonds très sombres
+  static const limeVif = Color(0xFFD1F811); // Accent, CTA, badges
+  static const limePale = Color(0xFFEBF97F); // Hover, états actifs
+  static const vertForet = Color(0xFF076653); // Boutons, liens, primaire
+  static const vertMoyen = Color(0xFF3D9E7A); // Variante intermédiaire
+  static const vertProfond = Color(0xFF02403D); // App bar, splash, headers
+  static const vertSombre = Color(0xFF012B29); // Fonds très sombres
 
   // Neutres
-  static const nuit          = Color(0xFF0A1628); // Textes, dark surface
+  static const nuit = Color(0xFF0A1628); // Textes, dark surface
   static const feuilleClaire = Color(0xFFF5F9EE); // Fond clair, cartes
-  static const feuilleGrise  = Color(0xFFDDEDD4); // Bordures, séparateurs
-  static const grisTexte     = Color(0xFF5A7060); // Labels, placeholders
-  static const blanc         = Color(0xFFFFFFFF);
+  static const feuilleGrise = Color(0xFFDDEDD4); // Bordures, séparateurs
+  static const grisTexte = Color(0xFF5A7060); // Labels, placeholders
+  static const blanc = Color(0xFFFFFFFF);
 
   // Statuts
-  static const succes        = Color(0xFF076653);
-  static const succesClair   = Color(0xFFE8F5EF);
-  static const attention     = Color(0xFFD97706);
-  static const attentionClair= Color(0xFFFEF3C7);
-  static const transit       = Color(0xFF1D4ED8);
-  static const transitClair  = Color(0xFFEFF6FF);
-  static const erreur        = Color(0xFFDC2626);
-  static const erreurClair   = Color(0xFFFEE2E2);
-
-
+  static const succes = Color(0xFF076653);
+  static const succesClair = Color(0xFFE8F5EF);
+  static const attention = Color(0xFFD97706);
+  static const attentionClair = Color(0xFFFEF3C7);
+  static const transit = Color(0xFF1D4ED8);
+  static const transitClair = Color(0xFFEFF6FF);
+  static const erreur = Color(0xFFDC2626);
+  static const erreurClair = Color(0xFFFEE2E2);
 }
 
+// ───TYPOGRAPHIE
+// lib/configuration/theme.dart
+// Remplace CCTypographie
 
-// ───TYPOGRAPHIE 
 class CCTypographie {
   CCTypographie._();
 
-  // ── Mode clair 
+  // ── Mode clair ────────────────────────────────────────────────────────
   static TextTheme get clair => TextTheme(
-    // Titres — Playfair Display
-    displayLarge:  GoogleFonts.playfairDisplay(
-      fontSize: 32, fontWeight: FontWeight.w700, color: CCCouleurs.vertProfond),
-    displayMedium: GoogleFonts.playfairDisplay(
-      fontSize: 26, fontWeight: FontWeight.w700, color: CCCouleurs.vertProfond),
-    headlineLarge: GoogleFonts.playfairDisplay(
-      fontSize: 22, fontWeight: FontWeight.w600, color: CCCouleurs.vertProfond),
-    headlineMedium:GoogleFonts.playfairDisplay(
-      fontSize: 18, fontWeight: FontWeight.w600, color: CCCouleurs.vertProfond),
+    // Très grands titres hero
+    // ex : "Bonjour Koami !" sur le dashboard
+    displayLarge: GoogleFonts.plusJakartaSans(
+      fontSize: 36,
+      fontWeight: FontWeight.w800,
+      color: CCCouleurs.vertProfond,
+      height: 1.15,
+      letterSpacing: -1.0,
+    ),
+    displayMedium: GoogleFonts.plusJakartaSans(
+      fontSize: 30,
+      fontWeight: FontWeight.w800,
+      color: CCCouleurs.vertProfond,
+      height: 1.2,
+      letterSpacing: -0.8,
+    ),
 
-    // Corps — Epilogue
-    titleLarge:  GoogleFonts.epilogue(
-      fontSize: 18, fontWeight: FontWeight.w600, color: CCCouleurs.nuit),
-    titleMedium: GoogleFonts.epilogue(
-      fontSize: 16, fontWeight: FontWeight.w600, color: CCCouleurs.nuit),
-    bodyLarge:   GoogleFonts.epilogue(
-      fontSize: 16, fontWeight: FontWeight.w400, color: CCCouleurs.nuit),
-    bodyMedium:  GoogleFonts.epilogue(
-      fontSize: 14, fontWeight: FontWeight.w400, color: CCCouleurs.nuit),
-    bodySmall:   GoogleFonts.epilogue(
-      fontSize: 12, fontWeight: FontWeight.w400, color: CCCouleurs.grisTexte),
+    // Titres d'écran
+    // ex : "Scanner le QR Code", "Connexion"
+    headlineLarge: GoogleFonts.plusJakartaSans(
+      fontSize: 26,
+      fontWeight: FontWeight.w700,
+      color: CCCouleurs.vertProfond,
+      letterSpacing: -0.5,
+      height: 1.25,
+    ),
+    headlineMedium: GoogleFonts.plusJakartaSans(
+      fontSize: 22,
+      fontWeight: FontWeight.w700,
+      color: CCCouleurs.vertProfond,
+      letterSpacing: -0.3,
+      height: 1.3,
+    ),
+    headlineSmall: GoogleFonts.plusJakartaSans(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: CCCouleurs.vertProfond,
+      height: 1.3,
+    ),
 
-    // Labels
-    labelLarge:  GoogleFonts.epilogue(
-      fontSize: 16, fontWeight: FontWeight.w600, color: CCCouleurs.blanc),
-    labelMedium: GoogleFonts.epilogue(
-      fontSize: 12, fontWeight: FontWeight.w500, color: CCCouleurs.grisTexte),
+    // Titres de cartes / sections
+    titleLarge: GoogleFonts.plusJakartaSans(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: CCCouleurs.nuit,
+      letterSpacing: -0.2,
+    ),
+    titleMedium: GoogleFonts.plusJakartaSans(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: CCCouleurs.nuit,
+    ),
+    titleSmall: GoogleFonts.plusJakartaSans(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CCCouleurs.nuit,
+    ),
+
+    // Corps — DM Sans, lisible et moderne
+    bodyLarge: GoogleFonts.dmSans(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      color: CCCouleurs.nuit,
+      height: 1.6,
+    ),
+    bodyMedium: GoogleFonts.dmSans(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: CCCouleurs.nuit,
+      height: 1.55,
+    ),
+    bodySmall: GoogleFonts.dmSans(
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+      color: CCCouleurs.grisTexte,
+      height: 1.5,
+    ),
+
+    // Labels — boutons, badges, nav
+    labelLarge: GoogleFonts.plusJakartaSans(
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.1,
+    ),
+    labelMedium: GoogleFonts.dmSans(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: CCCouleurs.grisTexte,
+    ),
+    labelSmall: GoogleFonts.dmSans(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      color: CCCouleurs.grisTexte,
+      letterSpacing: 0.2,
+    ),
   );
 
   // ── Mode sombre 
-  static TextTheme get sombre => TextTheme(
-    displayLarge:  GoogleFonts.playfairDisplay(
-      fontSize: 32, fontWeight: FontWeight.w700, color: CCCouleurs.limeVif),
-    displayMedium: GoogleFonts.playfairDisplay(
-      fontSize: 26, fontWeight: FontWeight.w700, color: CCCouleurs.limeVif),
-    headlineLarge: GoogleFonts.playfairDisplay(
-      fontSize: 22, fontWeight: FontWeight.w600, color: CCCouleurs.feuilleClaire),
-    headlineMedium:GoogleFonts.playfairDisplay(
-      fontSize: 18, fontWeight: FontWeight.w600, color: CCCouleurs.feuilleClaire),
+  static TextTheme get sombre => clair.copyWith(
+    displayLarge: GoogleFonts.plusJakartaSans(
+      fontSize: 36,
+      fontWeight: FontWeight.w800,
+      color: CCCouleurs.limeVif,
+      height: 1.15,
+      letterSpacing: -1.0,
+    ),
+    displayMedium: GoogleFonts.plusJakartaSans(
+      fontSize: 30,
+      fontWeight: FontWeight.w800,
+      color: CCCouleurs.limeVif,
+      height: 1.2,
+      letterSpacing: -0.8,
+    ),
+    headlineLarge: GoogleFonts.plusJakartaSans(
+      fontSize: 26,
+      fontWeight: FontWeight.w700,
+      color: CCCouleurs.feuilleClaire,
+      letterSpacing: -0.5,
+      height: 1.25,
+    ),
+    headlineMedium: GoogleFonts.plusJakartaSans(
+      fontSize: 22,
+      fontWeight: FontWeight.w700,
+      color: CCCouleurs.feuilleClaire,
+      letterSpacing: -0.3,
+      height: 1.3,
+    ),
+    headlineSmall: GoogleFonts.plusJakartaSans(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: CCCouleurs.feuilleClaire,
+      height: 1.3,
+    ),
+    titleLarge: GoogleFonts.plusJakartaSans(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: CCCouleurs.feuilleClaire,
+    ),
+    bodyLarge: GoogleFonts.dmSans(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      color: CCCouleurs.feuilleClaire,
+      height: 1.6,
+    ),
+    bodyMedium: GoogleFonts.dmSans(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: CCCouleurs.feuilleClaire,
+      height: 1.55,
+    ),
+  );
 
-    titleLarge:  GoogleFonts.epilogue(
-      fontSize: 18, fontWeight: FontWeight.w600, color: CCCouleurs.feuilleClaire),
-    titleMedium: GoogleFonts.epilogue(
-      fontSize: 16, fontWeight: FontWeight.w600, color: CCCouleurs.feuilleClaire),
-    bodyLarge:   GoogleFonts.epilogue(
-      fontSize: 16, fontWeight: FontWeight.w400, color: CCCouleurs.feuilleClaire),
-    bodyMedium:  GoogleFonts.epilogue(
-      fontSize: 14, fontWeight: FontWeight.w400, color: CCCouleurs.feuilleClaire),
-    bodySmall:   GoogleFonts.epilogue(
-      fontSize: 12, fontWeight: FontWeight.w400, color: CCCouleurs.grisTexte),
+  // ── Helper : texte accent lime dans un titre (comme "debt-free") ──────
+  // Usage : RichText avec TextSpan
+  static TextStyle get accentLime => GoogleFonts.plusJakartaSans(
+    fontSize: 26,
+    fontWeight: FontWeight.w800,
+    color: CCCouleurs.limeVif,
+    letterSpacing: -0.5,
+  );
 
-    labelLarge:  GoogleFonts.epilogue(
-      fontSize: 16, fontWeight: FontWeight.w600, color: CCCouleurs.vertProfond),
-    labelMedium: GoogleFonts.epilogue(
-      fontSize: 12, fontWeight: FontWeight.w500, color: CCCouleurs.grisTexte),
+  static TextStyle get accentBlanc => GoogleFonts.plusJakartaSans(
+    fontSize: 26,
+    fontWeight: FontWeight.w800,
+    color: CCCouleurs.blanc,
+    letterSpacing: -0.5,
   );
 }
 
-
-// ───  THÈME 
+// ───  THÈME
 class CCTheme {
   CCTheme._();
 
-  // ── Light 
+  // ── Light
   static ThemeData get clair => ThemeData(
     useMaterial3: true,
     scaffoldBackgroundColor: CCCouleurs.feuilleClaire,
     colorScheme: const ColorScheme.light(
-      primary:          CCCouleurs.vertForet,
+      primary: CCCouleurs.vertForet,
       primaryContainer: CCCouleurs.vertProfond,
-      secondary:        CCCouleurs.limeVif,
-      surface:          CCCouleurs.feuilleClaire,
-      error:            CCCouleurs.erreur,
-      onPrimary:        CCCouleurs.blanc,
-      onSecondary:      CCCouleurs.vertProfond,
-      onSurface:        CCCouleurs.nuit,
+      secondary: CCCouleurs.limeVif,
+      surface: CCCouleurs.feuilleClaire,
+      error: CCCouleurs.erreur,
+      onPrimary: CCCouleurs.blanc,
+      onSecondary: CCCouleurs.vertProfond,
+      onSurface: CCCouleurs.nuit,
     ),
-    textTheme:             CCTypographie.clair,
-    appBarTheme:           _appBar,
-    elevatedButtonTheme:   ElevatedButtonThemeData(style: _boutonPrincipal),
-    outlinedButtonTheme:   OutlinedButtonThemeData(style: _boutonSecondaire),
-    inputDecorationTheme:  _champSaisie,
-    cardTheme:             _carte,
-    dividerColor:          CCCouleurs.feuilleGrise,
+    textTheme: CCTypographie.clair,
+    appBarTheme: _appBar,
+    elevatedButtonTheme: ElevatedButtonThemeData(style: _boutonPrincipal),
+    outlinedButtonTheme: OutlinedButtonThemeData(style: _boutonSecondaire),
+    inputDecorationTheme: _champSaisie,
+    cardTheme: _carte,
+    dividerColor: CCCouleurs.feuilleGrise,
   );
 
-  // ── Dark 
+  // ── Dark
   static ThemeData get sombre => ThemeData(
     useMaterial3: true,
     scaffoldBackgroundColor: CCCouleurs.nuit,
     colorScheme: const ColorScheme.dark(
-      primary:          CCCouleurs.limeVif,
+      primary: CCCouleurs.limeVif,
       primaryContainer: CCCouleurs.vertForet,
-      secondary:        CCCouleurs.vertMoyen,
-      surface:          CCCouleurs.vertProfond,
-      error:            CCCouleurs.erreur,
-      onPrimary:        CCCouleurs.vertProfond,
-      onSurface:        CCCouleurs.feuilleClaire,
+      secondary: CCCouleurs.vertMoyen,
+      surface: CCCouleurs.vertProfond,
+      error: CCCouleurs.erreur,
+      onPrimary: CCCouleurs.vertProfond,
+      onSurface: CCCouleurs.feuilleClaire,
     ),
-    textTheme:           CCTypographie.sombre,
-    appBarTheme:         _appBarSombre,
+    textTheme: CCTypographie.sombre,
+    appBarTheme: _appBarSombre,
     elevatedButtonTheme: ElevatedButtonThemeData(style: _boutonLime),
-    cardTheme:           _carteSombre,
-    dividerColor:        CCCouleurs.vertSombre,
+    cardTheme: _carteSombre,
+    dividerColor: CCCouleurs.vertSombre,
   );
 
-  // ── Styles partagés 
+  // ── Styles partagés
 
   static const AppBarTheme _appBar = AppBarTheme(
     backgroundColor: CCCouleurs.vertProfond,

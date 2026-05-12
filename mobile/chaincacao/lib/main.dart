@@ -1,29 +1,39 @@
+// lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-// Ces imports seront créés au fur et à mesure
-// import 'configuration/routage.dart';
-// import 'configuration/theme.dart';
+
+import 'configuration/theme.dart';
+import 'configuration/routage.dart';
 
 void main() async {
-  // 1. Initialisation des services système
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 2. Fixer l'orientation en portrait pour éviter les bugs d'affichage
+  // Portrait uniquement
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
+  // Barre de statut transparente sur fond vert profond
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+  ));
+
   runApp(
-    MultiProvider(
-      providers: [
-        // On ajoutera ici nos ChangeNotifierProviders (Langue, Auth, Agriculteur)
-        // ChangeNotifierProvider(create: (_) => LanguageProvider()),
-      ],
-      child: const ChainCacaoApp(),
-    ),
+    const ChainCacaoApp()
+    // MultiProvider(
+    //   providers: [
+
+    //     // On ajoutera ici au fur et à mesure :
+    //     // ChangeNotifierProvider(create: (_) => ProviderLangue()),
+    //     // ChangeNotifierProvider(create: (_) => ProviderAuth()),
+    //   ],
+    //   child: const ChainCacaoApp(),
+    // ),
   );
 }
 
@@ -32,25 +42,17 @@ class ChainCacaoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Utilisation de .router pour GoRouter
     return MaterialApp.router(
       title: 'ChainCacao',
       debugShowCheckedModeBanner: false,
 
-      // Configuration du thème (on le déplacera dans configuration/theme.dart)
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: const Color(0xFF6B3A2A), // Brun Cacao
-        fontFamily: 'Poppins',
-      ),
+      // Thème défini dans configuration/theme.dart
+      theme:      CCTheme.clair,
+      darkTheme:  CCTheme.sombre,
+      themeMode:  ThemeMode.system,
 
-      // Configuration du routage (on le déplacera dans configuration/routage.dart)
-      // routerConfig: ConfigurationRoutage.router,
-
-      // En attendant GoRouter, on peut utiliser un placeholder ou builder
-      builder: (context, child) =>
-          child ??
-          const Scaffold(body: Center(child: Text("ChainCacao Ready"))),
+      // Routage défini dans configuration/routage.dart
+      routerConfig: CCRoutage.router,
     );
   }
 }
