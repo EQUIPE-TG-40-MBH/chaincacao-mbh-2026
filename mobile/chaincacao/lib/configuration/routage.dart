@@ -3,17 +3,19 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../configuration/constantes.dart';
 import '../configuration/theme.dart';
+import '../modeles/champ.dart';
 
 import '../fonctionnalités/connexion/ecran_splash.dart';
 import '../fonctionnalités/connexion/ecran_selection_langue.dart';
 import '../fonctionnalités/connexion/ecran_connexion.dart';
+import '../fonctionnalités/accueil/ecran_accueil.dart';
+import '../fonctionnalités/recolte/ecran_selection_champ.dart';
+import '../fonctionnalités/recolte/ecran_verification_gps.dart';
 import '../fonctionnalités/connexion/ecran_scan_profil.dart';
 import '../fonctionnalités/connexion/ecran_saisie_id.dart';
-import '../fonctionnalités/accueil/ecran_accueil.dart';
 import '../fonctionnalités/recolte/ecran_scan_sac.dart';
 import '../fonctionnalités/recolte/ecran_pesee.dart';
 import '../fonctionnalités/historique/ecran_mes_scans.dart';
-
 
 // ───NOMS DES ROUTES
 class CCRoutes {
@@ -27,10 +29,12 @@ class CCRoutes {
   static const saisieId = '/connexion/saisie-id';
 
   // Espace agriculteur (protégées)
-  static const accueil     = '/accueil';
-  static const scanSac     = '/recolte/scan-sac';
-  static const pesee       = '/recolte/pesee';
-  static const mesScans    = '/historique';
+  static const accueil = '/accueil';
+  static const selectionChamp = '/recolte/selection-champ';
+  static const verificationGps = '/recolte/verification-gps';
+  static const scanSac = '/recolte/scan-sac';
+  static const pesee = '/recolte/pesee';
+  static const mesScans = '/historique';
 }
 
 // ─── GUARD
@@ -98,24 +102,29 @@ class CCRoutage {
             path: 'scan-profil',
             builder: (_, __) => const EcranScanProfil(),
           ),
-          GoRoute(
-            path: 'saisie-id',
-            builder: (_, __) => const EcranSaisieId(),
-          ),
+          GoRoute(path: 'saisie-id', builder: (_, __) => const EcranSaisieId()),
         ],
       ),
 
       // ── Accueil (protégé)
+      GoRoute(path: CCRoutes.accueil, builder: (_, __) => const EcranAccueil()),
+
       GoRoute(
-        path: CCRoutes.accueil,
-        builder: (_, __) => const EcranAccueil(),
+        path: CCRoutes.selectionChamp,
+        builder: (_, __) => const EcranSelectionChamp(),
+      ),
+
+      // Verification gps
+      GoRoute(
+        path: CCRoutes.verificationGps,
+        builder: (context, state) {
+          final champ = state.extra as Champ;
+          return EcranVerificationGps(champ: champ);
+        },
       ),
 
       // // ── Récolte (protégé)
-      GoRoute(
-        path: CCRoutes.scanSac,
-        builder: (_, __) => const EcranScanSac(),
-      ),
+      GoRoute(path: CCRoutes.scanSac, builder: (_, __) => const EcranScanSac()),
       GoRoute(
         path: CCRoutes.pesee,
         builder: (context, state) {

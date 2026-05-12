@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../configuration/theme.dart';
 import '../../configuration/routage.dart';
 
+import '../../fonctionnalités/recolte/ecran_selection_champ.dart';
+
 class EcranAccueil extends StatefulWidget {
   const EcranAccueil({super.key});
 
@@ -493,7 +495,6 @@ class _ItemNav extends StatelessWidget {
     required this.actif,
     required this.onTap,
   });
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -520,7 +521,6 @@ class _ItemNav extends StatelessWidget {
     );
   }
 }
-
 // ─── FAB — Ajouter une récolte
 class _BoutonAjouterRecolte extends StatelessWidget {
   @override
@@ -562,7 +562,7 @@ class _SectionActions extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             // TODO : context.go(CCRoutes.nouvelleRecolteEtape1) quand flux prêt
-            onTap: () => context.go(CCRoutes.scanSac),
+            onTap: () => context.go(CCRoutes.selectionChamp),
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -594,7 +594,6 @@ class _SectionActions extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-
                   // Texte
                   Text(
                     'Ajouter',
@@ -618,8 +617,7 @@ class _SectionActions extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 14),
-
-        // ── Voir mes récoltes ─────────────────────────────────────────
+        // ── Voir mes récoltes 
         Expanded(
           child: GestureDetector(
             // TODO : context.go(CCRoutes.mesRecoltes) quand écran prêt
