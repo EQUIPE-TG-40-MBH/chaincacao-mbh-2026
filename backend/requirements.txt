@@ -39,7 +39,6 @@ pydantic_core==2.46.4
 PyJWT==2.12.1
 python-dotenv==1.2.2
 pyunormalize==17.0.0
-pywin32==311
 qrcode==8.2
 regex==2026.4.4
 reportlab==4.5.0
