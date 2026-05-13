@@ -373,7 +373,7 @@ class _ProfileCard extends StatelessWidget {
                   radius: 20,
                   backgroundColor: AppColors.orChaud,
                   child: Text(
-                    userName.substring(0, 1).toUpperCase(),
+                    userName.isEmpty ? '?' : userName.substring(0, 1).toUpperCase(),
                     style: AppTextStyles.button,
                   ),
                 ),

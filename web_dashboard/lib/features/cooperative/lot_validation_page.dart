@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/services/mvp_store.dart';
+import '../../core/services/api_client.dart';
 import '../../core/widgets/dashboard_shell.dart';
 
 class LotValidationPage extends StatefulWidget {
@@ -25,10 +25,10 @@ class _LotValidationPageState extends State<LotValidationPage> {
   EntityAccount? _account;
 
   bool get _hasFraud {
-    final declared = widget.lot['weightDeclared'] as double;
+    final declared = (widget.lot['weight_declared'] as num?)?.toDouble() ?? 0.0;
     final verified = double.tryParse(_weightController.text) ?? 0;
     if (verified == 0) return false;
-    final diff = ((declared - verified) / declared).abs();
+    final diff = declared > 0 ? ((declared - verified) / declared).abs() : 0.0;
     return diff > 0.05;
   }
 
@@ -43,26 +43,37 @@ class _LotValidationPageState extends State<LotValidationPage> {
     }
 
     setState(() => _loading = true);
-    final updatedLot = await MvpStore.validateLot(
-      lotId: widget.lot['lotId'],
+    final result = await ApiClient.transferLot(
+      lotId: widget.lot['lot_id'],
       weightVerified: verified,
+      fromActor: widget.lot['farmer_name'] ?? 'PRODUCTEUR',
+      toActor: _account?.entityName ?? 'COOPERATIVE',
+      notes: _hasFraud ? 'Alerte fraude: écart de poids constaté.' : 'Réception conforme.',
     );
+
     if (!mounted) return;
+    if (result != null) {
     setState(() {
       _loading = false;
       _validated = true;
       _flash = true;
-      _hash = updatedLot['blockchainHash'];
+        _hash = result['blockchain_hash'];
       _rangeError = null;
     });
     await Future.delayed(const Duration(milliseconds: 300));
     if (mounted) setState(() => _flash = false);
+    } else {
+      setState(() => _loading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erreur lors de la validation sur le serveur')),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    AuthService.currentAccount().then((account) {
+    AuthService.currentAccount().then((account) { // Récupérer le compte pour l'acteur
       if (mounted) setState(() => _account = account);
     });
   }
@@ -100,7 +111,7 @@ class _LotValidationPageState extends State<LotValidationPage> {
           DashboardShell(
             currentRoute: '/cooperative',
             pageTitle: _validated ? 'Lot valide' : 'Validation du lot',
-            pageSubtitle: '${lot['lotId']} - controle de reception cooperative',
+            pageSubtitle: '${lot['lot_id']} - controle de reception cooperative',
             userName: _account?.entityName ?? 'Cooperative',
             userRole: _account?.roleLabel ?? 'Cooperative',
             actions: [
@@ -215,13 +226,15 @@ class _LotDetailsCard extends StatelessWidget {
         children: [
           Text('Fiche du lot', style: AppTextStyles.h2),
           const Divider(height: 32),
-          _InfoRow('ID Lot', lot['lotId']),
-          _InfoRow('Agriculteur', lot['farmerName']),
-          _InfoRow('Culture', lot['cultureType']),
-          _InfoRow('Poids declare', '${lot['weightDeclared'].toInt()} kg'),
-          _InfoRow('GPS', lot['gps']),
-          _InfoRow('Enregistre le', lot['registeredAt']),
-          _InfoRow('Hash blockchain', lot['blockchainHash']),
+          _InfoRow('ID Lot', lot['lot_id']),
+          _InfoRow('Agriculteur', lot['farmer_name']),
+          _InfoRow('Culture', lot['culture_type']),
+          _InfoRow('Poids declare', '${lot['weight_declared']} kg'),
+          _InfoRow('GPS',
+              '${lot['gps_latitude']?.toStringAsFixed(4)}, ${lot['gps_longitude']?.toStringAsFixed(4)}'),
+          _InfoRow('Enregistre le', lot['registered_at']),
+          _InfoRow('Hash blockchain',
+              lot['blockchain_hash'] != null ? '${lot['blockchain_hash'].toString().substring(0, 10)}...' : 'En attente'),
         ],
       ),
     );

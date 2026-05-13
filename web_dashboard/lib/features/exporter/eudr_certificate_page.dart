@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/services/mvp_store.dart';
+import '../../core/services/api_client.dart';
 import '../../core/services/pdf_service.dart';
 import '../../core/widgets/dashboard_shell.dart';
 
@@ -32,15 +32,23 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
       lots: widget.lots,
       totalKg: widget.totalKg,
     );
-    await MvpStore.recordExport(
-      certificateId: _certId,
-      lots: widget.lots,
-      totalKg: widget.totalKg,
-    );
+
+    final lotIds = widget.lots.map((l) => l['lot_id'] as String).toList();
+    final result = await ApiClient.generateEudrCertificate(lotIds);
+
+    if (result != null) {
     setState(() {
       _generating = false;
       _generated = true;
     });
+    } else {
+      setState(() => _generating = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erreur lors de la génération du certificat')),
+        );
+      }
+    }
   }
 
   Widget _buildInfoRow(String label, String value) {
@@ -181,7 +189,7 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            lot['lotId'],
+                            lot['lot_id'],
                             style: AppTextStyles.body.copyWith(
                               fontWeight: FontWeight.w700,
                               fontFamily: 'JetBrainsMono',
@@ -189,15 +197,15 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${lot['farmerName']} · ${lot['weightVerified'].toInt()} kg',
+                            '${lot['farmer_name']} · ${lot['weight_verified'] ?? lot['weight_declared']} kg',
                             style: AppTextStyles.body,
                           ),
                           Text(
-                            'GPS : ${lot['gps']}',
+                            'GPS : ${lot['gps_latitude']}, ${lot['gps_longitude']}',
                             style: AppTextStyles.bodySecondary,
                           ),
                           Text(
-                            'Hash : ${lot['blockchainHash']}',
+                            'Hash : ${lot['blockchain_hash']}',
                             style: AppTextStyles.hash,
                           ),
                         ],

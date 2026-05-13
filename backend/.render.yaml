@@ -5,49 +5,41 @@ services:
   - type: web
     name: chaincacao-api
     runtime: python
-    region: frankfurt  # Plus proche de l'Afrique de l'Ouest
-    plan: free  # Upgrade vers paid quand en prod
-    
-    # Build et déploiement
+    region: frankfurt
+    plan: free
+
     buildCommand: pip install -r requirements.txt
+    preDeployCommand: |
+      python manage.py migrate --noinput
+      python manage.py collectstatic --noinput
     startCommand: gunicorn chaincacao.wsgi:application --bind 0.0.0.0:$PORT
-    
-    # Health check
+
     healthCheckPath: /api/health/
-    
-    # Chemins des fichiers
+
     pythonConfig:
       version: "3.11"
-    
-    # Variables d'environnement (à configurer dans Render Dashboard)
+
     envVars:
       - key: DATABASE_URL
-        sync: false  # À configurer manuellement ou via Render Dashboard
-      
-      - key: SECRET_KEY
-        generateValue: true  # Génère automatiquement une clé sécurisée
-      
-      - key: DEBUG
-        value: "False"
-      
-      - key: ALLOWED_HOSTS
-        value: "chaincacao-api.onrender.com,localhost,127.0.0.1"
-      
-      # Configuration blockchain (optionnel)
-      - key: CONTRACT_ADDRESS
-        sync: false
-      
-      - key: AMOY_RPC_URL
-        sync: false
-      
-      # Email (optionnel)
-      - key: EMAIL_HOST_USER
-        sync: false
-      
-      - key: EMAIL_HOST_PASSWORD
         sync: false
 
-# Commands de post-déploiement ((migrations, collectstatic, etc.)
-postDeployCommand: |
-  python manage.py migrate --noinput
-  python manage.py collectstatic --noinput
+      - key: SECRET_KEY
+        generateValue: true
+
+      - key: DEBUG
+        value: "False"
+
+      - key: ALLOWED_HOSTS
+        value: "chaincacao-api.onrender.com,localhost,127.0.0.1"
+
+      - key: CONTRACT_ADDRESS
+        sync: false
+
+      - key: AMOY_RPC_URL
+        sync: false
+
+      - key: EMAIL_HOST_USER
+        sync: false
+
+      - key: EMAIL_HOST_PASSWORD
+        sync: false

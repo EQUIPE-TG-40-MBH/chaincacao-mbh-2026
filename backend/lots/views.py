@@ -345,8 +345,8 @@ def email_lots_csv(request):
     
     for lot in queryset:
         # Prepare transfers history for CSV
-        transfers_history = (lot.lottransfer_set.all().order_by('timestamp')
-                             .values_list('from_actor', 'to_actor', 'notes', 'timestamp'))
+        transfers_history = (lot.transfers.all().order_by('transferred_at')
+                             .values_list('from_actor', 'to_actor', 'notes', 'transferred_at'))
         formatted_history = " | ".join([f"{t[0] or 'N/A'} -> {t[1] or 'N/A'} ({t[2] or ''}) [{t[3].strftime('%Y-%m-%d %H:%M')}]" for t in transfers_history])
 
         row_data = [

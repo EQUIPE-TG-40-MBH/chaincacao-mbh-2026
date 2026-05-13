@@ -12,10 +12,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-key')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
-    '.render.com',
-    'localhost',
-    '127.0.0.1',
-    '*',
+    host.strip()
+    for host in os.getenv(
+        'ALLOWED_HOSTS',
+        '.render.com,localhost,127.0.0.1'
+    ).split(',')
+    if host.strip()
 ]
 
 INSTALLED_APPS = [

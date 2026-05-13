@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EntityAccount {
@@ -10,6 +11,7 @@ class EntityAccount {
   final String phone;
   final String registrationId;
   final String createdAt;
+  final String? token;
 
   const EntityAccount({
     required this.entityName,
@@ -19,6 +21,7 @@ class EntityAccount {
     required this.phone,
     required this.registrationId,
     required this.createdAt,
+    this.token,
   });
 
   String get roleLabel {
@@ -48,6 +51,7 @@ class EntityAccount {
       'phone': phone,
       'registrationId': registrationId,
       'createdAt': createdAt,
+      'token': token,
     };
   }
 
@@ -60,15 +64,18 @@ class EntityAccount {
       phone: json['phone'] ?? '',
       registrationId: json['registrationId'] ?? '',
       createdAt: json['createdAt'] ?? '',
+      token: json['token'],
     );
   }
 }
 
 class AuthService {
+  static const String baseUrl = String.fromEnvironment('API_URL', defaultValue: 'http://127.0.0.1:8000/api');
   static const _accountsKey = 'chaincacao_entity_accounts_v1';
   static const _currentEmailKey = 'email';
   static const _currentRoleKey = 'role';
   static const _currentNameKey = 'entity_name';
+    static const _currentRegistrationIdKey = 'registration_id'; // Nouvelle clé
   static const _tokenKey = 'token';
 
   static Future<List<EntityAccount>> getAccounts() async {
@@ -114,26 +121,63 @@ class AuthService {
   }
 
   static Future<EntityAccount?> login(String email, String password) async {
-    final normalizedEmail = email.trim().toLowerCase();
-    final accounts = await getAccounts();
-    for (final account in accounts) {
-      if (account.email == normalizedEmail && account.password == password) {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/login/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email.trim().toLowerCase(),
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final account = EntityAccount(
+          entityName: data['name'] ?? '',
+          email: email.trim().toLowerCase(),
+          password: password, // Note: in real app, don't store password
+          role: data['role'] ?? '',
+          phone: '', // Backend doesn't return phone
+          registrationId: data['cooperative_id'] ?? '',
+          createdAt: DateTime.now().toString(),
+          token: data['token'],
+        );
         await _setSession(account);
         return account;
+      } else {
+        // En ligne, on refuse si le backend dit non
+        return null;
       }
+    } catch (e) {
+      // Pas de serveur = Pas d'accès (Comportement réel)
+      return null;
     }
-    return null;
   }
 
   static Future<EntityAccount?> currentAccount() async {
     final prefs = await SharedPreferences.getInstance();
     final email = prefs.getString(_currentEmailKey);
-    if (email == null) return null;
-    final accounts = await getAccounts();
-    for (final account in accounts) {
-      if (account.email == email) return account;
+    final role = prefs.getString(_currentRoleKey);
+    final name = prefs.getString(_currentNameKey);
+    final registrationId = prefs.getString(_currentRegistrationIdKey); // Récupérer l'ID
+    final token = prefs.getString(_tokenKey);
+
+    if (email == null || role == null || name == null || token == null || registrationId == null) {
+      return null;
     }
-    return null;
+
+    // Reconstruct from prefs for API logins
+    return EntityAccount(
+      entityName: name,
+      email: email,
+      password: '', // Not stored for API accounts
+      role: role,
+      phone: '',
+      registrationId: registrationId,
+      createdAt: DateTime.now().toString(),
+      token: token,
+    );
   }
 
   static Future<void> logout() async {
@@ -142,6 +186,7 @@ class AuthService {
     await prefs.remove(_currentEmailKey);
     await prefs.remove(_currentRoleKey);
     await prefs.remove(_currentNameKey);
+    await prefs.remove(_currentRegistrationIdKey); // Supprimer l'ID aussi
   }
 
   static Future<void> _saveAccounts(List<EntityAccount> accounts) async {
@@ -154,9 +199,15 @@ class AuthService {
 
   static Future<void> _setSession(EntityAccount account) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, 'mvp-token-${account.role}');
+    await prefs.setString(_tokenKey, account.token ?? 'mvp-token-${account.role}');
     await prefs.setString(_currentEmailKey, account.email);
     await prefs.setString(_currentRoleKey, account.role);
     await prefs.setString(_currentNameKey, account.entityName);
+    await prefs.setString(_currentRegistrationIdKey, account.registrationId); // Sauvegarder l'ID
+  }
+
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_tokenKey);
   }
 }

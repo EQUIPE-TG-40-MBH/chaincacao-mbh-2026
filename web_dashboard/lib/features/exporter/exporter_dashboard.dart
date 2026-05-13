@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/services/mvp_store.dart';
+import '../../core/services/api_client.dart';
 import '../../core/widgets/dashboard_shell.dart';
 import 'eudr_certificate_page.dart';
 
@@ -25,26 +25,26 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
 
   double get _totalSelectedKg => _selectedLots.fold(
     0,
-    (sum, lot) => sum + ((lot['weightVerified'] ?? 0) as num).toDouble(),
+    (sum, lot) => sum + ((lot['weight_verified'] ?? lot['weight_declared'] ?? 0) as num).toDouble(),
   );
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _loadData();
   }
 
-  Future<void> _load() async {
-    final lots = await MvpStore.getLots();
-    final exports = await MvpStore.getExports();
+  Future<void> _loadData() async {
+    final lots = await ApiClient.getLots();
+    // Note: Pour l'historique des exports réels, on pourrait ajouter une méthode getCertificates
     final account = await AuthService.currentAccount();
     if (!mounted) return;
     setState(() {
-      _lots = lots
-          .where((lot) => lot['status'] == 'VALIDATED')
+      _lots = lots // ApiClient.getLots() retourne déjà des lots réels
+          .where((lot) => lot['status'] == 'VALIDATED' || lot['status'] == 'CERTIFIED')
           .map((lot) => {...lot, 'selected': false})
           .toList();
-      _exports = exports;
+      _exports = []; // À brancher sur ApiClient.getCertificates() plus tard
       _account = account;
       _loading = false;
     });
@@ -73,7 +73,7 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
                       totalKg: _totalSelectedKg,
                     ),
                   ),
-                ).then((_) => _load());
+                ).then((_) => _loadData());
               },
             ),
       child: _loading
@@ -237,7 +237,7 @@ class _LotCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
-                          lot['lotId'],
+                          lot['lot_id'],
                           style: AppTextStyles.hash.copyWith(
                             fontWeight: FontWeight.w700,
                             fontSize: 15,
@@ -263,15 +263,15 @@ class _LotCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text(lot['farmerName'], style: AppTextStyles.h3),
+                    Text(lot['farmer_name'], style: AppTextStyles.h3),
                     const SizedBox(height: 4),
                     Text(
-                      '${lot['cultureType']} - ${lot['weightVerified'].toInt()} kg - ${lot['cooperativeName']}',
+                      '${lot['culture_type']} - ${(lot['weight_verified'] ?? lot['weight_declared']).toInt()} kg',
                       style: AppTextStyles.bodySecondary,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      lot['registeredAt'],
+                      lot['registered_at'] ?? '',
                       style: AppTextStyles.bodySecondary,
                     ),
                   ],
