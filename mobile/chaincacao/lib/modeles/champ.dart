@@ -8,6 +8,7 @@ class Champ {
   final double rayonCloture;  // en mètres — zone autorisée autour du centre
   final bool   estCollectif;  // true = champ coopérative, false = champ privé
   final double? superficieHa; // TODO : à ajouter côté API Jacques si disponible
+  final String? culture; // 'cacao' | 'café' | null
 
   const Champ({
     required this.id,
@@ -17,6 +18,7 @@ class Champ {
     this.rayonCloture  = 100.0,
     this.estCollectif  = false,
     this.superficieHa,
+    this.culture,
   });
 
   // ── Désérialisation API 
@@ -28,6 +30,7 @@ class Champ {
     rayonCloture:  (json['rayon_cloture'] as num?)?.toDouble() ?? 100.0,
     estCollectif:  json['est_collectif'] as bool? ?? false,
     superficieHa:  (json['superficie_ha'] as num?)?.toDouble(),
+    culture: json['culture'] as String?,
   );
 
   // ── Sérialisation 
@@ -39,6 +42,7 @@ class Champ {
     'rayon_cloture':  rayonCloture,
     'est_collectif':  estCollectif,
     'superficie_ha':  superficieHa,
+    'culture': culture,
   };
 
   // ── Helpers UI 

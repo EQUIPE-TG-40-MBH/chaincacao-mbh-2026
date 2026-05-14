@@ -64,9 +64,9 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
 
       // Succès → navigation automatique après 1.5s
       if (resultat.estDansLeChamp) {
-        await Future.delayed(const Duration(milliseconds: 1500));
+        await Future.delayed(const Duration(milliseconds: 2000));
         if (!mounted) return;
-        context.push(CCRoutes.pesee, extra: widget.champ);
+        context.push(CCRoutes.diagnosticRecolte, extra: widget.champ);
       }
     } catch (e) {
       if (!mounted) return;
@@ -185,7 +185,7 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
   Widget _buildContenuCentral() {
     switch (_etat) {
 
-      // ── En cours de vérification ────────────────────────────────────
+      // ── En cours de vérification 
       case 'verification':
         return Column(
           children: [
@@ -231,7 +231,7 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
           ],
         );
 
-      // ── Succès ──────────────────────────────────────────────────────
+      // ── Succès 
       case 'succes':
         return Column(
           children: [
@@ -280,7 +280,7 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
           ],
         );
 
-      // ── Échec — hors du champ ───────────────────────────────────────
+      // ── Échec — hors du champ 
       case 'echec':
         return Column(
           children: [
@@ -355,7 +355,7 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
           ],
         );
 
-      // ── Erreur GPS ──────────────────────────────────────────────────
+      // ── Erreur GPS 
       default:
         return Column(
           children: [

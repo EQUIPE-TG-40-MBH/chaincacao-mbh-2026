@@ -24,9 +24,9 @@ class _EcranSelectionChampState extends State<EcranSelectionChamp> {
     Champ(
       id: 'CH-001',
       nom: 'Champ de Kpalimé Nord',
-      latitude: 6.9008,
-      longitude: 0.6314,
-      rayonCloture: 100,
+      latitude: 6.191601,
+      longitude: 1.147932,
+      rayonCloture: 500,
       estCollectif: false,
       superficieHa: 2.5,
     ),
@@ -87,6 +87,21 @@ class _EcranSelectionChampState extends State<EcranSelectionChamp> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TextButton(
+            
+            onPressed: () {
+              context.push(CCRoutes.diagnosticRecolte);
+              // TODO : rediriger vers écran ajout champ
+            },
+            child: Text(
+              'Ajouter',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                color: CCCouleurs.vertProfond,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
           // ── Sous-titre
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),

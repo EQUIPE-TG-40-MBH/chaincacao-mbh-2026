@@ -10,6 +10,7 @@ import '../fonctionnalités/connexion/ecran_selection_langue.dart';
 import '../fonctionnalités/connexion/ecran_connexion.dart';
 import '../fonctionnalités/accueil/ecran_accueil.dart';
 import '../fonctionnalités/recolte/ecran_selection_champ.dart';
+import '../fonctionnalités/recolte/ecran_diagnostic_recolte.dart';
 import '../fonctionnalités/recolte/ecran_verification_gps.dart';
 import '../fonctionnalités/connexion/ecran_scan_profil.dart';
 import '../fonctionnalités/connexion/ecran_saisie_id.dart';
@@ -32,6 +33,7 @@ class CCRoutes {
   static const accueil = '/accueil';
   static const selectionChamp = '/recolte/selection-champ';
   static const verificationGps = '/recolte/verification-gps';
+  static const diagnosticRecolte = '/recolte/diagnostic';
   static const scanSac = '/recolte/scan-sac';
   static const pesee = '/recolte/pesee';
   static const mesScans = '/historique';
@@ -120,6 +122,15 @@ class CCRoutage {
         builder: (context, state) {
           final champ = state.extra as Champ;
           return EcranVerificationGps(champ: champ);
+        },
+      ),
+
+      // Diagnostic récolte (protégé)
+      GoRoute(
+        path: CCRoutes.diagnosticRecolte,
+        builder: (context, state) {
+          final champ = state.extra as Champ;
+          return EcranDiagnosticRecolte(champ: champ);
         },
       ),
 
