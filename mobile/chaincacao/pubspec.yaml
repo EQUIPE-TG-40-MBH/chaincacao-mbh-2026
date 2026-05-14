@@ -41,6 +41,7 @@ dependencies:
   # Appels HTTP vers le backend Django REST
 
   mobile_scanner: ^7.2.0
+  qr_flutter: ^4.1.0
   geolocator: ^14.0.2
 
   # ── Média ────────────────────────────────────
