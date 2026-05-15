@@ -9,6 +9,7 @@ import '../fonctionnalités/connexion/ecran_splash.dart';
 import '../fonctionnalités/connexion/ecran_selection_langue.dart';
 import '../fonctionnalités/connexion/ecran_connexion.dart';
 import '../fonctionnalités/accueil/ecran_accueil.dart';
+import '../fonctionnalités/profil/ecran_profil.dart';
 import '../fonctionnalités/recolte/ecran_selection_champ.dart';
 import '../fonctionnalités/recolte/ecran_diagnostic_recolte.dart';
 import '../fonctionnalités/recolte/ecran_verification_gps.dart';
@@ -28,6 +29,7 @@ class CCRoutes {
   static const connexion = '/connexion';
   static const scanProfil = '/connexion/scan-profil';
   static const saisieId = '/connexion/saisie-id';
+  static const profil = '/profil';
 
   // Espace agriculteur (protégées)
   static const accueil = '/accueil';
@@ -110,6 +112,8 @@ class CCRoutage {
 
       // ── Accueil (protégé)
       GoRoute(path: CCRoutes.accueil, builder: (_, __) => const EcranAccueil()),
+
+      GoRoute(path: CCRoutes.profil, builder: (_, __) => const EcranProfil()),
 
       GoRoute(
         path: CCRoutes.selectionChamp,

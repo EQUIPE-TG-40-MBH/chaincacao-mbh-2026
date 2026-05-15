@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../configuration/theme.dart';
 import '../../configuration/routage.dart';
-
-import '../../fonctionnalités/recolte/ecran_selection_champ.dart';
+import '../../composants/bouton_audio_aide.dart';
+import '../../services/service_audio.dart';
 
 class EcranAccueil extends StatefulWidget {
   const EcranAccueil({super.key});
@@ -26,25 +26,32 @@ class _EcranAccueilState extends State<EcranAccueil> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CCCouleurs.feuilleClaire,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: _Header(agriculteur: _agriculteur)),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 28, 20, 100),
-            sliver: SliverList(
-              // Dans SliverList → delegate → children
-              delegate: SliverChildListDelegate([
-                _SectionActions(), // ← ajouter ici
-                const SizedBox(height: 28),
-                _SectionMesRecoltes(),
-              ]),
-            ),
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: CCCouleurs.feuilleClaire,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _Header(agriculteur: _agriculteur)),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 100),
+                sliver: SliverList(
+                  // Dans SliverList → delegate → children
+                  delegate: SliverChildListDelegate([
+                    _SectionActions(), // ← ajouter ici
+                    const SizedBox(height: 28),
+                    _SectionMesRecoltes(),
+                  ]),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        // Bouton audio d'aide flottant
+        BoutonAudioGuide(cleAudio: ServiceAudio.accueil),
+      ],
     );
   }
 }
@@ -152,6 +159,23 @@ class _Header extends StatelessWidget {
                   size: 22,
                 ),
               ),
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: () => context.push(CCRoutes.profil),
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: CCCouleurs.blanc.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.menu_rounded,
+                    color: CCCouleurs.limeVif,
+                    size: 22,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -249,7 +273,6 @@ class _SectionMesRecoltes extends StatelessWidget {
                 letterSpacing: -0.2,
               ),
             ),
-            // TODO : naviguer vers ecran_mes_recoltes.dart (liste complète)
             GestureDetector(
               onTap: () => context.go(CCRoutes.mesScans),
               child: Text(
@@ -433,135 +456,15 @@ class _EtatVide extends StatelessWidget {
   }
 }
 
-// ─── Barre de navigation — 3 onglets
-class _BarreNavigation extends StatelessWidget {
-  final int indexActif;
-  final Function(int) onTap;
-
-  const _BarreNavigation({required this.indexActif, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: CCCouleurs.vertProfond,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [
-          BoxShadow(
-            color: CCCouleurs.vertProfond.withOpacity(0.25),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _ItemNav(
-                icone: Icons.home_rounded,
-                label: 'Accueil',
-                actif: indexActif == 0,
-                onTap: () => onTap(0),
-              ),
-              // Espace pour le FAB
-              const SizedBox(width: 60),
-              _ItemNav(
-                icone: Icons.list_alt_rounded,
-                label: 'Mes récoltes',
-                actif: indexActif == 1,
-                onTap: () => onTap(1),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ItemNav extends StatelessWidget {
-  final IconData icone;
-  final String label;
-  final bool actif;
-  final VoidCallback onTap;
-
-  const _ItemNav({
-    required this.icone,
-    required this.label,
-    required this.actif,
-    required this.onTap,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icone,
-            color: actif ? CCCouleurs.limeVif : CCCouleurs.grisTexte,
-            size: 26,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: GoogleFonts.dmSans(
-              fontSize: 11,
-              fontWeight: actif ? FontWeight.w600 : FontWeight.w400,
-              color: actif ? CCCouleurs.limeVif : CCCouleurs.grisTexte,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-// ─── FAB — Ajouter une récolte
-class _BoutonAjouterRecolte extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      // TODO : context.go(CCRoutes.nouvelleRecolteEtape1) quand flux prêt
-      onTap: () => context.go(CCRoutes.scanSac),
-      child: Container(
-        width: 64,
-        height: 64,
-        decoration: BoxDecoration(
-          color: CCCouleurs.limeVif,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: CCCouleurs.limeVif.withOpacity(0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: const Icon(
-          Icons.add_rounded,
-          color: CCCouleurs.vertProfond,
-          size: 34,
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Section boutons d'action 
+// ─── Section boutons d'action
 class _SectionActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // ── Ajouter une récolte 
+        // ── Ajouter une récolte
         Expanded(
           child: GestureDetector(
-            // TODO : context.go(CCRoutes.nouvelleRecolteEtape1) quand flux prêt
             onTap: () => context.go(CCRoutes.selectionChamp),
             child: Container(
               padding: const EdgeInsets.all(20),
@@ -617,10 +520,9 @@ class _SectionActions extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 14),
-        // ── Voir mes récoltes 
+        // ── Voir mes récoltes
         Expanded(
           child: GestureDetector(
-            // TODO : context.go(CCRoutes.mesRecoltes) quand écran prêt
             onTap: () => context.go(CCRoutes.mesScans),
             child: Container(
               padding: const EdgeInsets.all(20),

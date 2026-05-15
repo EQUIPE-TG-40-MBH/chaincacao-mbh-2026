@@ -33,9 +33,9 @@ class _EcranSelectionChampState extends State<EcranSelectionChamp> {
     Champ(
       id: 'CH-002',
       nom: 'Champ Bas-fond Est',
-      latitude: 6.8954,
-      longitude: 0.6401,
-      rayonCloture: 150,
+      latitude: 6.17504,
+      longitude: 0.21367,
+      rayonCloture: 750,
       estCollectif: false,
       superficieHa: 1.8,
     ),
@@ -52,93 +52,82 @@ class _EcranSelectionChampState extends State<EcranSelectionChamp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CCCouleurs.feuilleClaire,
-      appBar: AppBar(
-        backgroundColor: CCCouleurs.feuilleClaire,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: GestureDetector(
-          onTap: () => context.push(CCRoutes.accueil),
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: CCCouleurs.blanc,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: CCCouleurs.feuilleGrise),
-            ),
-            child: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: CCCouleurs.vertProfond,
-              size: 18,
-            ),
-          ),
-        ),
-        title: Text(
-          'Choisir un champ',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: CCCouleurs.vertProfond,
-          ),
-        ),
-      ),
-
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextButton(
-            
-            onPressed: () {
-              context.push(CCRoutes.diagnosticRecolte);
-              // TODO : rediriger vers écran ajout champ
-            },
-            child: Text(
-              'Ajouter',
-              style: GoogleFonts.dmSans(
-                fontSize: 14,
-                color: CCCouleurs.vertProfond,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-          // ── Sous-titre
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-            child: Text(
-              'Sélectionnez le champ dans lequel vous\neffectuez la récolte aujourd\'hui.',
-              style: GoogleFonts.dmSans(
-                fontSize: 14,
-                color: CCCouleurs.grisTexte,
-                height: 1.5,
-              ),
-            ),
-          ),
-
-          // ── État vide
-          if (_champs.isEmpty)
-            _EtatVide()
-          else
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
-                itemCount: _champs.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (_, i) => _CarteChamp(
-                  champ: _champs[i],
-                  estChoisi: _champChoisi?.id == _champs[i].id,
-                  onTap: () => setState(() => _champChoisi = _champs[i]),
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: CCCouleurs.feuilleClaire,
+          appBar: AppBar(
+            backgroundColor: CCCouleurs.feuilleClaire,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            leading: GestureDetector(
+              onTap: () => context.push(CCRoutes.accueil),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: CCCouleurs.blanc,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: CCCouleurs.feuilleGrise),
+                ),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: CCCouleurs.vertProfond,
+                  size: 18,
                 ),
               ),
             ),
-        ],
-      ),
+            title: Text(
+              'Choisir un champ',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: CCCouleurs.vertProfond,
+              ),
+            ),
+          ),
 
-      // ── Bouton confirmer fixe en bas
-      bottomNavigationBar: _BoutonConfirmer(
-        champChoisi: _champChoisi,
-        onConfirmer: _confirmer,
-      ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Sous-titre
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                child: Text(
+                  'Sélectionnez le champ dans lequel vous\neffectuez la récolte aujourd\'hui.',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    color: CCCouleurs.grisTexte,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+
+              // ── État vide
+              if (_champs.isEmpty)
+                _EtatVide()
+              else
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
+                    itemCount: _champs.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (_, i) => _CarteChamp(
+                      champ: _champs[i],
+                      estChoisi: _champChoisi?.id == _champs[i].id,
+                      onTap: () => setState(() => _champChoisi = _champs[i]),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+
+          // ── Bouton confirmer fixe en bas
+          bottomNavigationBar: _BoutonConfirmer(
+            champChoisi: _champChoisi,
+            onConfirmer: _confirmer,
+          ),
+        ),
+      ],
     );
   }
 

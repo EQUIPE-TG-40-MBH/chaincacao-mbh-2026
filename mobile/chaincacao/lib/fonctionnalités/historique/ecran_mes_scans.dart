@@ -8,16 +8,18 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../configuration/theme.dart';
 import '../../configuration/routage.dart';
+import '../../composants/bouton_audio_aide.dart';
+import '../../services/service_audio.dart';
 
 // ─── Modèle récolte ───────────────────────────────────────────────────────
 class RecolteHistorique {
-  final String  id;
-  final String  culture;     // 'Cacao' | 'Café'
-  final String  statut;      // 'attente' | 'transit' | 'certifie'
+  final String id;
+  final String culture; // 'Cacao' | 'Café'
+  final String statut; // 'attente' | 'transit' | 'certifie'
   final DateTime dateRecolte;
   final double? poidsCooperative; // TODO : saisi par la coopérative via API
-  final String  champNom;
-  final String? hashBlockchain;   // TODO : retourné par Jacques (BE15)
+  final String champNom;
+  final String? hashBlockchain; // TODO : retourné par Jacques (BE15)
 
   const RecolteHistorique({
     required this.id,
@@ -31,9 +33,7 @@ class RecolteHistorique {
 
   // Données encodées dans le QR code
   // Format : ID + hash blockchain si disponible
-  String get donneesQr => hashBlockchain != null
-      ? '$id|$hashBlockchain'
-      : id;
+  String get donneesQr => hashBlockchain != null ? '$id|$hashBlockchain' : id;
 }
 
 // ─── Écran principal ──────────────────────────────────────────────────────
@@ -51,27 +51,27 @@ class _EcranMesScansState extends State<EcranMesScans> {
   // GET /api/lots/ — liste des lots de l'agriculteur connecté
   final List<RecolteHistorique> _recoltes = [
     RecolteHistorique(
-      id:               'CC-2024-001',
-      culture:          'Cacao',
-      statut:           'certifie',
-      dateRecolte:      DateTime(2024, 5, 12, 8, 30),
+      id: 'CC-2024-001',
+      culture: 'Cacao',
+      statut: 'certifie',
+      dateRecolte: DateTime(2024, 5, 12, 8, 30),
       poidsCooperative: 120.5,
-      champNom:         'Champ de Kpalimé Nord',
-      hashBlockchain:   '0x3a9f1b2c',
+      champNom: 'Champ de Kpalimé Nord',
+      hashBlockchain: '0x3a9f1b2c',
     ),
     RecolteHistorique(
-      id:          'CC-2024-002',
-      culture:     'Cacao',
-      statut:      'transit',
+      id: 'CC-2024-002',
+      culture: 'Cacao',
+      statut: 'transit',
       dateRecolte: DateTime(2024, 5, 11, 14, 0),
-      champNom:    'Champ Bas-fond Est',
+      champNom: 'Champ Bas-fond Est',
     ),
     RecolteHistorique(
-      id:          'CC-2024-003',
-      culture:     'Café',
-      statut:      'attente',
+      id: 'CC-2024-003',
+      culture: 'Café',
+      statut: 'attente',
       dateRecolte: DateTime(2024, 5, 9, 10, 15),
-      champNom:    'Parcelle Familiale',
+      champNom: 'Parcelle Familiale',
     ),
   ];
 
@@ -81,98 +81,103 @@ class _EcranMesScansState extends State<EcranMesScans> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CCCouleurs.feuilleClaire,
-      appBar: AppBar(
-        backgroundColor:        CCCouleurs.feuilleClaire,
-        elevation:              0,
-        scrolledUnderElevation: 0,
-        leading: GestureDetector(
-          onTap: () => context.go(CCRoutes.accueil),
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color:        CCCouleurs.blanc,
-              borderRadius: BorderRadius.circular(10),
-              border:       Border.all(color: CCCouleurs.feuilleGrise),
-            ),
-            child: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: CCCouleurs.vertProfond,
-              size:  18,
-            ),
-          ),
-        ),
-        title: Text(
-          'Mes récoltes',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize:   18,
-            fontWeight: FontWeight.w700,
-            color:      CCCouleurs.vertProfond,
-          ),
-        ),
-        actions: [
-          // Compteur total
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color:        CCCouleurs.vertProfond,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '${_recoltes.length} lots',
-              style: GoogleFonts.dmSans(
-                fontSize:   12,
-                fontWeight: FontWeight.w600,
-                color:      CCCouleurs.limeVif,
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: CCCouleurs.feuilleClaire,
+          appBar: AppBar(
+            backgroundColor: CCCouleurs.feuilleClaire,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            leading: GestureDetector(
+              onTap: () => context.go(CCRoutes.accueil),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: CCCouleurs.blanc,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: CCCouleurs.feuilleGrise),
+                ),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: CCCouleurs.vertProfond,
+                  size: 18,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-
-      body: Column(
-        children: [
-          // ── Filtres par statut ────────────────────────────────────
-          _FiltresStatut(
-            filtreActif: _filtreStatut,
-            onFiltre:    (f) => setState(() => _filtreStatut = f),
-          ),
-
-          // ── Liste ─────────────────────────────────────────────────
-          Expanded(
-            child: _recoltesFiltrees.isEmpty
-                ? _EtatVide(filtre: _filtreStatut)
-                : ListView.builder(
-                    padding:     const EdgeInsets.fromLTRB(20, 8, 20, 100),
-                    itemCount:   _recoltesFiltrees.length,
-                    itemBuilder: (_, i) => _CarteRecolte(
-                      recolte: _recoltesFiltrees[i],
-                    ),
+            title: Text(
+              'Mes récoltes',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: CCCouleurs.vertProfond,
+              ),
+            ),
+            actions: [
+              // Compteur total
+              Container(
+                margin: const EdgeInsets.only(right: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: CCCouleurs.vertProfond,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '${_recoltes.length} lots',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: CCCouleurs.limeVif,
                   ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+
+          body: Column(
+            children: [
+              // ── Filtres par statut ────────────────────────────────────
+              _FiltresStatut(
+                filtreActif: _filtreStatut,
+                onFiltre: (f) => setState(() => _filtreStatut = f),
+              ),
+
+              // ── Liste ─────────────────────────────────────────────────
+              Expanded(
+                child: _recoltesFiltrees.isEmpty
+                    ? _EtatVide(filtre: _filtreStatut)
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
+                        itemCount: _recoltesFiltrees.length,
+                        itemBuilder: (_, i) =>
+                            _CarteRecolte(recolte: _recoltesFiltrees[i]),
+                      ),
+              ),
+            ],
+          ),
+        ),
+        // ── Audio guide ─────────────────────────────────────────
+        BoutonAudioGuide(cleAudio: ServiceAudio.mesScans),
+      ],
     );
   }
 }
 
 // ─── Filtres statut ───────────────────────────────────────────────────────
 class _FiltresStatut extends StatelessWidget {
-  final String            filtreActif;
-  final Function(String)  onFiltre;
+  final String filtreActif;
+  final Function(String) onFiltre;
 
-  const _FiltresStatut({
-    required this.filtreActif,
-    required this.onFiltre,
-  });
+  const _FiltresStatut({required this.filtreActif, required this.onFiltre});
 
   static const _filtres = [
-    ('tous',      'Tous',       null),
-    ('attente',   '⏳ Attente', CCCouleurs.attention),
-    ('transit',   '→ Transit',  CCCouleurs.transit),
-    ('certifie',  '✓ Certifié', CCCouleurs.vertForet),
+    ('tous', 'Tous', null),
+    ('attente', '⏳ Attente', CCCouleurs.attention),
+    ('transit', '→ Transit', CCCouleurs.transit),
+    ('certifie', '✓ Certifié', CCCouleurs.vertForet),
   ];
 
   @override
@@ -206,7 +211,7 @@ class _FiltresStatut extends StatelessWidget {
                 child: Text(
                   label,
                   style: GoogleFonts.dmSans(
-                    fontSize:   13,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: estActif ? CCCouleurs.blanc : CCCouleurs.grisTexte,
                   ),
@@ -230,16 +235,16 @@ class _CarteRecolte extends StatelessWidget {
     final config = _configStatut(recolte.statut);
 
     return Container(
-      margin:  const EdgeInsets.only(bottom: 14),
+      margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color:        CCCouleurs.blanc,
+        color: CCCouleurs.blanc,
         borderRadius: BorderRadius.circular(20),
-        border:       Border.all(color: CCCouleurs.feuilleGrise),
+        border: Border.all(color: CCCouleurs.feuilleGrise),
         boxShadow: [
           BoxShadow(
-            color:     Colors.black.withOpacity(0.04),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 10,
-            offset:    const Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -254,25 +259,25 @@ class _CarteRecolte extends StatelessWidget {
                 GestureDetector(
                   onTap: () => _afficherQrPleinEcran(context),
                   child: Container(
-                    width:  72,
+                    width: 72,
                     height: 72,
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color:        CCCouleurs.blanc,
+                      color: CCCouleurs.blanc,
                       borderRadius: BorderRadius.circular(12),
-                      border:       Border.all(color: CCCouleurs.feuilleGrise),
+                      border: Border.all(color: CCCouleurs.feuilleGrise),
                     ),
                     child: QrImageView(
-                      data:            recolte.donneesQr,
-                      version:         QrVersions.auto,
+                      data: recolte.donneesQr,
+                      version: QrVersions.auto,
                       backgroundColor: Colors.white,
                       eyeStyle: const QrEyeStyle(
                         eyeShape: QrEyeShape.square,
-                        color:    CCCouleurs.vertProfond,
+                        color: CCCouleurs.vertProfond,
                       ),
                       dataModuleStyle: const QrDataModuleStyle(
                         dataModuleShape: QrDataModuleShape.square,
-                        color:           CCCouleurs.vertProfond,
+                        color: CCCouleurs.vertProfond,
                       ),
                     ),
                   ),
@@ -290,9 +295,9 @@ class _CarteRecolte extends StatelessWidget {
                           Text(
                             recolte.id,
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize:   14,
+                              fontSize: 14,
                               fontWeight: FontWeight.w700,
-                              color:      CCCouleurs.vertProfond,
+                              color: CCCouleurs.vertProfond,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -307,18 +312,19 @@ class _CarteRecolte extends StatelessWidget {
                       // Badge statut
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4,
+                          horizontal: 10,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color:        config.couleurFond,
+                          color: config.couleurFond,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           config.label,
                           style: GoogleFonts.dmSans(
-                            fontSize:   11,
+                            fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color:      config.couleur,
+                            color: config.couleur,
                           ),
                         ),
                       ),
@@ -329,7 +335,7 @@ class _CarteRecolte extends StatelessWidget {
                         children: [
                           const Icon(
                             Icons.landscape_rounded,
-                            size:  13,
+                            size: 13,
                             color: CCCouleurs.grisTexte,
                           ),
                           const SizedBox(width: 4),
@@ -338,7 +344,7 @@ class _CarteRecolte extends StatelessWidget {
                               recolte.champNom,
                               style: GoogleFonts.dmSans(
                                 fontSize: 12,
-                                color:    CCCouleurs.grisTexte,
+                                color: CCCouleurs.grisTexte,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -353,16 +359,16 @@ class _CarteRecolte extends StatelessWidget {
                 GestureDetector(
                   onTap: () => _afficherQrPleinEcran(context),
                   child: Container(
-                    width:  36,
+                    width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color:        CCCouleurs.feuilleClaire,
+                      color: CCCouleurs.feuilleClaire,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(
                       Icons.qr_code_2_rounded,
                       color: CCCouleurs.vertProfond,
-                      size:  20,
+                      size: 20,
                     ),
                   ),
                 ),
@@ -388,15 +394,15 @@ class _CarteRecolte extends StatelessWidget {
                 // Séparateur vertical
                 Container(
                   height: 32,
-                  width:  1,
+                  width: 1,
                   margin: const EdgeInsets.symmetric(horizontal: 12),
-                  color:  CCCouleurs.feuilleGrise,
+                  color: CCCouleurs.feuilleGrise,
                 ),
 
                 // Poids coopérative
                 _InfoItem(
-                  icone:  Icons.scale_rounded,
-                  label:  'Poids vérifié',
+                  icone: Icons.scale_rounded,
+                  label: 'Poids vérifié',
                   valeur: recolte.poidsCooperative != null
                       ? '${recolte.poidsCooperative} kg'
                       : 'En attente',
@@ -409,13 +415,13 @@ class _CarteRecolte extends StatelessWidget {
                 if (recolte.hashBlockchain != null) ...[
                   Container(
                     height: 32,
-                    width:  1,
+                    width: 1,
                     margin: const EdgeInsets.symmetric(horizontal: 12),
-                    color:  CCCouleurs.feuilleGrise,
+                    color: CCCouleurs.feuilleGrise,
                   ),
                   _InfoItem(
-                    icone:  Icons.link_rounded,
-                    label:  'Blockchain',
+                    icone: Icons.link_rounded,
+                    label: 'Blockchain',
                     valeur: '${recolte.hashBlockchain!.substring(0, 8)}…',
                     couleurValeur: CCCouleurs.transit,
                   ),
@@ -430,39 +436,51 @@ class _CarteRecolte extends StatelessWidget {
 
   void _afficherQrPleinEcran(BuildContext context) {
     showModalBottomSheet(
-      context:          context,
-      backgroundColor:  Colors.transparent,
+      context: context,
+      backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) => _ModalQrCode(recolte: recolte),
     );
   }
 
   String _formaterDate(DateTime dt) {
-    final mois = ['Jan','Fév','Mar','Avr','Mai','Juin',
-                   'Juil','Aoû','Sep','Oct','Nov','Déc'];
+    final mois = [
+      'Jan',
+      'Fév',
+      'Mar',
+      'Avr',
+      'Mai',
+      'Juin',
+      'Juil',
+      'Aoû',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Déc',
+    ];
     return '${dt.day} ${mois[dt.month - 1]} ${dt.year}\n'
-           '${dt.hour.toString().padLeft(2,'0')}h'
-           '${dt.minute.toString().padLeft(2,'0')}';
+        '${dt.hour.toString().padLeft(2, '0')}h'
+        '${dt.minute.toString().padLeft(2, '0')}';
   }
 
   _ConfigStatut _configStatut(String statut) {
     switch (statut) {
       case 'certifie':
         return const _ConfigStatut(
-          label:      '✓ Certifié',
-          couleur:    CCCouleurs.vertForet,
+          label: '✓ Certifié',
+          couleur: CCCouleurs.vertForet,
           couleurFond: CCCouleurs.succesClair,
         );
       case 'transit':
         return const _ConfigStatut(
-          label:       '→ En transit',
-          couleur:     CCCouleurs.transit,
+          label: '→ En transit',
+          couleur: CCCouleurs.transit,
           couleurFond: CCCouleurs.transitClair,
         );
       default:
         return const _ConfigStatut(
-          label:       '⏳ En attente',
-          couleur:     CCCouleurs.attention,
+          label: '⏳ En attente',
+          couleur: CCCouleurs.attention,
           couleurFond: CCCouleurs.attentionClair,
         );
     }
@@ -477,10 +495,10 @@ class _ModalQrCode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin:  const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color:        CCCouleurs.blanc,
+        color: CCCouleurs.blanc,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -488,10 +506,10 @@ class _ModalQrCode extends StatelessWidget {
         children: [
           // Poignée
           Container(
-            width:  40,
+            width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color:        CCCouleurs.feuilleGrise,
+              color: CCCouleurs.feuilleGrise,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -501,9 +519,9 @@ class _ModalQrCode extends StatelessWidget {
           Text(
             recolte.id,
             style: GoogleFonts.plusJakartaSans(
-              fontSize:   20,
+              fontSize: 20,
               fontWeight: FontWeight.w700,
-              color:      CCCouleurs.vertProfond,
+              color: CCCouleurs.vertProfond,
             ),
           ),
           const SizedBox(height: 4),
@@ -511,7 +529,7 @@ class _ModalQrCode extends StatelessWidget {
             '${recolte.culture} — ${recolte.champNom}',
             style: GoogleFonts.dmSans(
               fontSize: 13,
-              color:    CCCouleurs.grisTexte,
+              color: CCCouleurs.grisTexte,
             ),
             textAlign: TextAlign.center,
           ),
@@ -521,29 +539,29 @@ class _ModalQrCode extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color:        CCCouleurs.blanc,
+              color: CCCouleurs.blanc,
               borderRadius: BorderRadius.circular(20),
-              border:       Border.all(color: CCCouleurs.feuilleGrise),
+              border: Border.all(color: CCCouleurs.feuilleGrise),
               boxShadow: [
                 BoxShadow(
-                  color:      CCCouleurs.vertProfond.withOpacity(0.08),
+                  color: CCCouleurs.vertProfond.withOpacity(0.08),
                   blurRadius: 20,
-                  offset:     const Offset(0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: QrImageView(
-              data:            recolte.donneesQr,
-              version:         QrVersions.auto,
-              size:            240,
+              data: recolte.donneesQr,
+              version: QrVersions.auto,
+              size: 240,
               backgroundColor: Colors.white,
               eyeStyle: const QrEyeStyle(
                 eyeShape: QrEyeShape.square,
-                color:    CCCouleurs.vertProfond,
+                color: CCCouleurs.vertProfond,
               ),
               dataModuleStyle: const QrDataModuleStyle(
                 dataModuleShape: QrDataModuleShape.square,
-                color:           CCCouleurs.vertProfond,
+                color: CCCouleurs.vertProfond,
               ),
             ),
           ),
@@ -553,9 +571,7 @@ class _ModalQrCode extends StatelessWidget {
           if (recolte.hashBlockchain != null)
             GestureDetector(
               onTap: () {
-                Clipboard.setData(
-                  ClipboardData(text: recolte.hashBlockchain!),
-                );
+                Clipboard.setData(ClipboardData(text: recolte.hashBlockchain!));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -569,34 +585,35 @@ class _ModalQrCode extends StatelessWidget {
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14, vertical: 10,
+                  horizontal: 14,
+                  vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color:        CCCouleurs.feuilleClaire,
+                  color: CCCouleurs.feuilleClaire,
                   borderRadius: BorderRadius.circular(10),
-                  border:       Border.all(color: CCCouleurs.feuilleGrise),
+                  border: Border.all(color: CCCouleurs.feuilleGrise),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(
                       Icons.link_rounded,
-                      size:  14,
+                      size: 14,
                       color: CCCouleurs.transit,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       recolte.hashBlockchain!,
                       style: GoogleFonts.dmSans(
-                        fontSize:   12,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color:      CCCouleurs.transit,
+                        color: CCCouleurs.transit,
                       ),
                     ),
                     const SizedBox(width: 8),
                     const Icon(
                       Icons.copy_rounded,
-                      size:  14,
+                      size: 14,
                       color: CCCouleurs.grisTexte,
                     ),
                   ],
@@ -608,9 +625,9 @@ class _ModalQrCode extends StatelessWidget {
 
           // Bouton fermer
           SizedBox(
-            width:  double.infinity,
+            width: double.infinity,
             height: 54,
-            child:  ElevatedButton(
+            child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: CCCouleurs.vertProfond,
                 shape: RoundedRectangleBorder(
@@ -622,9 +639,9 @@ class _ModalQrCode extends StatelessWidget {
               child: Text(
                 'Fermer',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize:   16,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color:      CCCouleurs.limeVif,
+                  color: CCCouleurs.limeVif,
                 ),
               ),
             ),
@@ -638,9 +655,9 @@ class _ModalQrCode extends StatelessWidget {
 // ─── Info item (date, poids, hash) ────────────────────────────────────────
 class _InfoItem extends StatelessWidget {
   final IconData icone;
-  final String   label;
-  final String   valeur;
-  final Color    couleurValeur;
+  final String label;
+  final String valeur;
+  final Color couleurValeur;
 
   const _InfoItem({
     required this.icone,
@@ -663,7 +680,7 @@ class _InfoItem extends StatelessWidget {
                 label,
                 style: GoogleFonts.dmSans(
                   fontSize: 10,
-                  color:    CCCouleurs.grisTexte,
+                  color: CCCouleurs.grisTexte,
                 ),
               ),
             ],
@@ -672,10 +689,10 @@ class _InfoItem extends StatelessWidget {
           Text(
             valeur,
             style: GoogleFonts.plusJakartaSans(
-              fontSize:   12,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              color:      couleurValeur,
-              height:     1.3,
+              color: couleurValeur,
+              height: 1.3,
             ),
           ),
         ],
@@ -695,20 +712,16 @@ class _EtatVide extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.grass_rounded,
-            size:  72,
-            color: CCCouleurs.feuilleGrise,
-          ),
+          Icon(Icons.grass_rounded, size: 72, color: CCCouleurs.feuilleGrise),
           const SizedBox(height: 16),
           Text(
             filtre == 'tous'
                 ? 'Aucune récolte enregistrée'
                 : 'Aucune récolte "${filtre}"',
             style: GoogleFonts.plusJakartaSans(
-              fontSize:   16,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
-              color:      CCCouleurs.grisTexte,
+              color: CCCouleurs.grisTexte,
             ),
           ),
           const SizedBox(height: 8),
@@ -717,8 +730,8 @@ class _EtatVide extends StatelessWidget {
             textAlign: TextAlign.center,
             style: GoogleFonts.dmSans(
               fontSize: 13,
-              color:    CCCouleurs.grisTexte,
-              height:   1.5,
+              color: CCCouleurs.grisTexte,
+              height: 1.5,
             ),
           ),
         ],
@@ -730,8 +743,8 @@ class _EtatVide extends StatelessWidget {
 // ─── Modèles internes ─────────────────────────────────────────────────────
 class _ConfigStatut {
   final String label;
-  final Color  couleur;
-  final Color  couleurFond;
+  final Color couleur;
+  final Color couleurFond;
   const _ConfigStatut({
     required this.label,
     required this.couleur,

@@ -25,7 +25,7 @@ class _EcranSelectionLangueState extends State<EcranSelectionLangue> {
     _Langue(code: 'fr', label: 'Français', sousTitre: 'Langue officielle', drapeau: '🇫🇷'),
     _Langue(code: 'ewe', label: 'Éwé', sousTitre: 'National', drapeau: '🇹🇬'),
     _Langue(code: 'kab', label: 'Kabiyè', sousTitre: 'National', drapeau: '🇹🇬'),
-    _Langue(code: 'en', label: 'Akposso', sousTitre: 'National', drapeau: '🇹🇬'),
+    _Langue(code: 'akp', label: 'Akposso', sousTitre: 'National', drapeau: '🇹🇬'),
   ];
 
   @override

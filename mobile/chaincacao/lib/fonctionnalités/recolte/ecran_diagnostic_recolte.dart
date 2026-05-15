@@ -1,8 +1,9 @@
 // lib/fonctionnalités/recolte/ecran_diagnostic_recolte.dart
-
-import 'package:chaincacao/services/service_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,7 +11,6 @@ import '../../configuration/theme.dart';
 import '../../configuration/routage.dart';
 import '../../configuration/constantes.dart';
 import '../../modeles/champ.dart';
-import '../../modeles/agriculteur.dart';
 import '../../services/service_audio.dart';
 
 // ─── Modèle de données du diagnostic ──────────────────────────────────────
@@ -63,7 +63,7 @@ class _EcranDiagnosticRecolteState extends State<EcranDiagnosticRecolte> {
       icone: Icons.color_lens_rounded,
       label: 'Maturité',
       description: 'État de maturité du cacao',
-      cleAudio: 'diagnostic_sante',
+      cleAudio: 'diagnostic_maturite',
     ),
     _Etape(
       icone: Icons.health_and_safety_rounded,
@@ -1352,6 +1352,7 @@ class _EtapePhoto extends StatefulWidget {
 }
 
 class _EtapePhotoState extends State<_EtapePhoto> {
+  final ImagePicker _picker = ImagePicker();
   bool _enEnvoi = false;
   late final List<_PlanPhoto> _plans;
   late final _TextesCulture _textes;
@@ -1403,12 +1404,19 @@ class _EtapePhotoState extends State<_EtapePhoto> {
   }
 
   Future<void> _prendrePhoto(int index) async {
-    // TODO : remplacer par image_picker
-    // final image = await _picker.pickImage(source: ImageSource.camera);
-    // if (image != null) setState(() => widget.donnees.photoPath = image.path);
-
-    // Simulation pour l'instant
-    setState(() => widget.donnees.photos[index] = 'photo_$index.jpg');
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 70,
+        maxWidth: 1024,
+      );
+      if (image != null) {
+        setState(() => widget.donnees.photos[index] = image.path);
+        HapticFeedback.lightImpact();
+      }
+    } catch (e) {
+      debugPrint('Erreur capture : $e');
+    }
   }
 
   bool get _auMoinsUnePhoto => widget.donnees.photos.any((p) => p.isNotEmpty);
@@ -1524,45 +1532,87 @@ class _EtapePhotoState extends State<_EtapePhoto> {
                         ),
                         child: widget.donnees.photos[i].isNotEmpty
                             // Photo prise
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.check_circle_rounded,
-                                    color: CCCouleurs.vertForet,
-                                    size: 48,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'Photo ${i + 1} prise ✓',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                      color: CCCouleurs.vertForet,
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Image.file(
+                                      File(widget.donnees.photos[i]),
+                                      fit: BoxFit.cover,
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _plans[i].label,
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: 12,
-                                      color: CCCouleurs.vertForet.withOpacity(
-                                        0.7,
+                                    // Overlay avec bouton supprimer/refaire
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.black38,
+                                            Colors.transparent,
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => _prendrePhoto(i),
-                                    child: Text(
-                                      'Reprendre',
-                                      style: GoogleFonts.dmSans(
-                                        fontSize: 12,
-                                        color: CCCouleurs.grisTexte,
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        radius: 16,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.refresh_rounded,
+                                            size: 16,
+                                            color: CCCouleurs.vertProfond,
+                                          ),
+                                          onPressed: () => _prendrePhoto(i),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               )
+                            // : Column(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       const Icon(
+                            //         Icons.check_circle_rounded,
+                            //         color: CCCouleurs.vertForet,
+                            //         size: 48,
+                            //       ),
+                            //       const SizedBox(height: 10),
+                            //       Text(
+                            //         'Photo ${i + 1} prise ✓',
+                            //         style: GoogleFonts.plusJakartaSans(
+                            //           fontSize: 15,
+                            //           fontWeight: FontWeight.w700,
+                            //           color: CCCouleurs.vertForet,
+                            //         ),
+                            //       ),
+                            //       const SizedBox(height: 4),
+                            //       Text(
+                            //         _plans[i].label,
+                            //         style: GoogleFonts.dmSans(
+                            //           fontSize: 12,
+                            //           color: CCCouleurs.vertForet.withOpacity(
+                            //             0.7,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       TextButton(
+                            //         onPressed: () => _prendrePhoto(i),
+                            //         child: Text(
+                            //           'Reprendre',
+                            //           style: GoogleFonts.dmSans(
+                            //             fontSize: 12,
+                            //             color: CCCouleurs.grisTexte,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            //   )
                             // Pas encore de photo
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,

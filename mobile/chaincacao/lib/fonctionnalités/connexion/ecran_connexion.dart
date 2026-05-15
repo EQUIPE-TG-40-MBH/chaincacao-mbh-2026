@@ -107,16 +107,13 @@ class _EcranConnexionState extends State<EcranConnexion>
 
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _OngletSaisieId(),
-          _OngletScannerQr(),
-        ],
+        children: [_OngletSaisieId(), _OngletScannerQr()],
       ),
     );
   }
 }
 
-// ─── Onglet 1 — Saisie ID 
+// ─── Onglet 1 — Saisie ID
 class _OngletSaisieId extends StatefulWidget {
   @override
   State<_OngletSaisieId> createState() => _OngletSaisieIdState();
@@ -124,14 +121,28 @@ class _OngletSaisieId extends StatefulWidget {
 
 class _OngletSaisieIdState extends State<_OngletSaisieId> {
   final _controleur = TextEditingController();
-  bool _rempli = false;
+  bool _formatValide = false;
+  final RegExp _idRegex = RegExp(r'^[A-Z0-9]+-[A-Z0-9]+-[0-9]{3}-[0-9]{3}$');
 
   @override
   void initState() {
     super.initState();
-    _controleur.addListener(
-      () => setState(() => _rempli = _controleur.text.trim().isNotEmpty),
-    );
+    _controleur.addListener(_validerSaisie);
+  }
+
+  void _validerSaisie() {
+    final texte = _controleur.text.trim().toUpperCase();
+    
+    if (_controleur.text != texte) {
+      _controleur.value = _controleur.value.copyWith(
+        text: texte,
+        selection: TextSelection.collapsed(offset: texte.length),
+      );
+    }
+
+    setState(() {
+      _formatValide = _idRegex.hasMatch(texte);
+    });
   }
 
   @override
@@ -142,152 +153,158 @@ class _OngletSaisieIdState extends State<_OngletSaisieId> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: CCCouleurs.feuilleClaire,
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icône centrale
-          Center(
-            child: Container(
-              width: 96,
-              height: 96,
-              decoration: BoxDecoration(
-                color: CCCouleurs.succesClair,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: CCCouleurs.vertForet.withOpacity(0.2),
-                  width: 2,
+    return SingleChildScrollView(
+      child: Container(
+        color: CCCouleurs.feuilleClaire,
+        padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Icône centrale
+            Center(
+              child: Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                  color: CCCouleurs.succesClair,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: CCCouleurs.vertForet.withOpacity(0.2),
+                    width: 2,
+                  ),
                 ),
-              ),
-              child: const Icon(
-                Icons.badge_rounded,
-                color: CCCouleurs.vertForet,
-                size: 44,
-              ),
-            ),
-          ),
-          const SizedBox(height: 28),
-
-          Center( 
-            child: Text(
-              'Entrez votre identifiant',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: CCCouleurs.vertProfond,
-                letterSpacing: -0.3,
-              ),
-            ),
-          ),  
-          const SizedBox(height: 8),
-          Center(
-            child: Text(
-              'Saisissez votre numéro agriculteur reçu\nlors de votre inscription à la coopérative.',
-              style: GoogleFonts.dmSans(
-                fontSize: 14,
-                color: CCCouleurs.grisTexte,
-                height: 1.5,
-              ),
-            ),
-          ),
-          const SizedBox(height: 28),
-
-          // Champ de saisie
-          TextField(
-            controller: _controleur,
-            keyboardType: TextInputType.number,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: CCCouleurs.vertProfond,
-              letterSpacing: 2,
-            ),
-            cursorColor: CCCouleurs.vertForet,
-            decoration: InputDecoration(
-              hintText: 'Ex : 240511',
-              hintStyle: GoogleFonts.dmSans(
-                fontSize: 16,
-                color: CCCouleurs.grisTexte,
-                letterSpacing: 1,
-              ),
-              filled: true,
-              fillColor: CCCouleurs.blanc,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: CCCouleurs.feuilleGrise),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: CCCouleurs.feuilleGrise),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
+                child: const Icon(
+                  Icons.badge_rounded,
                   color: CCCouleurs.vertForet,
-                  width: 2,
+                  size: 44,
                 ),
-              ),
-              prefixIcon: const Icon(
-                Icons.tag_rounded,
-                color: CCCouleurs.grisTexte,
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 18,
               ),
             ),
-          ),
+            const SizedBox(height: 28),
 
-          const Spacer(),
-
-          // Bouton valider
-          SizedBox(
-            width: double.infinity,
-            height: 58,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _rempli
-                    ? CCCouleurs.vertProfond
-                    : CCCouleurs.feuilleGrise,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: _rempli ? 6 : 0,
-                shadowColor: CCCouleurs.vertProfond.withOpacity(0.25),
-              ),
-              onPressed: _rempli
-                  ? () async{
-                    final prefs=await SharedPreferences.getInstance();
-                    await prefs.setString(CCStockage.token, 'token_test_123');
-                    await prefs.setString('id_agriculteur', _controleur.text.trim());
-                    if (mounted) {
-                      context.go(CCRoutes.accueil);
-                    }
-                  }
-                  :null,
+            Center(
               child: Text(
-                'Valider',
+                'Entrez votre identifiant',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 17,
+                  fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: _rempli ? CCCouleurs.limeVif : CCCouleurs.grisTexte,
+                  color: CCCouleurs.vertProfond,
+                  letterSpacing: -0.3,
                 ),
               ),
             ),
-          ),
+            const SizedBox(height: 8),
+            Center(
+              child: Text(
+                'Saisissez votre numéro agriculteur reçu\nlors de votre inscription à la coopérative.',
+                style: GoogleFonts.dmSans(
+                  fontSize: 14,
+                  color: CCCouleurs.grisTexte,
+                  height: 1.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: 28),
 
-          TextButton(onPressed: (){
-              context.go(CCRoutes.accueil);
-          }, child: Text('acceuil'))
-        ],
+            // Champ de saisie
+            TextField(
+              controller: _controleur,
+              keyboardType: TextInputType.text,
+              textCapitalization: TextCapitalization.characters,
+              autocorrect: false,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: CCCouleurs.vertProfond,
+                letterSpacing: 2,
+              ),
+              cursorColor: CCCouleurs.vertForet,
+              decoration: InputDecoration(
+                hintText: 'Ex : COOP-TG-001-001',
+                hintStyle: GoogleFonts.dmSans(
+                  fontSize: 16,
+                  color: CCCouleurs.grisTexte,
+                  letterSpacing: 1,
+                ),
+                filled: true,
+                fillColor: CCCouleurs.blanc,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(color: CCCouleurs.feuilleGrise),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(color: CCCouleurs.feuilleGrise),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(
+                    color: CCCouleurs.vertForet,
+                    width: 2,
+                  ),
+                ),
+                prefixIcon: const Icon(
+                  Icons.tag_rounded,
+                  color: CCCouleurs.grisTexte,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 18,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 28),
+
+            // Bouton valider
+            SizedBox(
+              width: double.infinity,
+              height: 58,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _formatValide
+                      ? CCCouleurs.vertProfond
+                      : CCCouleurs.feuilleGrise,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: _formatValide ? 6 : 0,
+                  shadowColor: CCCouleurs.vertProfond.withOpacity(0.25),
+                ),
+                onPressed: _formatValide
+                    ? () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setString(
+                          CCStockage.token,
+                          'token_test_123',
+                        );
+                        await prefs.setString(
+                          'id_agriculteur',
+                          _controleur.text.trim().toLowerCase(),
+                        );
+                        if (mounted) {
+                          context.go(CCRoutes.accueil);
+                        }
+                      }
+                    : null,
+                child: Text(
+                  'Valider',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: _formatValide ? CCCouleurs.limeVif : CCCouleurs.grisTexte,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// ─── Onglet 2 — Scanner QR fonctionnel 
+// ─── Onglet 2 — Scanner QR fonctionnel
 class _OngletScannerQr extends StatefulWidget {
   @override
   State<_OngletScannerQr> createState() => _OngletScannerQrState();
@@ -323,7 +340,12 @@ class _OngletScannerQrState extends State<_OngletScannerQr> {
       ),
     );
 
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 800), () async{
+      if (!mounted) return;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(CCStockage.token, 'token_test_123');
+      await prefs.setString('id_agriculteur', code.trim().toUpperCase());
+      
       if (!mounted) return;
       context.go(CCRoutes.accueil, extra: code);
     });
@@ -371,8 +393,7 @@ class _OngletScannerQrState extends State<_OngletScannerQr> {
                       ),
 
                       // Ligne de scan animée
-                      if (!_traite)
-                        const _LigneScanAnimee(),
+                      if (!_traite) const _LigneScanAnimee(),
 
                       // Overlay succès
                       if (_traite)
@@ -423,7 +444,10 @@ class _OngletScannerQrState extends State<_OngletScannerQr> {
                 height: 58,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: CCCouleurs.vertForet, width: 2),
+                    side: const BorderSide(
+                      color: CCCouleurs.vertForet,
+                      width: 2,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -451,7 +475,7 @@ class _OngletScannerQrState extends State<_OngletScannerQr> {
   }
 }
 
-// ─── Ligne de scan animée 
+// ─── Ligne de scan animée
 class _LigneScanAnimee extends StatefulWidget {
   const _LigneScanAnimee();
 
@@ -462,7 +486,7 @@ class _LigneScanAnimee extends StatefulWidget {
 class _LigneScanAnimeeState extends State<_LigneScanAnimee>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
-  late Animation<double>   _anim;
+  late Animation<double> _anim;
 
   @override
   void initState() {
@@ -471,9 +495,10 @@ class _LigneScanAnimeeState extends State<_LigneScanAnimee>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
-    _anim = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
-    );
+    _anim = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -520,17 +545,37 @@ class _PeintreCadreQr extends CustomPainter {
     const longueur = 40.0;
 
     // Coin haut-gauche
-    canvas.drawPath(Path()
-      ..moveTo(0, longueur)..lineTo(0, 0)..lineTo(longueur, 0), pinceau);
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, longueur)
+        ..lineTo(0, 0)
+        ..lineTo(longueur, 0),
+      pinceau,
+    );
     // Coin haut-droite
-    canvas.drawPath(Path()
-      ..moveTo(size.width - longueur, 0)..lineTo(size.width, 0)..lineTo(size.width, longueur), pinceau);
+    canvas.drawPath(
+      Path()
+        ..moveTo(size.width - longueur, 0)
+        ..lineTo(size.width, 0)
+        ..lineTo(size.width, longueur),
+      pinceau,
+    );
     // Coin bas-gauche
-    canvas.drawPath(Path()
-      ..moveTo(0, size.height - longueur)..lineTo(0, size.height)..lineTo(longueur, size.height), pinceau);
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, size.height - longueur)
+        ..lineTo(0, size.height)
+        ..lineTo(longueur, size.height),
+      pinceau,
+    );
     // Coin bas-droite
-    canvas.drawPath(Path()
-      ..moveTo(size.width - longueur, size.height)..lineTo(size.width, size.height)..lineTo(size.width, size.height - longueur), pinceau);
+    canvas.drawPath(
+      Path()
+        ..moveTo(size.width - longueur, size.height)
+        ..lineTo(size.width, size.height)
+        ..lineTo(size.width, size.height - longueur),
+      pinceau,
+    );
   }
 
   @override
