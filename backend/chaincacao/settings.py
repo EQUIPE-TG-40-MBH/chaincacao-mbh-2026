@@ -71,15 +71,20 @@ WSGI_APPLICATION = 'chaincacao.wsgi.application'
 # Database configuration
 # En production (Render), utiliser DATABASE_URL de Supabase
 # En local, utilise SQLite par défaut ou DATABASE_URL si défini
+# Database configuration
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-if DATABASE_URL and not DATABASE_URL.startswith('sqlite'):
+if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
             ssl_require=True
         )
+    }
+    # Indispensable pour la connexion sécurisée à Supabase depuis Render
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
     }
 else:
     DATABASES = {
