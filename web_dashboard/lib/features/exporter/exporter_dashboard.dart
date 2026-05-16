@@ -303,7 +303,7 @@ class _ExportActionBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: AppColors.cacao.withOpacity(0.25),
+              color: const Color(0x403D1C02), // Correction de l'opacité cacao
               blurRadius: 32,
               offset: const Offset(0, 8),
             ),

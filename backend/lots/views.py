@@ -18,6 +18,7 @@ import io
 import hashlib
 import time
 import os
+import datetime
 import json
 from django.core.mail import EmailMessage
 from web3 import Web3
@@ -213,7 +214,7 @@ def generate_eudr_certificate(request):
             status=status.HTTP_404_NOT_FOUND,
         )
 
-    total_weight = sum(l.weight_verified or l.weight_declared for l in lots)
+    total_weight = sum(float(l.weight_verified or l.weight_declared or 0) for l in lots)
     blockchain_hash = generate_demo_hash("EUDR")
 
     certificate = Certificate.objects.create(
@@ -506,8 +507,6 @@ def email_lots_csv(request):
     queryset = Lot.objects.filter(cooperative__cooperative_id=cooperative_id)
 
     # Parsing des dates (ISO YYYY-MM-DD)
-    import datetime
-
     if start_date:
         start_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
         queryset = queryset.filter(registered_at__date__gte=start_datetime)
