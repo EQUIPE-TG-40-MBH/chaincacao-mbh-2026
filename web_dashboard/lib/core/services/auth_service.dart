@@ -1,19 +1,19 @@
 import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Supposons que EntityAccount est défini quelque part, par exemple:
 class EntityAccount {
   final String entityName;
   final String email;
-  final String password;
+  final String password; // Ne devrait pas être stocké en prod
   final String role;
   final String phone;
   final String registrationId;
   final String createdAt;
-  final String? token;
+  final String token;
+  final String homeRoute; // Ajouté pour faciliter la navigation
 
-  const EntityAccount({
+  EntityAccount({
     required this.entityName,
     required this.email,
     required this.password,
@@ -21,76 +21,123 @@ class EntityAccount {
     required this.phone,
     required this.registrationId,
     required this.createdAt,
-    this.token,
-  });
+    required this.token,
+  }) : homeRoute = _getHomeRouteForRole(role);
 
+  /// Retourne un nom lisible pour le rôle (utilisé dans l'UI)
   String get roleLabel {
-    return switch (role) {
-      'cooperative' => 'Cooperative',
-      'exportateur' => 'Exportateur',
-      'verificateur' => 'Verificateur',
-      _ => role,
-    };
+    switch (role) {
+      case 'cooperative': return 'Coopérative';
+      case 'exportateur': return 'Exportateur';
+      case 'ccfcc': return 'CCFCC (Qualité)';
+      case 'otr': return 'OTR (Douanes)';
+      case 'verificateur': return 'Vérificateur';
+      case 'importateur': return 'Importateur';
+      default: return role[0].toUpperCase() + role.substring(1);
+    }
   }
 
-  String get homeRoute {
-    return switch (role) {
-      'cooperative' => '/cooperative/lots',
-      'exportateur' => '/exporter/dashboard',
-      'verificateur' => '/regulator/dashboard',
-      'importateur' => '/importer/reception',
-      _ => '/',
-    };
+  static String _getHomeRouteForRole(String role) {
+    switch (role) {
+      case 'cooperative': return '/cooperative';
+      case 'exportateur': return '/exportateur';
+      case 'ccfcc': return '/ccfcc';
+      case 'otr': return '/otr';
+      case 'verificateur': return '/verifier'; // Ou une page spécifique
+      case 'importateur': return '/importer/reception'; // Ou une page spécifique
+      default: return '/';
+    }
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'entityName': entityName,
-      'email': email,
-      'password': password,
-      'role': role,
-      'phone': phone,
-      'registrationId': registrationId,
-      'createdAt': createdAt,
-      'token': token,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'entityName': entityName,
+        'email': email,
+        'role': role,
+        'phone': phone,
+        'registrationId': registrationId,
+        'createdAt': createdAt,
+        'token': token,
+      };
 
-  factory EntityAccount.fromJson(Map<String, dynamic> json) {
-    return EntityAccount(
-      entityName: json['entityName'] ?? '',
-      email: json['email'] ?? '',
-      password: json['password'] ?? '',
-      role: json['role'] ?? '',
-      phone: json['phone'] ?? '',
-      registrationId: json['registrationId'] ?? '',
-      createdAt: json['createdAt'] ?? '',
-      token: json['token'],
-    );
-  }
+  factory EntityAccount.fromJson(Map<String, dynamic> json) => EntityAccount(
+        entityName: json['entityName'],
+        email: json['email'],
+        password: '', // Ne pas charger le mot de passe
+        role: json['role'],
+        phone: json['phone'],
+        registrationId: json['registrationId'],
+        createdAt: json['createdAt'],
+        token: json['token'],
+      );
 }
 
 class AuthService {
-  static const String baseUrl = String.fromEnvironment('API_URL', defaultValue: 'https://chaincacao-api.onrender.com/api');
-  static const _accountsKey = 'chaincacao_entity_accounts_v1';
-  static const _currentEmailKey = 'email';
-  static const _currentRoleKey = 'role';
-  static const _currentNameKey = 'entity_name';
-  static const _currentRegistrationIdKey = 'registration_id'; // Nouvelle clé
-  static const _tokenKey = 'token';
+  static const String _sessionKey = 'current_session';
 
+  /// URL de base de l'API (utilisée par MvpStore et ApiClient)
+  static const String baseUrl = 'https://chaincacao-api.onrender.com/api';
 
-  static Future<List<EntityAccount>> getAccounts() async {
+  /// Récupère le compte actuellement connecté (utilisé par AuthGate et les Dashboards)
+  static Future<EntityAccount?> currentAccount() => getSession();
+
+  static Future<void> setGuestSession(EntityAccount account) async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_accountsKey);
-    if (raw == null) return [];
-    final decoded = jsonDecode(raw) as List;
-    return decoded
-        .map((item) => EntityAccount.fromJson(Map<String, dynamic>.from(item)))
-        .toList();
+    await prefs.setString(_sessionKey, jsonEncode(account.toJson()));
   }
 
-  static Future<EntityAccount> register({
+  static Future<EntityAccount?> getSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sessionString = prefs.getString(_sessionKey);
+    if (sessionString != null) {
+      return EntityAccount.fromJson(jsonDecode(sessionString));
+    }
+    return null;
+  }
+
+  static Future<String?> getToken() async {
+    final session = await getSession();
+    return session?.token;
+  }
+
+  static Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_sessionKey);
+  }
+
+  static Future<bool> isLoggedIn() async {
+    return (await getSession()) != null;
+  }
+
+  static Future<bool> hasRequiredRole(String requiredRole) async {
+    final session = await getSession();
+    return session?.role == requiredRole;
+  }
+
+  // Méthode de simulation de login (pour le hackathon)
+  static Future<EntityAccount?> login(String email, String password) async {
+    // Ici, tu ferais un appel API réel
+    await Future.delayed(const Duration(seconds: 1)); // Simule un délai réseau
+
+    // Logique de simulation pour le hackathon
+    if (email == 'export@chaincacao.tg' && password == '1234') {
+      final account = EntityAccount(
+        entityName: 'ChainCacao Export',
+        email: email,
+        password: password,
+        role: 'exportateur',
+        phone: '+22890000000',
+        registrationId: 'EXP-TG-001',
+        createdAt: DateTime.now().toIso8601String(),
+        token: 'fake-export-token',
+      );
+      await setGuestSession(account); // Réutilise setGuestSession pour stocker
+      return account;
+    }
+    return null;
+  }
+
+  /// Méthode d'inscription simulée pour le MVP
+  static Future<EntityAccount?> register({
     required String entityName,
     required String email,
     required String password,
@@ -98,118 +145,18 @@ class AuthService {
     required String phone,
     required String registrationId,
   }) async {
-    final normalizedEmail = email.trim().toLowerCase();
-    final accounts = await getAccounts();
-    if (accounts.any((account) => account.email == normalizedEmail)) {
-      throw StateError('Un compte existe deja avec cet email.');
-    }
-
-    final now = DateTime.now();
+    await Future.delayed(const Duration(seconds: 1)); // Simulation réseau
     final account = EntityAccount(
-      entityName: entityName.trim(),
-      email: normalizedEmail,
+      entityName: entityName,
+      email: email,
       password: password,
       role: role,
-      phone: phone.trim(),
-      registrationId: registrationId.trim(),
-      createdAt:
-          '${now.day.toString().padLeft(2, '0')}/'
-          '${now.month.toString().padLeft(2, '0')}/${now.year}',
-    );
-    accounts.add(account);
-    await _saveAccounts(accounts);
-    await _setSession(account);
-    return account;
-  }
-
-  static Future<EntityAccount?> login(String email, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/login/'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email.trim().toLowerCase(),
-          'password': password,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final account = EntityAccount(
-          entityName: data['name'] ?? '',
-          email: email.trim().toLowerCase(),
-          password: password, // Note: in real app, don't store password
-          role: data['role'] ?? '',
-          phone: '', // Backend doesn't return phone
-          registrationId: data['cooperative_id'] ?? '',
-          createdAt: DateTime.now().toString(),
-          token: data['token'],
-        );
-        await _setSession(account);
-        return account;
-      } else {
-        // En ligne, on refuse si le backend dit non
-        return null;
-      }
-    } catch (e) {
-      // Pas de serveur = Pas d'accès (Comportement réel)
-      return null;
-    }
-  }
-
-  static Future<EntityAccount?> currentAccount() async {
-    final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString(_currentEmailKey);
-    final role = prefs.getString(_currentRoleKey);
-    final name = prefs.getString(_currentNameKey);
-    final registrationId = prefs.getString(_currentRegistrationIdKey); // Récupérer l'ID
-    final token = prefs.getString(_tokenKey);
-
-    if (email == null || role == null || name == null || token == null || registrationId == null) {
-      return null;
-    }
-
-    // Reconstruct from prefs for API logins
-    return EntityAccount(
-      entityName: name,
-      email: email,
-      password: '', // Not stored for API accounts
-      role: role,
-      phone: '',
+      phone: phone,
       registrationId: registrationId,
-      createdAt: DateTime.now().toString(),
-      token: token,
+      createdAt: DateTime.now().toIso8601String(),
+      token: 'reg-token-${DateTime.now().millisecondsSinceEpoch}',
     );
-  }
-
-  static Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
-    await prefs.remove(_currentEmailKey);
-    await prefs.remove(_currentRoleKey);
-    await prefs.remove(_currentNameKey);
-    await prefs.remove(_currentRegistrationIdKey); // Supprimer l'ID aussi
-  }
-
-  static Future<void> _saveAccounts(List<EntityAccount> accounts) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      _accountsKey,
-      jsonEncode(accounts.map((account) => account.toJson()).toList()),
-    );
-  }
-
-  static Future<void> _setSession(EntityAccount account) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, account.token ?? 'mvp-token-${account.role}');
-    await prefs.setString(_currentEmailKey, account.email);
-    await prefs.setString(_currentRoleKey, account.role);
-    await prefs.setString(_currentNameKey, account.entityName);
-    await prefs.setString(_currentRegistrationIdKey, account.registrationId); // Sauvegarder l'ID
-  }
-
-  static Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_tokenKey);
+    await setGuestSession(account);
+    return account;
   }
 }

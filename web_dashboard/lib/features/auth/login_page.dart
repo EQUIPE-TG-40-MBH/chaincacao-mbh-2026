@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/widgets/demo_role_switcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -274,6 +275,17 @@ class _LoginPageState extends State<LoginPage> {
                                     ? 'Creer le compte et entrer'
                                     : 'Se connecter',
                               ),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed: () => showDemoSwitcher(context),
+                        icon: const Icon(Icons.auto_awesome, color: AppColors.orChaud),
+                        label: const Text('Tester sans compte (Mode Démo)'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.orChaud,
+                          side: const BorderSide(color: AppColors.orChaud),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       OutlinedButton.icon(

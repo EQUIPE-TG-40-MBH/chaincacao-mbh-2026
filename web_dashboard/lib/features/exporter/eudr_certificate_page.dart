@@ -4,6 +4,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/services/api_client.dart';
 import '../../core/services/pdf_service.dart';
 import '../../core/widgets/dashboard_shell.dart';
+import '../../core/widgets/demo_role_switcher.dart'; // Importe le nouveau fichier
 
 class EudrCertificatePage extends StatefulWidget {
   final List<Map<String, dynamic>> lots;
@@ -84,6 +85,13 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
       pageSubtitle: 'Conformite deforestation et tracabilite export',
       userName: 'ChainCacao Export',
       userRole: 'Exportateur',
+      // Ajout du bouton de changement de rôle démo (via DashboardShell.floatingAction)
+      floatingAction: FloatingActionButton.extended( // Correction ici
+        onPressed: () => showDemoSwitcher(context),
+        backgroundColor: AppColors.orChaud, // Utilise la couleur du design system
+        icon: const Icon(Icons.swap_horiz, color: Colors.white),
+        label: const Text('Changer de Rôle', style: TextStyle(color: Colors.white)),
+      ),
       actions: [
         SizedBox(
           width: 180,

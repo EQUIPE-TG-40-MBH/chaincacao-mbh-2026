@@ -16,6 +16,22 @@ class ApiClient {
     };
   }
 
+  // Méthode pour les appels API publics (sans token d'authentification)
+  static Future<Map<String, dynamic>?> getPublicLot(String lotId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/lots/$lotId/public/'), // Utilise l'endpoint public
+        headers: {'Content-Type': 'application/json'}, // Pas d'Authorization header
+      );
+      if (response.statusCode == 200) {
+        return Map<String, dynamic>.from(jsonDecode(response.body));
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   // ===== LOTS =====
   static Future<List<Map<String, dynamic>>> getLots() async {
     try {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/services/auth_service.dart';
+import '../../../core/services/auth_service.dart'; // Assure-toi que go_router est importé
 
 class OtpVerificationPage extends StatefulWidget {
   final EntityAccount account;
@@ -40,6 +40,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     // Pour la production, cet appel se fera via ApiClient.verifyOtp()
     if (_otpController.text == "1234" || _otpController.text.length == 4) {
       if (mounted) {
+        // Utilise Navigator.pushReplacementNamed pour le routage standard
         Navigator.pushReplacementNamed(context, widget.account.homeRoute);
       }
     } else {
@@ -113,7 +114,18 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                   : const Text('Vérifier et Accéder', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+              const Divider(),
+              const SizedBox(height: 8),
+              TextButton.icon( // Correction ici aussi
+                onPressed: () => Navigator.pushNamed(context, '/verifier'),
+                icon: const Icon(Icons.qr_code_scanner, color: AppColors.vertFeuille),
+                label: Text(
+                  'Vérifier un lot public',
+                  style: AppTextStyles.bodySecondary.copyWith(color: AppColors.vertFeuille),
+                ),
+              ),
+              const SizedBox(height: 8),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Retour à la connexion', style: TextStyle(color: AppColors.grisTexte)),
