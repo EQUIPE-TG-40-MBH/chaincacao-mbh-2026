@@ -37,7 +37,7 @@ class LotSerializer(serializers.ModelSerializer):
             'gps_latitude', 'gps_longitude', 'gps_coordinates',
             'culture_type', 'photo', 'status', 'status_display',
             'blockchain_hash', 'fraud_alert', 'fraud_details',
-            'transfers', 'registered_at', 'updated_at'
+            'gps_forced', 'transfers', 'registered_at', 'updated_at'
         ]
         read_only_fields = [
             'lot_id', 'blockchain_hash',
@@ -67,7 +67,7 @@ class LotPublicSerializer(serializers.ModelSerializer):
             'gps_coordinates', 'region',
             'culture_type', 'status',
             'blockchain_hash', 'fraud_alert',
-            'transfers', 'registered_at'
+            'gps_forced', 'transfers', 'registered_at'
         ]
 
 

@@ -3,13 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../configuration/theme.dart';
 import '../../configuration/routage.dart';
-import '../../configuration/constantes.dart';
 import '../../services/service_audio.dart';
+import '../../services/service_api_chaincacao.dart';
 
 class EcranConnexion extends StatefulWidget {
   const EcranConnexion({super.key});
@@ -273,18 +272,23 @@ class _OngletSaisieIdState extends State<_OngletSaisieId> {
                 ),
                 onPressed: _formatValide
                     ? () async {
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setString(
-                          CCStockage.token,
-                          'token_test_123',
+                        final ok = await ServiceApiChainCacao.connecterProducteur(
+                          _controleur.text,
                         );
-                        await prefs.setString(
-                          'id_agriculteur',
-                          _controleur.text.trim().toLowerCase(),
-                        );
-                        if (mounted) {
+                        if (!context.mounted) return;
+                        if (ok) {
                           context.go(CCRoutes.accueil);
+                          return;
                         }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Identifiant introuvable ou API indisponible',
+                              style: GoogleFonts.dmSans(color: Colors.white),
+                            ),
+                            backgroundColor: CCCouleurs.erreur,
+                          ),
+                        );
                       }
                     : null,
                 child: Text(
@@ -322,9 +326,21 @@ class _OngletScannerQrState extends State<_OngletScannerQr> {
 
   void _surDetection(BarcodeCapture capture) {
     if (_traite) return;
-    final code = capture.barcodes.firstOrNull?.rawValue;
-    if (code == null || code.isEmpty) return;
+    if (!mounted) return;
 
+    // Certaines captures peuvent contenir plusieurs barcodes; on ne traite qu’un seul code.
+    final rawCodes = capture.barcodes
+        .map((b) => b.rawValue)
+        .whereType<String>()
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+
+    if (rawCodes.isEmpty) return;
+
+    final code = rawCodes.first.toUpperCase();
+
+    // Stop immédiat pour éviter les doubles actions / multi-navigations
     setState(() => _traite = true);
     _scannerCtrl.stop();
 
@@ -340,14 +356,26 @@ class _OngletScannerQrState extends State<_OngletScannerQr> {
       ),
     );
 
-    Future.delayed(const Duration(milliseconds: 800), () async{
-      if (!mounted) return;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(CCStockage.token, 'token_test_123');
-      await prefs.setString('id_agriculteur', code.trim().toUpperCase());
-      
-      if (!mounted) return;
-      context.go(CCRoutes.accueil, extra: code);
+    Future.delayed(const Duration(milliseconds: 800), () async {
+      if (!context.mounted) return;
+
+      final ok = await ServiceApiChainCacao.connecterProducteur(code);
+      if (!context.mounted) return;
+      if (ok) {
+        context.go(CCRoutes.accueil, extra: code);
+        return;
+      }
+      setState(() => _traite = false);
+      _scannerCtrl.start();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'QR invalide ou API indisponible',
+            style: GoogleFonts.dmSans(color: Colors.white),
+          ),
+          backgroundColor: CCCouleurs.erreur,
+        ),
+      );
     });
   }
 

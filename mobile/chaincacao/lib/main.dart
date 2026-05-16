@@ -2,8 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-
 
 import 'configuration/theme.dart';
 import 'configuration/routage.dart';

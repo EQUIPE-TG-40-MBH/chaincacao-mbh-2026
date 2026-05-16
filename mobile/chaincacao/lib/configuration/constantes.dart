@@ -6,5 +6,7 @@ class CCStockage {
   static const String langue    = 'cc_langue';     // 'fr' | 'ewe' | 'kab'
   static const String token     = 'cc_token';      // JWT
   static const String agriculteurId = 'cc_agri_id';
+  static const String agriculteurPk = 'cc_agri_pk';
   static const String agriculteurNom = 'cc_agri_nom';
+  static const String cooperativePk = 'cc_coop_pk';
 }

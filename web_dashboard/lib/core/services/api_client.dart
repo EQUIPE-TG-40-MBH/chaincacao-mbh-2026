@@ -20,7 +20,7 @@ class ApiClient {
   static Future<Map<String, dynamic>?> getPublicLot(String lotId) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/lots/$lotId/public/'), // Utilise l'endpoint public
+        Uri.parse('$baseUrl/lots/public/$lotId/'), // Utilise l'endpoint public
         headers: {'Content-Type': 'application/json'}, // Pas d'Authorization header
       );
       if (response.statusCode == 200) {

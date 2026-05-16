@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../configuration/theme.dart';
-import '../../configuration/constantes.dart';
 
 class EcranPesee extends StatelessWidget {
   final String idSac;

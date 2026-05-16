@@ -66,7 +66,14 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
       if (resultat.estDansLeChamp) {
         await Future.delayed(const Duration(milliseconds: 2000));
         if (!mounted) return;
-        context.push(CCRoutes.diagnosticRecolte, extra: widget.champ);
+        context.push(
+          CCRoutes.diagnosticRecolte,
+          extra: {
+            'champ': widget.champ,
+            'gps_forced': false,
+            'gps_resultat': resultat,
+          },
+        );
       }
     } catch (e) {
       if (!mounted) return;
@@ -426,7 +433,7 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
                   extra: {
                     'champ': widget.champ,
                     'gps_forced': true,
-                    'position': _resultat?.position,
+                    'gps_resultat': _resultat,
                   }),
                 icon: const Icon(Icons.arrow_forward_rounded, color: CCCouleurs.blanc),
                 label: Text(

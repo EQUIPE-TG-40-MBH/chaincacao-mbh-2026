@@ -14,6 +14,7 @@ from .serializers import (
 )
 
 import csv
+import datetime
 import io
 import hashlib
 import time
@@ -322,6 +323,9 @@ def validate_customs_otr(request, lot_id):
             )
 
         blockchain_hash = call_smart_contract_update_status(lot_id, "CUSTOMS_CLEARED")
+        lot.status = "CUSTOMS_CLEARED"
+        lot.blockchain_hash = blockchain_hash
+        lot.save()
 
         LotTransfer.objects.create(
             lot=lot,

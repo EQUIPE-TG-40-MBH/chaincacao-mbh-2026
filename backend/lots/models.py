@@ -10,6 +10,7 @@ class Lot(models.Model):
         ('FRAUD_ALERT', 'Alerte fraude'),
         ('EXPORTED', 'Exporté'),
         ('CERTIFIED', 'Certifié'),
+        ('CUSTOMS_CLEARED', 'Dédouané'),
     ]
 
     CULTURE_CHOICES = [
@@ -38,6 +39,7 @@ class Lot(models.Model):
     blockchain_hash = models.CharField(max_length=200, null=True, blank=True)
     fraud_alert = models.BooleanField(default=False)
     fraud_details = models.TextField(null=True, blank=True)
+    gps_forced = models.BooleanField(default=False)
 
     # Qualité / Contrôle CCFCC
     recent_treatments = models.TextField(null=True, blank=True)
@@ -82,7 +84,7 @@ class Lot(models.Model):
 
     @property
     def gps_coordinates(self):
-        if self.gps_latitude and self.gps_longitude:
+        if self.gps_latitude is not None and self.gps_longitude is not None:
             return f"{self.gps_latitude}° N, {self.gps_longitude}° E"
         return "Non défini"
 

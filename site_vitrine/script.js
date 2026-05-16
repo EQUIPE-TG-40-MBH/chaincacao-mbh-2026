@@ -1,3 +1,14 @@
+  const CHAINCACAO_LINKS = {
+    app: 'https://drive.google.com/uc?export=download&id=1yqeNHY1xuwYdyQgRzzNIwYxd6z_wXClu',
+    dashboard: 'https://chaincacao-dashboard.vercel.app',
+    verifier: 'https://chaincacao.netlify.app/verifier',
+  };
+
+  function openChainCacaoTarget(target) {
+    const href = CHAINCACAO_LINKS[target] || CHAINCACAO_LINKS.dashboard;
+    window.location.href = href;
+  }
+
   /* --- Nav scroll --- */
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
@@ -247,20 +258,62 @@
   /* --- Original image carousel --- */
   // Open dashboard / APK from the buttons
   document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('solutionModal');
+    const openModalButtons = [
+      document.getElementById('openSolutionModal'),
+      document.getElementById('heroSolutionAccess'),
+    ].filter(Boolean);
+
+    function openModal() {
+      if (!modal) return;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      sessionStorage.setItem('chaincacaoSolutionModalSeen', 'true');
+    }
+
+    openModalButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    });
+
+    document.querySelectorAll('[data-close-solution]').forEach(btn => {
+      btn.addEventListener('click', closeModal);
+    });
+
+    document.querySelectorAll('[data-solution-route]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        openChainCacaoTarget(link.dataset.solutionRoute);
+      });
+    });
+
+    if (!sessionStorage.getItem('chaincacaoSolutionModalSeen')) {
+      setTimeout(openModal, 700);
+    }
+
     const openDashboardBtn = document.getElementById('openDashboardBtn');
     if (openDashboardBtn) {
       openDashboardBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = '/';
+        openChainCacaoTarget('dashboard');
       });
     }
 
     const downloadApkLink = document.getElementById('downloadApkLink');
-    const apkHref = 'https://drive.google.com/uc?export=download&id=1yqeNHY1xuwYdyQgRzzNIwYxd6z_wXClu';
     if (downloadApkLink) {
       downloadApkLink.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = apkHref;
+        openChainCacaoTarget('app');
       });
     }
   });

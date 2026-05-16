@@ -14,6 +14,43 @@
 </head>
 
 <body>
+  <div class="solution-modal" id="solutionModal" aria-hidden="true">
+    <div class="solution-modal-backdrop" data-close-solution></div>
+    <div class="solution-modal-panel" role="dialog" aria-modal="true" aria-labelledby="solutionModalTitle">
+      <button class="solution-modal-close" type="button" data-close-solution aria-label="Fermer">×</button>
+      <div class="solution-modal-kicker">ChainCacao</div>
+      <h2 id="solutionModalTitle">Accéder à la solution</h2>
+      <p>Choisissez votre profil pour ouvrir directement le bon espace de travail.</p>
+      <div class="solution-access-grid">
+        <a href="#" class="solution-access-card" data-solution-route="app">
+          <span class="solution-access-icon">📱</span>
+          <strong>Agriculteur</strong>
+          <small>Télécharger l'application mobile</small>
+        </a>
+        <a href="#" class="solution-access-card" data-solution-route="verifier">
+          <span class="solution-access-icon">🔎</span>
+          <strong>Acheteur</strong>
+          <small>Vérifier un lot avant achat</small>
+        </a>
+        <a href="#" class="solution-access-card" data-solution-route="dashboard">
+          <span class="solution-access-icon">🤝</span>
+          <strong>Coopérative</strong>
+          <small>Accéder au dashboard</small>
+        </a>
+        <a href="#" class="solution-access-card" data-solution-route="dashboard">
+          <span class="solution-access-icon">🚢</span>
+          <strong>Exportateur</strong>
+          <small>Gérer certificats et lots</small>
+        </a>
+        <a href="#" class="solution-access-card" data-solution-route="dashboard">
+          <span class="solution-access-icon">🏛️</span>
+          <strong>CCFCC / OTR</strong>
+          <small>Valider qualité et douane</small>
+        </a>
+      </div>
+      <button class="solution-modal-secondary" type="button" data-close-solution>Continuer sur le site</button>
+    </div>
+  </div>
 
   <!-- =========================================================
      NAVIGATION
@@ -30,7 +67,7 @@
         <li><a href="#eudr">EUDR</a></li>
         <li><a href="#equipe">Équipe</a></li>
         <li><a href="#telechargements">Téléchargements</a></li>
-        <li><a href="#simulateur" class="btn btn-primary nav-cta">Simuler un lot</a></li>
+        <li><a href="#" class="btn btn-primary nav-cta" id="openSolutionModal">Accéder</a></li>
       </ul>
       <div class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -87,9 +124,8 @@
         </div>
 
         <div class="hero-actions">
-<a href="#comment-ca-marche" class="btn btn-primary">Découvrir la solution</a>
-          <a href="#simulateur" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.35);">Simuler
-            un lot</a>
+          <a href="#" class="btn btn-primary" id="heroSolutionAccess">Accéder à la solution</a>
+          <a href="#simulateur" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.35);">Vérifier un lot</a>
         </div>
       </div>
 
@@ -554,13 +590,12 @@
         <div class="team-card reveal">
           <div class="team-photo">
             <div class="team-photo-decoration"></div>
-            <img src="./WhatsApp Image 2026-05-14 at 09.43.40.jpeg" alt="Kwame Assigbey" class="team-photo-avatar" />
+            <img src="./image/EQUIPE/TRESOR HALALOUNA.png" alt="HALALOUNA Trésor" class="team-photo-avatar" />
           </div>
           <div class="team-body">
-            <div class="team-name">Kwame Assigbey</div>
-            <div class="team-role">CEO &amp; Product Lead</div>
-            <div class="team-bio">Expert en chaînes d'approvisionnement agricoles. 8 ans d'expérience dans les filières
-              cacao togolaises et ghanéennes.</div>
+            <div class="team-name">HALALOUNA Trésor</div>
+            <div class="team-role">Chef de projet · Blockchain · Dashboard</div>
+            <div class="team-bio">Pilote l'architecture produit, le smart contract Polygon et le dashboard web pour les acteurs institutionnels.</div>
             <div class="team-socials">
               <div class="team-social">in</div>
               <div class="team-social">𝕏</div>
@@ -572,13 +607,12 @@
         <div class="team-card reveal reveal-delay-1">
           <div class="team-photo">
             <div class="team-photo-decoration"></div>
-            <img src="./WhatsApp Image 2026-04-11 at 06.54.12.jpeg" alt="Afi Mensah" class="team-photo-avatar" />
+            <img src="./image/EQUIPE/Georges GNANLE.png" alt="Georges GNANLE" class="team-photo-avatar" />
           </div>
           <div class="team-body">
-            <div class="team-name">Afi Mensah</div>
-            <div class="team-role">Lead Blockchain Dev</div>
-            <div class="team-bio">Développeuse blockchain spécialisée en smart contracts. Diplômée de l'Université de
-              Lomé, certifiée Ethereum.</div>
+            <div class="team-name">Georges GNANLE</div>
+            <div class="team-role">Application mobile Flutter</div>
+            <div class="team-bio">Conçoit le parcours producteur: langue, QR, GPS résilient, diagnostic récolte et expérience terrain hors connexion.</div>
             <div class="team-socials">
               <div class="team-social">in</div>
               <div class="team-social">⌨</div>
@@ -590,13 +624,12 @@
         <div class="team-card reveal reveal-delay-2">
           <div class="team-photo">
             <div class="team-photo-decoration"></div>
-            <img src="./WhatsApp Image 2026-05-14 at 09.43.40.jpeg" alt="Yao Koffi" class="team-photo-avatar" />
+            <img src="./image/EQUIPE/EKOE FELICIO.png" alt="EKOE Félicio" class="team-photo-avatar" />
           </div>
           <div class="team-body">
-            <div class="team-name">Yao Koffi</div>
-            <div class="team-role">UX / UI Designer</div>
-            <div class="team-bio">Designer centré utilisateur avec 5 ans d'expérience sur des produits agri-tech en
-              Afrique subsaharienne.</div>
+            <div class="team-name">EKOE Félicio</div>
+            <div class="team-role">Site vitrine · Interface publique</div>
+            <div class="team-bio">Met en scène la solution, l'accès public aux acteurs et l'expérience de vérification pour le marché.</div>
             <div class="team-socials">
               <div class="team-social">in</div>
               <div class="team-social">🎨</div>
@@ -608,13 +641,12 @@
         <div class="team-card reveal reveal-delay-3">
           <div class="team-photo">
             <div class="team-photo-decoration"></div>
-<img src="./image/EQUIPE/TRESOR HALALOUNA.png" alt="Etonam Sunu" class="team-photo-avatar" />
+            <img src="./image/EQUIPE/KOMBATE JACQUES.png" alt="Jacques KOMBATE" class="team-photo-avatar" />
           </div>
           <div class="team-body">
-            <div class="team-name">Etonam Sunu</div>
-            <div class="team-role">Agri Business &amp; Impact</div>
-            <div class="team-bio">Spécialiste en développement rural et accès aux marchés. Coordinatrice de 12
-              coopératives dans la région des Plateaux.</div>
+            <div class="team-name">Jacques KOMBATE</div>
+            <div class="team-role">Backend Django REST</div>
+            <div class="team-bio">Construit l'API, les workflows lots, producteurs, certificats EUDR, exports et intégration blockchain.</div>
             <div class="team-socials">
               <div class="team-social">in</div>
               <div class="team-social">𝕏</div>
@@ -639,7 +671,40 @@
           depuis votre smartphone ou votre poste de travail.</p>
       </div>
 
-      <div class="dl-cards">
+      <div class="role-access-grid">
+        <a href="#" class="role-access-card reveal" data-solution-route="app">
+          <span>📱</span>
+          <h3>Agriculteur</h3>
+          <p>Installer l'app mobile pour enregistrer une récolte, capturer le GPS et générer le QR du lot.</p>
+          <strong>Télécharger l'app</strong>
+        </a>
+        <a href="#" class="role-access-card reveal reveal-delay-1" data-solution-route="verifier">
+          <span>🔎</span>
+          <h3>Acheteur</h3>
+          <p>Vérifier l'origine, la qualité, l'historique et le hash blockchain d'un lot avant achat.</p>
+          <strong>Vérifier un lot</strong>
+        </a>
+        <a href="#" class="role-access-card reveal reveal-delay-2" data-solution-route="dashboard">
+          <span>🤝</span>
+          <h3>Coopérative</h3>
+          <p>Valider les producteurs, peser les lots, suivre les alertes et préparer les exports.</p>
+          <strong>Ouvrir le dashboard</strong>
+        </a>
+        <a href="#" class="role-access-card reveal reveal-delay-3" data-solution-route="dashboard">
+          <span>🚢</span>
+          <h3>Exportateur</h3>
+          <p>Fusionner les lots, générer les certificats EUDR et suivre le passage douane.</p>
+          <strong>Accéder aux exports</strong>
+        </a>
+        <a href="#" class="role-access-card reveal reveal-delay-4" data-solution-route="dashboard">
+          <span>🏛️</span>
+          <h3>CCFCC / OTR</h3>
+          <p>Contrôler la qualité, valider le dédouanement et historiser les décisions critiques.</p>
+          <strong>Accéder aux contrôles</strong>
+        </a>
+      </div>
+
+      <div class="dl-cards compact">
         <div class="dl-card dl-card-app reveal">
           <div class="dl-card-icon">📱</div>
           <div class="dl-card-title">Application Mobile</div>
@@ -663,7 +728,7 @@
             <div class="dl-badge">Multi-lots</div>
             <div class="dl-badge">EUDR Ready</div>
           </div>
-<a href="/" class="btn btn-white" id="openDashboardBtn">🚀 Accéder au dashboard</a>
+          <a href="#" class="btn btn-white" id="openDashboardBtn" data-solution-route="dashboard">🚀 Accéder au dashboard</a>
         </div>
       </div>
     </div>

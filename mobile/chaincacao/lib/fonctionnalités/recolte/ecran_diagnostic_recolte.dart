@@ -12,6 +12,8 @@ import '../../configuration/routage.dart';
 import '../../configuration/constantes.dart';
 import '../../modeles/champ.dart';
 import '../../services/service_audio.dart';
+import '../../services/service_api_chaincacao.dart';
+import '../../services/service_gps.dart';
 
 // ─── Modèle de données du diagnostic ──────────────────────────────────────
 class DonneesRecolte {
@@ -36,8 +38,15 @@ class DonneesRecolte {
 
 class EcranDiagnosticRecolte extends StatefulWidget {
   final Champ champ;
+  final bool gpsForced;
+  final ResultatGps? gpsResultat;
 
-  const EcranDiagnosticRecolte({super.key, required this.champ});
+  const EcranDiagnosticRecolte({
+    super.key,
+    required this.champ,
+    this.gpsForced = false,
+    this.gpsResultat,
+  });
 
   @override
   State<EcranDiagnosticRecolte> createState() => _EcranDiagnosticRecolteState();
@@ -81,7 +90,7 @@ class _EcranDiagnosticRecolteState extends State<EcranDiagnosticRecolte> {
       icone: Icons.camera_alt_rounded,
       label: 'Photo',
       description: 'Photo de contrôle',
-      cleAudio: 'diagnostic_photo',
+      cleAudio: 'diagnostic_photos',
     ),
   ];
 
@@ -213,6 +222,8 @@ class _EcranDiagnosticRecolteState extends State<EcranDiagnosticRecolte> {
                   donnees: _donnees,
                   culture: widget.champ.culture ?? 'Cacao',
                   champ: widget.champ,
+                  gpsForced: widget.gpsForced,
+                  gpsResultat: widget.gpsResultat,
                 ),
               ],
             ),
@@ -1340,11 +1351,15 @@ class _EtapePhoto extends StatefulWidget {
   final DonneesRecolte donnees;
   final String culture;
   final Champ champ;
+  final bool gpsForced;
+  final ResultatGps? gpsResultat;
 
   const _EtapePhoto({
     required this.donnees,
     required this.culture,
     required this.champ,
+    required this.gpsForced,
+    required this.gpsResultat,
   });
 
   @override
@@ -1426,12 +1441,38 @@ class _EtapePhotoState extends State<_EtapePhoto> {
   Future<void> _enregistrer() async {
     setState(() => _enEnvoi = true);
 
-    // TODO : appeler LotService.creerRecolte(widget.donnees, widget.champ)
-    // POST /api/lots/ avec toutes les données du diagnostic
-    await Future.delayed(const Duration(seconds: 2)); // simulation
+    final position = widget.gpsResultat?.position;
+    final payloadGps = {
+      'gps_latitude': position?.latitude ?? widget.champ.latitude,
+      'gps_longitude': position?.longitude ?? widget.champ.longitude,
+      'gps_forced': widget.gpsForced,
+    };
+    debugPrint(
+      'GPS payload recolte: $payloadGps, distance=${widget.gpsResultat?.distanceMetres}',
+    );
+
+    final lot = await ServiceApiChainCacao.creerLot(
+      weightDeclared: 1,
+      cultureType: widget.champ.culture == 'cafe' ? 'cafe' : 'cacao',
+      gpsLatitude: payloadGps['gps_latitude'] as double,
+      gpsLongitude: payloadGps['gps_longitude'] as double,
+      gpsForced: widget.gpsForced,
+    );
 
     if (!mounted) return;
     setState(() => _enEnvoi = false);
+    if (lot == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Connexion API indisponible. La récolte n’a pas été envoyée.',
+            style: GoogleFonts.dmSans(color: Colors.white),
+          ),
+          backgroundColor: CCCouleurs.erreur,
+        ),
+      );
+      return;
+    }
 
     // Succès → retour accueil avec confirmation
     _afficherSucces();

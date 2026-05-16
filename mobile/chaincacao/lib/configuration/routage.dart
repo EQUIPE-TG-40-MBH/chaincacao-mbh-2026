@@ -18,6 +18,7 @@ import '../fonctionnalités/connexion/ecran_saisie_id.dart';
 import '../fonctionnalités/recolte/ecran_scan_sac.dart';
 import '../fonctionnalités/recolte/ecran_pesee.dart';
 import '../fonctionnalités/historique/ecran_mes_scans.dart';
+import '../services/service_gps.dart';
 
 // ───NOMS DES ROUTES
 class CCRoutes {
@@ -133,8 +134,15 @@ class CCRoutage {
       GoRoute(
         path: CCRoutes.diagnosticRecolte,
         builder: (context, state) {
-          final champ = state.extra as Champ;
-          return EcranDiagnosticRecolte(champ: champ);
+          final extra = state.extra;
+          if (extra is Map) {
+            return EcranDiagnosticRecolte(
+              champ: extra['champ'] as Champ,
+              gpsForced: extra['gps_forced'] as bool? ?? false,
+              gpsResultat: extra['gps_resultat'] as ResultatGps?,
+            );
+          }
+          return EcranDiagnosticRecolte(champ: extra as Champ);
         },
       ),
 
