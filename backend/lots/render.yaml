@@ -10,7 +10,7 @@ services:
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        value: "postgresql://postgres:Chaincacao2026!@db.mmvktgvhrigvlsgjqkhb.supabase.co:5432/postgres"
+        value: "postgresql://postgres.mmvktgvhrigvlsgjqkhb:Chaincacao2026!@aws-0-eu-west-1.pooler.supabase.com:5432/postgres"
       - key: ALLOWED_HOSTS
         value: "chaincacao-api.onrender.com"
       - key: AMOY_RPC_URL
