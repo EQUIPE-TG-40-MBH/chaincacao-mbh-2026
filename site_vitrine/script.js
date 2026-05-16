@@ -1,6 +1,6 @@
   const CHAINCACAO_LINKS = {
     app: 'https://drive.google.com/uc?export=download&id=1yqeNHY1xuwYdyQgRzzNIwYxd6z_wXClu',
-    dashboard: 'https://chaincacao-dashboard.vercel.app',
+    dashboard: 'https://web-tresor1hs-projects.vercel.app',
     verifier: 'https://chaincacao.netlify.app/verifier',
   };
 
