@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export CSV de vos lots ChainCacao</title>
+    <style>
+        body {
+            font-family: 'Epilogue', sans-serif; /* Assurez-vous que cette police est disponible ou utilisez une alternative web-safe */
+            margin: 0;
+            padding: 0;
+            background-color: #FAF6EE; /* Crème */
+            color: #3D1C02; /* Cacao profond */
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(61, 28, 2, 0.10);
+            border-left: 4px solid #C9933A; /* Or chaud */
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #E0D5C8; /* Gris clair */
+        }
+        .header h1 {
+            color: #3D1C02;
+            font-family: 'Playfair Display', serif; /* Assurez-vous que cette police est disponible ou utilisez une alternative web-safe */
+            font-size: 28px;
+            margin: 10px 0 0;
+        }
+        .content {
+            padding: 20px 0;
+            line-height: 1.6;
+        }
+        .content p {
+            margin-bottom: 10px;
+        }
+        .highlight {
+            color: #C9933A; /* Or chaud */
+            font-weight: 600;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #E0D5C8;
+            font-size: 12px;
+            color: #8A7A6A; /* Gris texte */
+        }
+        .date-range {
+            background-color: #FAF6EE;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #E0D5C8;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ChainCacao</h1>
+            <p style="color: #8A7A6A;">Traçabilité Blockchain du Cacao Togolais</p>
+        </div>
+        <div class="content">
+            <p>Bonjour <span class="highlight">{{ user_name }}</span>,</p>
+            <p>Nous avons le plaisir de vous confirmer l'envoi de votre rapport d'exportation CSV pour vos lots de cacao.</p>
+            {% if start_date and end_date %}
+                <p>Ce rapport couvre la période du <span class="highlight">{{ start_date }}</span> au <span class="highlight">{{ end_date }}</span>.</p>
+            {% else %}
+                <p>Ce rapport couvre tous les lots disponibles.</p>
+            {% endif %}
+            {% if detailed_report %}
+                <p>Le rapport inclus l'historique détaillé des transferts pour chaque lot.</p>
+            {% else %}
+                <p>Le rapport est une version simplifiée sans l'historique des transferts.</p>
+            {% endif %}
+            <p>Vous trouverez le fichier CSV en pièce jointe de cet e-mail.</p>
+            <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+            <p>Cordialement,</p>
+            <p>L'équipe ChainCacao</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 ChainCacao. Tous droits réservés.</p>
+            <p>MIABE Hackathon 2026 · Lomé, Togo</p>
+        </div>
+    </div>
+</body>
+</html>
