@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../configuration/theme.dart';
 import '../../configuration/constantes.dart';
@@ -39,28 +40,48 @@ class _EcranProfilState extends State<EcranProfil> {
       titre: 'Comment utiliser ChainCacao',
       description: 'Présentation générale de l\'application',
       icone: Icons.play_circle_rounded,
-      duree: '2 min',
+      duree: '1 min 05 sec',
+      youtubeIds: {
+        'fr': 'GsK6F0ErLdc',
+        'ewe': 'METTRE_ID_ICI',
+        'kab': 'METTRE_ID_ICI',
+      },
     ),
     _Tutoriel(
       theme: 'Récolte',
       titre: 'Enregistrer une récolte',
       description: 'De la sélection du champ à la confirmation',
       icone: Icons.grass_rounded,
-      duree: '3 min',
+      duree: '1 min 03 sec',
+      youtubeIds: {
+        'fr': 'YSpeAkIozjQ',
+        'ewe': 'METTRE_ID_ICI',
+        'kab': 'METTRE_ID_ICI',
+      },
     ),
     _Tutoriel(
       theme: 'Qualité',
       titre: 'Faire un bon diagnostic',
       description: 'Évaluer la maturité, santé et humidité',
       icone: Icons.health_and_safety_rounded,
-      duree: '4 min',
+      duree: '1 min',
+      youtubeIds: {
+        'fr': 'YSpeAkIozjQ',
+        'ewe': 'METTRE_ID_ICI',
+        'kab': 'METTRE_ID_ICI',
+      },
     ),
     _Tutoriel(
       theme: 'Traçabilité',
       titre: 'Comprendre le QR code',
       description: 'À quoi sert votre QR code de récolte',
       icone: Icons.qr_code_rounded,
-      duree: '2 min',
+      duree: '1 min 32 sec',
+      youtubeIds: {
+        'fr': 'zeOt-6GDb00',
+        'ewe': 'METTRE_ID_ICI',
+        'kab': 'METTRE_ID_ICI',
+      },
     ),
     _Tutoriel(
       theme: 'GPS',
@@ -68,6 +89,11 @@ class _EcranProfilState extends State<EcranProfil> {
       description: 'Pourquoi être dans son champ est obligatoire',
       icone: Icons.gps_fixed_rounded,
       duree: '2 min',
+      youtubeIds: {
+        'fr': 'METTRE_ID_ICI',
+        'ewe': 'METTRE_ID_ICI',
+        'kab': 'METTRE_ID_ICI',
+      },
     ),
   ];
 
@@ -653,41 +679,77 @@ class _ModalTutoriel extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Zone vidéo placeholder
-            // TODO : remplacer par VideoPlayer ou WebView avec lien vidéo
-            Container(
-              width: double.infinity,
-              height: 180,
-              decoration: BoxDecoration(
-                color: CCCouleurs.nuit,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: const BoxDecoration(
-                      color: CCCouleurs.limeVif,
-                      shape: BoxShape.circle,
+            // Zone vidéo — YouTube si disponible, placeholder sinon
+            Builder(
+              builder: (_) {
+                final videoId =
+                    tutoriel.youtubeIds[langue] ??
+                    tutoriel.youtubeIds['fr']; // fallback français
+
+                // ── Pas encore de vidéo ─────────────────────────────────
+                if (videoId == null || videoId == 'METTRE_ID_ICI') {
+                  return Container(
+                    width: double.infinity,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: CCCouleurs.nuit,
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const Icon(
-                      Icons.play_arrow_rounded,
-                      color: CCCouleurs.vertProfond,
-                      size: 32,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 56,
+                          height: 56,
+                          decoration: const BoxDecoration(
+                            color: CCCouleurs.limeVif,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.play_arrow_rounded,
+                            color: CCCouleurs.vertProfond,
+                            size: 32,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Vidéo bientôt disponible',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 13,
+                            color: CCCouleurs.feuilleClaire.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                // ── Vidéo YouTube disponible ─────────────────────────────
+                final controller = YoutubePlayerController(
+                  initialVideoId: videoId,
+                  flags: const YoutubePlayerFlags(
+                    autoPlay: false,
+                    mute: false,
+                    loop: false,
+                    isLive: false,
+                    forceHD: false,
+                    enableCaption: false,
+                  ),
+                );
+
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: YoutubePlayer(
+                    controller: controller,
+                    showVideoProgressIndicator: true,
+                    progressIndicatorColor: CCCouleurs.limeVif,
+                    progressColors: const ProgressBarColors(
+                      playedColor: CCCouleurs.limeVif,
+                      handleColor: CCCouleurs.vertForet,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Vidéo bientôt disponible',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 13,
-                      color: CCCouleurs.feuilleClaire.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
             const SizedBox(height: 20),
 
@@ -755,6 +817,7 @@ class _Tutoriel {
   final String description;
   final IconData icone;
   final String duree;
+  final Map<String, String> youtubeIds; // langue -> ID vidéo
 
   const _Tutoriel({
     required this.theme,
@@ -762,5 +825,6 @@ class _Tutoriel {
     required this.description,
     required this.icone,
     required this.duree,
+    this.youtubeIds = const {},
   });
 }
