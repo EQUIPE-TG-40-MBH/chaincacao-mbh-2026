@@ -27,16 +27,18 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
 
   Future<void> _generateCertificate() async {
     setState(() => _generating = true);
-    await ChainCacaoPdfService.downloadEudrCertificate(
-      certificateId: _certId,
-      lots: widget.lots,
-      totalKg: widget.totalKg,
-    );
 
     final lotIds = widget.lots.map((l) => l['lot_id'] as String).toList();
+    // On enregistre d'abord en base de données
     final result = await ApiClient.generateEudrCertificate(lotIds);
 
     if (result != null) {
+      // Si succès API, on déclenche le téléchargement PDF
+      await ChainCacaoPdfService.downloadEudrCertificate(
+        certificateId: _certId,
+        lots: widget.lots,
+        totalKg: widget.totalKg,
+      );
     setState(() {
       _generating = false;
       _generated = true;

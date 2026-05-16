@@ -66,12 +66,14 @@ class _FarmerRecordPageState extends State<FarmerRecordPage> {
     if (!hasPermission) return;
 
     setState(() => _isLoading = true);
+    // Remplacer par l'URL de production ou l'IP locale si test physique
+    const String apiUrl = 'https://chaincacao-api.onrender.com/api/lots/';
+
     try {
       Position pos = await Geolocator.getCurrentPosition();
       
-      // 2. Envoyer au Backend Render
       final response = await http.post(
-        Uri.parse('https://chaincacao-api.onrender.com/api/lots/'),
+        Uri.parse(apiUrl),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'farmer_id': '1', // ID de test
