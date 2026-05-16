@@ -193,9 +193,9 @@ class _ValidationForm extends StatelessWidget {
         if (!twoColumns) {
           return Column(
             children: [
-              details,
+              AnimatedAppear(index: 0, child: details),
               const SizedBox(height: 24),
-              form,
+              AnimatedAppear(index: 1, child: form),
             ],
           );
         }
@@ -203,9 +203,9 @@ class _ValidationForm extends StatelessWidget {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: details),
+            Expanded(child: AnimatedAppear(index: 0, child: details)),
             const SizedBox(width: 24),
-            Expanded(child: form),
+            Expanded(child: AnimatedAppear(index: 1, child: form)),
           ],
         );
       },
@@ -383,9 +383,7 @@ class _SuccessView extends StatelessWidget {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 640),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: PremiumCard(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

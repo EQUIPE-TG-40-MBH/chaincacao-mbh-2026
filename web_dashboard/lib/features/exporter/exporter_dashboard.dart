@@ -67,7 +67,8 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
               onGenerate: () {
                 Navigator.push(
                   context,
-                  premiumRoute(
+                  MaterialPageRoute(
+                    builder: (_) => 
                     EudrCertificatePage(
                       lots: _selectedLots,
                       totalKg: _totalSelectedKg,
@@ -92,33 +93,25 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        AnimatedAppear(
-                          index: 0,
-                          child: _StatCard(
+                        _StatCard(
                             title: 'Lots disponibles',
                             value: '${_lots.length}',
                             icon: Icons.inventory_2_outlined,
                             color: AppColors.orChaud,
                           ),
-                        ),
-                        AnimatedAppear(
-                          index: 1,
-                          child: _StatCard(
+                        _StatCard(
                             title: 'Lots selectionnes',
                             value: '${_selectedLots.length}',
                             icon: Icons.check_circle_outline,
                             color: AppColors.vertFeuille,
                           ),
-                        ),
                       ],
                     );
                   },
                 ),
                 const SizedBox(height: 24),
                 ..._lots.asMap().entries.map(
-                  (entry) => AnimatedAppear(
-                    index: 2 + entry.key,
-                    child: Padding(
+                  (entry) => Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: _LotCard(
                         lot: entry.value,
@@ -128,14 +121,10 @@ class _ExporterDashboardState extends State<ExporterDashboard> {
                         ),
                       ),
                     ),
-                  ),
                 ),
                 if (_exports.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  AnimatedAppear(
-                    index: 8,
-                    child: _ExportHistoryCard(exports: _exports),
-                  ),
+                  _ExportHistoryCard(exports: _exports),
                 ],
               ],
             ),
@@ -205,11 +194,12 @@ class _LotCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
-        child: PremiumCard(
-          border: Border.all(
-            color: isSelected ? AppColors.orChaud : Colors.transparent,
-            width: 2,
-          ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: isSelected ? AppColors.orChaud : Colors.transparent, width: 2),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               AnimatedContainer(
@@ -366,7 +356,11 @@ class _ExportHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PremiumCard(
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -411,6 +405,7 @@ class _ExportHistoryCard extends StatelessWidget {
                 ),
               ),
         ],
+      ),
       ),
     );
   }
