@@ -256,7 +256,7 @@
     }
 
     const downloadApkLink = document.getElementById('downloadApkLink');
-    const apkHref = '/apk/release.apk';
+    const apkHref = 'https://drive.google.com/uc?export=download&id=1yqeNHY1xuwYdyQgRzzNIwYxd6z_wXClu';
     if (downloadApkLink) {
       downloadApkLink.addEventListener('click', (e) => {
         e.preventDefault();
