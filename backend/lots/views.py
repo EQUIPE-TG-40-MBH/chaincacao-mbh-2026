@@ -18,7 +18,6 @@ import io
 import hashlib
 import time
 import os
-import datetime
 import json
 from django.core.mail import EmailMessage
 from web3 import Web3
@@ -81,7 +80,7 @@ def call_smart_contract_update_status(lot_id: str, new_status: str) -> str:
 
 class LotListView(generics.ListCreateAPIView):
     serializer_class = LotSerializer
-    permission_classes = [AllowAny] # Autorise GET et POST pour le mode démo/jury
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Lot.objects.all().order_by("-registered_at")
@@ -214,7 +213,7 @@ def generate_eudr_certificate(request):
             status=status.HTTP_404_NOT_FOUND,
         )
 
-    total_weight = sum(float(l.weight_verified or l.weight_declared or 0) for l in lots)
+    total_weight = sum(l.weight_verified or l.weight_declared for l in lots)
     blockchain_hash = generate_demo_hash("EUDR")
 
     certificate = Certificate.objects.create(
@@ -341,10 +340,10 @@ def validate_customs_otr(request, lot_id):
 @transaction.atomic
 def merge_lots(request):
     """Fusion de lots en 1 lot enfant. Scénario: exactement 5 parents."""
-    data_in = request.data or {}
+    data_in = request.data
     # Vérification que lot_ids est présent et est une liste
     lot_ids = data_in.get("lot_ids")
-    if not isinstance(lot_ids, list) or not lot_ids:
+    if not isinstance(lot_ids, list):
         return Response(
             {"error": "Le champ 'lot_ids' doit être une liste d'identifiants"},
             status=status.HTTP_400_BAD_REQUEST,
@@ -365,7 +364,7 @@ def merge_lots(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    total_weight = sum(float(l.weight_verified or l.weight_declared or 0) for l in lots)
+    total_weight = sum(float(l.weight_verified or l.weight_declared) for l in lots)
 
     new_lot_id = None
     if base_parent_lot_id and base_parent_lot_id in lot_ids and len(lot_ids) == 5:
