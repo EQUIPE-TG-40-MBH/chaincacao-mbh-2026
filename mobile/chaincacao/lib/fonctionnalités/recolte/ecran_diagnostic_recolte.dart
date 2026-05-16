@@ -1426,8 +1426,23 @@ class _EtapePhotoState extends State<_EtapePhoto> {
   Future<void> _enregistrer() async {
     setState(() => _enEnvoi = true);
 
-    // TODO : appeler LotService.creerRecolte(widget.donnees, widget.champ)
-    // POST /api/lots/ avec toutes les données du diagnostic
+    // 1. Génération dynamique du lot_id
+    final int anneeActuelle = DateTime.now().year; // Récupère 2026
+
+    // TODO : Récupérer le count depuis ton service ou ta DB (ex: 142)
+    final int compteurLot = 142;
+
+    // Formate le compteur sur 5 chiffres (ex: 142 devient 00142)
+    final String compteurFormate = compteurLot.toString().padLeft(5, '0');
+
+    // Assemblage final : TG-2026-00142
+    final String lotId = 'TG-$anneeActuelle-$compteurFormate';
+
+    // 2. Intégration dans ton appel de service
+    // Tu pourras passer 'lotId' à ton service ou l'ajouter à widget.donnees
+    // TODO : appeler LotService.creerRecolte(widget.donnees, widget.champ, lotId: lotId)
+    // POST /api/lots/ avec toutes les données du diagnostic et le lotId
+
     await Future.delayed(const Duration(seconds: 2)); // simulation
 
     if (!mounted) return;
@@ -1573,46 +1588,6 @@ class _EtapePhotoState extends State<_EtapePhoto> {
                                   ],
                                 ),
                               )
-                            // : Column(
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     children: [
-                            //       const Icon(
-                            //         Icons.check_circle_rounded,
-                            //         color: CCCouleurs.vertForet,
-                            //         size: 48,
-                            //       ),
-                            //       const SizedBox(height: 10),
-                            //       Text(
-                            //         'Photo ${i + 1} prise ✓',
-                            //         style: GoogleFonts.plusJakartaSans(
-                            //           fontSize: 15,
-                            //           fontWeight: FontWeight.w700,
-                            //           color: CCCouleurs.vertForet,
-                            //         ),
-                            //       ),
-                            //       const SizedBox(height: 4),
-                            //       Text(
-                            //         _plans[i].label,
-                            //         style: GoogleFonts.dmSans(
-                            //           fontSize: 12,
-                            //           color: CCCouleurs.vertForet.withOpacity(
-                            //             0.7,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       TextButton(
-                            //         onPressed: () => _prendrePhoto(i),
-                            //         child: Text(
-                            //           'Reprendre',
-                            //           style: GoogleFonts.dmSans(
-                            //             fontSize: 12,
-                            //             color: CCCouleurs.grisTexte,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                            //   )
                             // Pas encore de photo
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
