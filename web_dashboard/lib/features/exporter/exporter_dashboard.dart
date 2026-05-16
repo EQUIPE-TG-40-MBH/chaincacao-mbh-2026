@@ -152,8 +152,8 @@ class _StatCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
+      child: Row(
+        children: [
           Container(
             width: 56,
             height: 56,
