@@ -143,7 +143,13 @@ def lot_transfer(request, lot_id):
         )
 
     weight_verified = request.data.get("weight_verified")
-    from_actor = request.data.get("from_actor", "FARMER")
+    if not weight_verified:
+        return Response(
+            {"error": "Le poids vérifié est obligatoire pour valider un transfert"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    from_actor = request.data.get("from_actor", "PRODUCTEUR")
     to_actor = request.data.get("to_actor", "COOPERATIVE")
     notes = request.data.get("notes", "")
 
@@ -334,8 +340,15 @@ def validate_customs_otr(request, lot_id):
 @transaction.atomic
 def merge_lots(request):
     """Fusion de lots en 1 lot enfant. Scénario: exactement 5 parents."""
+    data_in = request.data
+    # Vérification que lot_ids est présent et est une liste
+    lot_ids = data_in.get("lot_ids")
+    if not isinstance(lot_ids, list):
+        return Response(
+            {"error": "Le champ 'lot_ids' doit être une liste d'identifiants"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-    lot_ids = request.data.get("lot_ids", [])
     base_parent_lot_id = request.data.get("base_parent_lot_id")
 
     if len(lot_ids) < 2:
@@ -409,6 +422,13 @@ def merge_lots(request):
 def register_cooperative_lot(request):
     cooperative_id = request.data.get("cooperative_id")
     weight = request.data.get("weight_declared")
+
+    if not cooperative_id or not weight:
+        return Response(
+            {"error": "Champs manquants : cooperative_id et weight_declared sont requis"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     culture_type = request.data.get("culture_type", "cacao")
     gps_latitude = request.data.get("gps_latitude", 6.8913)
     gps_longitude = request.data.get("gps_longitude", 0.6502)
@@ -571,4 +591,3 @@ def email_lots_csv(request):
         return Response({"message": f"Le fichier CSV a été envoyé à {user_email}"})
     except Exception as e:
         return Response({"error": str(e)}, status=500)
-
