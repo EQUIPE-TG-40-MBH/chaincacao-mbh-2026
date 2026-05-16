@@ -409,6 +409,37 @@ class _EcranVerificationGpsState extends State<EcranVerificationGps>
       case 'echec':
         return Column(
           children: [
+            // Option de forçage : Continuer malgré l'écart GPS
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CCCouleurs.attention,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 0,
+                ),
+                onPressed: () => context.push(
+                  CCRoutes.diagnosticRecolte, 
+                  extra: {
+                    'champ': widget.champ,
+                    'gps_forced': true,
+                    'position': _resultat?.position,
+                  }),
+                icon: const Icon(Icons.arrow_forward_rounded, color: CCCouleurs.blanc),
+                label: Text(
+                  'Capturer quand même',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: CCCouleurs.blanc,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
             // Réessayer
             SizedBox(
               width: double.infinity,

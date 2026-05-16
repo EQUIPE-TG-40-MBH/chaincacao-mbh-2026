@@ -2,7 +2,7 @@
 
 > **Traçabilité Blockchain du Cacao Togolais**  
 > MIABE Hackathon 2026 · Darollo Technologies Corporation · Lomé, Togo  
-> Thème : *La Blockchain, levier du développement durable africain*
+> Thème : *La Blockchain, levier de la conformité EUDR et du développement durable africain*
 
 ---
 
@@ -22,11 +22,11 @@ ChainCacao enregistre chaque lot sur la **blockchain Polygon** — de la ferme �
 - 🏭 La coopérative valide et détecte les fraudes automatiquement
 - 🚢 L'exportateur génère le certificat EUDR en 1 clic
 - 🇪🇺 L'importateur vérifie l'historique complet sans créer de compte
-- 🔊 Interface audio en Français, Éwé et Kabiyè — zéro exclusion
+- 🔊 **Zéro exclusion** : Interface audio (Éwé/Kabiyè) et **fonctionnement 100% hors-ligne** en zone rurale.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Structure du Projet
 
 ```
 chaincacao-mbh-2026/
@@ -51,6 +51,10 @@ chaincacao-mbh-2026/
 | Vérification publique | https://chaincacao.netlify.app/verifier |
 | API backend | https://api.chaincacao.tg |
 | Contrat Polygon Amoy | [0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc](https://amoy.polygonscan.com/address/0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc) |
+
+---
+### 🛠️ Résilience GPS & Backend
+Le backend Django accepte le champ `gps_forced` (booléen). Si `true`, le lot est marqué pour une inspection manuelle par la coopérative, tout en conservant les coordonnées GPS réelles. Cela garantit la continuité de service en zone rurale tout en restant conforme à l'EUDR.
 
 ---
 
@@ -109,6 +113,11 @@ python manage.py runserver
 cd mobile
 flutter pub get
 flutter run
+
+### Build de Production (APK)
+1. Générer les icônes : `dart run flutter_launcher_icons`
+2. Vérifier `android:label="ChainCacao"` dans `AndroidManifest.xml`
+3. Lancer le build : `flutter build apk --release`
 ```
 
 ### Dashboard Flutter web
@@ -183,6 +192,10 @@ Voir [`docs/blockchain-config.md`](docs/blockchain-config.md) pour la configurat
 5. **Min 5** — *"Ce lot vient de Koami, agriculteur à Kpalimé. Pour la première fois, il sait ce que son travail rapporte."*
 
 ---
+## 📦 État du MVP (Soumission)
+- [x] Smart Contract déployé et vérifié sur Polygon Amoy.
+- [x] App Mobile avec capture GPS résiliente et mode hors-ligne.
+- [x] Dashboard avec génération de certificat EUDR et détection de fraude.
 
 ## 📄 Licence
 
@@ -190,4 +203,4 @@ Projet réalisé dans le cadre du **MIABE Hackathon 2026** organisé par Darollo
 
 ---
 
-*ChainCacao · Équipe TG-40 · ESIG Global Success · Lomé, Togo · Mai 2026*
+*ChainCacao · Équipe TG-40 · Lomé, Togo · Mai 2026*

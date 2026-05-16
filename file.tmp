@@ -1,0 +1,191 @@
+# 🍫 ChainCacao
+
+> **Traçabilité Blockchain du Cacao Togolais**  
+> MIABE Hackathon 2026 · Darollo Technologies Corporation · Lomé, Togo  
+> Thème : *La Blockchain, levier de la conformité EUDR et du développement durable africain*
+
+
+## 🌍 Le problème
+
+Le cacao togolais passe par **4 à 6 intermédiaires non tracés**. L'agriculteur reçoit seulement **15 à 25%** de la valeur réelle de sa récolte. Depuis 2025, le règlement européen **EUDR** exige une traçabilité géographique prouvée pour tout cacao exporté vers l'UE. Sans solution, le Togo perd ses marchés européens.
+
+**40 000 familles** de producteurs de cacao sont concernées.
+
+---
+
+## ✅ La solution
+
+ChainCacao enregistre chaque lot sur la **blockchain Polygon** — de la ferme à l'exportateur — de manière immuable, vérifiable et accessible à tous.
+
+- 🌱 L'agriculteur enregistre son lot en 3 clics
+- 🏭 La coopérative valide et détecte les fraudes automatiquement
+- 🚢 L'exportateur génère le certificat EUDR en 1 clic
+- 🇪🇺 L'importateur vérifie l'historique complet sans créer de compte
+- 🔊 Interface audio en Français, Éwé et Kabiyè — zéro exclusion
+
+---
+
+## 🏗️ Structure du Projet
+
+```
+chaincacao-mbh-2026/
+├── backend/          → API Django REST (Jacques KOMBATE)
+├── mobile/           → App Flutter agriculteur (Georges GNANLE)
+├── web-dashboard/    → Dashboard Flutter web (HALALOUNA Trésor)
+├── site-vitrine/     → Site HTML/CSS/JS (EKOE Félicio)
+├── blockchain/       → Smart contracts Solidity (HALALOUNA Trésor)
+├── assets/           → Logo, icônes, fichiers audio
+└── docs/             → Documentation technique et design system
+```
+
+---
+
+## 🔗 Liens
+
+| Plateforme | URL |
+|---|---|
+| Site vitrine | https://chaincacao.netlify.app |
+| App agriculteur | (APK disponible en release) |
+| Dashboard web | https://chaincacao-dashboard.netlify.app |
+| Vérification publique | https://chaincacao.netlify.app/verifier |
+| API backend | https://api.chaincacao.tg |
+| Contrat Polygon Amoy | [0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc](https://amoy.polygonscan.com/address/0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc) |
+
+---
+
+## 👥 Équipe TG-40
+
+| Membre | Rôle | Branche |
+|---|---|---|
+| HALALOUNA Trésor | Chef de projet · Blockchain · Dashboard Web | `feature/blockchain` `feature/dashboard-web` |
+| Georges GNANLE | Dev Flutter Mobile | `feature/app-mobile` |
+| EKOE Félicio | Dev Site Vitrine HTML/CSS/JS | `feature/site-vitrine` |
+| Jacques KOMBATE | Dev Backend Django | `feature/backend` |
+
+---
+
+## 🛠️ Stack technique
+
+| Couche | Technologie |
+|---|---|
+| App mobile | Flutter (Android + PWA) |
+| Dashboard web | Flutter Web |
+| Site vitrine | HTML / CSS / JavaScript |
+| Backend API | Django REST Framework |
+| Base de données | PostgreSQL |
+| Blockchain | Solidity · Polygon Amoy Testnet |
+| USSD / SMS | AfricasTalking |
+| Hébergement frontend | Netlify (Drop & CI/CD) |
+| Hébergement backend | Railway |
+
+
+## 🚀 Installation et lancement
+
+### Prérequis
+
+- Python 3.11+
+- Flutter 3.x
+- Node.js 18+
+- PostgreSQL
+- Un wallet MetaMask configuré sur Polygon Amoy
+
+### Backend Django
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate        # Windows
+pip install -r requirements.txt
+cp .env.example .env         # Remplir les variables
+python manage.py migrate
+python manage.py runserver
+```
+
+### App Flutter mobile
+
+```bash
+cd mobile/chaincacao
+flutter pub get
+flutter build apk --release
+```
+
+### Dashboard Flutter web
+
+```bash
+cd web-dashboard
+flutter pub get
+flutter run -d chrome
+```
+
+### Site vitrine
+
+```bash
+cd site-vitrine
+# Ouvrir index.html dans le navigateur
+# Ou utiliser Live Server dans VS Code
+```
+
+### Blockchain
+
+```bash
+cd blockchain
+npm install
+npx hardhat compile
+npx hardhat ignition deploy ignition/modules/LotRegistry.js --network amoy
+```
+
+---
+
+## 🔑 Variables d'environnement
+
+Copier `.env.example` en `.env` et remplir :
+
+```
+# Django
+SECRET_KEY=
+DEBUG=True
+DATABASE_URL=
+
+# AfricasTalking
+AT_USERNAME=
+AT_API_KEY=
+
+# Polygon
+POLYGON_RPC_URL=https://rpc-amoy.polygon.technology
+PRIVATE_KEY=
+CONTRACT_ADDRESS=0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc
+
+# JWT
+JWT_SECRET=
+```
+
+---
+
+## 📋 Organisation GitHub
+
+- `main` → Production stable uniquement
+- `develop` → Intégration de toutes les features
+- `feature/*` → Branches individuelles par développeur
+
+Voir [`docs/design-system.md`](docs/design-system.md) pour les règles UI/UX.  
+Voir [`docs/blockchain-config.md`](docs/blockchain-config.md) pour la configuration blockchain.
+
+---
+
+## 🎯 Scénario de démo (5 minutes)
+
+1. **Min 1** — Agriculteur ouvre l'app → voix en éwé → enregistre un lot → QR généré
+2. **Min 2** — Coopérative scanne le QR → valide → hash blockchain affiché
+3. **Min 3** — Exportateur génère le certificat EUDR PDF en 1 clic
+4. **Min 4** — Importateur européen vérifie le lot depuis son téléphone sans compte
+5. **Min 5** — *"Ce lot vient de Koami, agriculteur à Kpalimé. Pour la première fois, il sait ce que son travail rapporte."*
+
+---
+
+## 📄 Licence
+
+Projet réalisé dans le cadre du **MIABE Hackathon 2026** organisé par Darollo Technologies Corporation.
+
+---
+
+*ChainCacao · Équipe TG-40 · ESIG Global Success · Lomé, Togo · Mai 2026*

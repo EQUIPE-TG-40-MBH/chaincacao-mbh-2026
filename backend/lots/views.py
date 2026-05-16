@@ -98,7 +98,13 @@ class LotListView(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
-        lot = serializer.save()
+        # Récupération du flag de résilience GPS envoyé par le mobile
+        gps_forced = self.request.data.get('gps_forced', False)
+        lot = serializer.save(gps_forced=gps_forced)
+        
+        if gps_forced:
+            lot.fraud_details = "Position capturée hors périmètre (Validation manuelle requise)"
+            
         lot.blockchain_hash = generate_demo_hash(lot.lot_id)
         lot.save()
 

@@ -35,6 +35,12 @@ class ApiClient {
   // ===== LOTS =====
   static Future<List<Map<String, dynamic>>> getLots() async {
     try {
+      final token = await AuthService.getToken();
+      if (token == 'demo-token-bypass') {
+        // Retourne des données fictives pour la démo sans backend
+        return _getMockLots();
+      }
+
       final headers = await _getHeaders();
       final response = await http.get(
         Uri.parse('$baseUrl/lots/'),
@@ -48,6 +54,36 @@ class ApiClient {
     } catch (e) {
       return [];
     }
+  }
+
+  /// Données de test pour le mode démo sans backend
+  static List<Map<String, dynamic>> _getMockLots() {
+    return [
+      {
+        'lot_id': 'TGO-2026-00124',
+        'farmer_name': 'Abalo Koffi',
+        'culture_type': 'Cacao Forastero',
+        'weight_declared': 150.0,
+        'weight_verified': 148.5,
+        'status': 'VALIDATED',
+        'registered_at': '2026-05-08T10:30:00Z',
+        'gps_latitude': 7.1855,
+        'gps_longitude': 0.6123,
+        'blockchain_hash': '0x72c5...53aEF',
+      },
+      {
+        'lot_id': 'TGO-2026-00125',
+        'farmer_name': 'Yao Mensah',
+        'culture_type': 'Cacao Criollo',
+        'weight_declared': 85.0,
+        'weight_verified': null,
+        'status': 'REGISTERED',
+        'registered_at': '2026-05-09T08:15:00Z',
+        'gps_latitude': 7.1922,
+        'gps_longitude': 0.6055,
+        'blockchain_hash': null,
+      },
+    ];
   }
 
   static Future<Map<String, dynamic>?> getLot(String lotId) async {

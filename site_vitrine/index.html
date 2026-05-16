@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChainCacao & Café – Traçabilité blockchain du cacao togolais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+
+  <!-- =========================================================
+     NAVIGATION
+========================================================= -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="./chaincacao_logo_light.png" alt="ChainCacao Logo" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="#comment-ca-marche">Fonctionnement</a></li>
+        <li><a href="#pour-qui">Acteurs</a></li>
+        <li><a href="#impact">Impact</a></li>
+        <li><a href="#eudr">EUDR</a></li>
+        <li><a href="#equipe">Équipe</a></li>
+        <li><a href="#telechargements">Téléchargements</a></li>
+        <li><a href="#simulateur" class="btn btn-primary nav-cta">Simuler un lot</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#comment-ca-marche">Fonctionnement</a>
+    <a href="#pour-qui">Acteurs</a>
+    <a href="#impact">Impact</a>
+    <a href="#eudr">EUDR</a>
+    <a href="#equipe">Équipe</a>
+    <a href="#simulateur">Simuler un lot</a>
+    <a href="#telechargements">Téléchargements</a>
+  </div>
+
+  <!-- =========================================================
+     HERO
+========================================================= -->
+  <section id="hero">
+    <div class="hero-pattern"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+
+    <div class="hero-inner">
+      <!-- Left: text -->
+      <div>
+        <div class="hero-badge">Hackathon MIABE 2026 · Togo</div>
+        <h1 class="hero-title">
+          Tracer chaque grain,<br>
+          <em>restaurer la confiance</em>
+        </h1>
+
+        <div class="hero-problem">
+          <h3>⚠ Le problème actuel</h3>
+          <ul>
+            <li>Filière cacao &amp; café totalement opaque</li>
+            <li>Fraudes répétées sur la pesée et les prix</li>
+            <li>40 000 familles sans levier de négociation</li>
+            <li>Menace d'exclusion du marché européen (EUDR 2025)</li>
+          </ul>
+        </div>
+
+        <div class="hero-solution">
+          <h3>✦ Notre réponse blockchain</h3>
+          <ul>
+            <li>Traçabilité bout en bout, infalsifiable</li>
+            <li>QR code unique par lot dès la récolte</li>
+            <li>Double validation coopérative + exportateur</li>
+            <li>Conformité totale aux exigences EUDR 2025</li>
+          </ul>
+        </div>
+
+        <div class="hero-actions">
+<a href="#comment-ca-marche" class="btn btn-primary">Découvrir la solution</a>
+          <a href="#simulateur" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.35);">Simuler
+            un lot</a>
+        </div>
+      </div>
+
+      <!-- Right: original scrolling image carousel -->
+      <div class="reveal reveal-delay-2" style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="hero-carousel" id="heroCarousel">
+          <div class="carousel-track" id="carouselTrack">
+
+            <div class="carousel-slide">
+              <img src="./image/Cocoa_Plantation.jpg" alt="Plantation en Afrique" />
+              <div class="carousel-caption">Cacao et Café togolais — Région des Plateaux</div>
+            </div>
+
+            <div class="carousel-slide">
+              <img src="./image/WhatsApp_Image.jpeg" alt="Fèves de cacao et grains de café" loading="lazy" />
+              <div class="carousel-caption">Fèves et grains séchés · Grade A · Export certifié</div>
+            </div>
+
+            <div class="carousel-slide">
+              <img src="./image/Feves_de_cacao.jpg" alt="Plantation certifiée" loading="lazy" />
+              <div class="carousel-caption">Plantation certifiée · Kpalimé, Togo</div>
+            </div>
+
+            <div class="carousel-slide">
+              <img src="./image/QR_codes.png" alt="Traçabilité QR Code" loading="lazy" />
+              <div class="carousel-caption">Producteur enregistré · Traçabilité garantie</div>
+            </div>
+
+          </div>
+
+          <button class="carousel-arrow prev" id="carouselPrevBtn" aria-label="Précédent">‹</button>
+          <button class="carousel-arrow next" id="carouselNextBtn" aria-label="Suivant">›</button>
+
+          <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="mouse">
+        <div class="wheel"></div>
+      </div>
+      <span>Défiler</span>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     CHIFFRES CLÉS
+========================================================= -->
+  <section id="chiffres">
+    <div class="chiffres-grid">
+      <div class="chiffre-item reveal">
+        <div class="chiffre-num"><span class="counter" data-target="40000" data-suffix="K+">0</span></div>
+        <div class="chiffre-label">Familles productrices au Togo</div>
+      </div>
+      <div class="chiffre-divider"></div>
+      <div class="chiffre-item reveal reveal-delay-2">
+        <div class="chiffre-num"><span class="counter" data-target="35" data-suffix="%">0</span></div>
+        <div class="chiffre-label">Pertes estimées par fraude</div>
+      </div>
+      <div class="chiffre-divider"></div>
+      <div class="chiffre-item reveal reveal-delay-3">
+        <div class="chiffre-num"><span>2025</span></div>
+        <div class="chiffre-label">Deadline EUDR (déjà en vigueur)</div>
+      </div>
+      <div class="chiffre-divider"></div>
+      <div class="chiffre-item reveal reveal-delay-4">
+        <div class="chiffre-num"><span class="counter" data-target="100" data-suffix="%">0</span></div>
+        <div class="chiffre-label">Traçabilité blockchain garantie</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     COMMENT ÇA MARCHE
+========================================================= -->
+  <section id="comment-ca-marche" class="section">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Fonctionnement</div>
+        <h2 class="section-title">5 étapes, une traçabilité complète</h2>
+        <p class="section-sub">Du champ togolais jusqu'à l'acheteur européen — chaque maillon documenté, chaque bloc
+          immuable.</p>
+      </div>
+
+      <div class="steps-flow">
+
+        <div class="step-card step-1 reveal" id="step1">
+          <div class="step-icon-wrap">🌱</div>
+          <div class="step-num">Étape 01</div>
+          <div class="step-title">Création du lot</div>
+          <div class="step-desc">Le producteur enregistre sa récolte : poids, coordonnées GPS, variété, date.</div>
+          <div class="step-hash">BLOC #0001 · Genesis</div>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <div class="step-card step-2 reveal reveal-delay-1" id="step2">
+          <div class="step-icon-wrap">✅</div>
+          <div class="step-num">Étape 02</div>
+          <div class="step-title">Validation coopérative</div>
+          <div class="step-desc">La coopérative vérifie, pèse et cosigne le lot sur la plateforme.</div>
+          <div class="step-hash">BLOC #0002 · Signed</div>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <div class="step-card step-3 reveal reveal-delay-2" id="step3">
+          <div class="step-icon-wrap">🔖</div>
+          <div class="step-num">Étape 03</div>
+          <div class="step-title">QR Code unique</div>
+          <div class="step-desc">Un QR code infalsifiable est généré et attaché physiquement au lot.</div>
+          <div class="step-hash">BLOC #0003 · QR-linked</div>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <div class="step-card step-4 reveal reveal-delay-3" id="step4">
+          <div class="step-icon-wrap">🚛</div>
+          <div class="step-num">Étape 04</div>
+          <div class="step-title">Transport &amp; Export</div>
+          <div class="step-desc">Chaque transfert physique génère un nouveau point de traçabilité horodaté.</div>
+          <div class="step-hash">BLOC #0004 · Transit</div>
+        </div>
+
+        <div class="step-connector"></div>
+
+        <div class="step-card step-5 reveal reveal-delay-4" id="step5">
+          <div class="step-icon-wrap">🔍</div>
+          <div class="step-num">Étape 05</div>
+          <div class="step-title">Vérification acheteur</div>
+          <div class="step-desc">L'acheteur scanne le QR code et accède à l'historique complet en secondes.</div>
+          <div class="step-hash">BLOC #0005 · Verified ✓</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     POUR QUI
+========================================================= -->
+  <section id="pour-qui" class="section">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Écosystème</div>
+        <h2 class="section-title">Une solution pour chaque acteur</h2>
+        <p class="section-sub">ChainCacao connecte toute la filière autour d'une donnée partagée, transparente et de
+          confiance. Cliquez sur une carte pour en savoir plus.</p>
+      </div>
+
+      <div class="actors-grid">
+
+        <!-- Colonne 1 -->
+        <div class="actors-col">
+          <div class="actor-card actor-1 reveal">
+            <div class="actor-chevron">▼</div>
+            <div class="actor-icon">🌾</div>
+            <div class="actor-title">Producteurs</div>
+            <div class="actor-desc">Enregistrent leurs lots et accèdent à un historique complet pour mieux négocier
+              leurs prix.</div>
+            <div class="actor-detail">
+              <ul>
+                <li>Enregistrement des récoltes via smartphone</li>
+                <li>Historique des ventes consultable à tout moment</li>
+                <li>Revenus +25% grâce à la transparence des prix</li>
+                <li>Accès aux certifications de qualité internationales</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="actor-card actor-4 reveal reveal-delay-1">
+            <div class="actor-chevron">▼</div>
+            <div class="actor-icon">🏦</div>
+            <div class="actor-title">Institutions &amp; État</div>
+            <div class="actor-desc">Supervisent la filière avec des données fiables pour orienter les politiques
+              agricoles du Togo.</div>
+            <div class="actor-detail">
+              <ul>
+                <li>Statistiques agrégées en temps réel</li>
+                <li>Détection automatique des anomalies</li>
+                <li>Rapports officiels pour les organismes UE</li>
+                <li>Cartographie des zones de production</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne 2 -->
+        <div class="actors-col">
+          <div class="actor-card actor-2 reveal reveal-delay-1">
+            <div class="actor-chevron">▼</div>
+            <div class="actor-icon">🤝</div>
+            <div class="actor-title">Coopératives</div>
+            <div class="actor-desc">Valident les lots, supervisent la qualité et certifient la conformité des données à
+              chaque étape.</div>
+            <div class="actor-detail">
+              <ul>
+                <li>Tableau de bord de suivi en temps réel</li>
+                <li>Double signature électronique des lots</li>
+                <li>Rapports de qualité automatiques</li>
+                <li>Interface de gestion des membres producteurs</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="actor-card actor-5 reveal reveal-delay-2">
+            <div class="actor-chevron">▼</div>
+            <div class="actor-icon">🌍</div>
+            <div class="actor-title">Acheteurs internationaux</div>
+            <div class="actor-desc">Vérifient l'authenticité et l'éthique de chaque lot en scannant un simple QR code.
+            </div>
+            <div class="actor-detail">
+              <ul>
+                <li>Scan QR code depuis n'importe quel pays</li>
+                <li>Historique complet du lot en quelques secondes</li>
+                <li>Certification d'origine prouvée blockchain</li>
+                <li>Conformité EUDR vérifiable instantanément</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne 3 -->
+        <div class="actors-col">
+          <div class="actor-card actor-3 reveal reveal-delay-2">
+            <div class="actor-chevron">▼</div>
+            <div class="actor-icon">🚢</div>
+            <div class="actor-title">Exportateurs</div>
+            <div class="actor-desc">Consolident les lots et génèrent automatiquement les certificats d'origine pour
+              l'export.</div>
+            <div class="actor-detail">
+              <ul>
+                <li>Génération automatique des certificats EUDR</li>
+                <li>Consolidation multi-lots en un clic</li>
+                <li>Documentation douanière intégrée</li>
+                <li>Conformité prouvée pour les marchés européens</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="actor-card actor-6 reveal reveal-delay-3">
+            <div class="actor-chevron">▼</div>
+            <div class="actor-icon">🔬</div>
+            <div class="actor-title">Auditeurs &amp; Certificateurs</div>
+            <div class="actor-desc">Accèdent à un audit trail complet et infalsifiable pour certifier la conformité
+              éthique.</div>
+            <div class="actor-detail">
+              <ul>
+                <li>Audit trail blockchain non modifiable</li>
+                <li>Preuve cryptographique de chaque étape</li>
+                <li>Outils d'analyse des anomalies</li>
+                <li>Rapports d'audit automatisés (Rainforest, Fairtrade…)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     IMPACT
+========================================================= -->
+  <section id="impact">
+    <div class="impact-header reveal">
+      <div class="section-label">Résultats attendus</div>
+      <h2 class="section-title">Un impact concret pour la CEDEAO</h2>
+      <p class="section-sub">ChainCacao vise une transformation profonde des filières cacao et café en Afrique de
+        l'Ouest.</p>
+    </div>
+
+    <div class="impact-grid container">
+
+      <div class="impact-card reveal">
+        <div class="impact-icon">👨‍🌾</div>
+        <div class="impact-num"><span class="counter" data-target="500000" data-suffix="">0</span></div>
+        <div class="impact-label">
+          <strong>Agriculteurs bénéficiaires</strong>
+          potentiellement couverts en CEDEAO d'ici 2030
+        </div>
+      </div>
+
+      <div class="impact-card reveal reveal-delay-1">
+        <div class="impact-icon">💼</div>
+        <div class="impact-num"><span class="counter" data-target="50000" data-suffix="">0</span></div>
+        <div class="impact-label">
+          <strong>Emplois créés ou sécurisés</strong>
+          dans la chaîne d'approvisionnement certifiée
+        </div>
+      </div>
+
+      <div class="impact-card reveal reveal-delay-2">
+        <div class="impact-icon">🌍</div>
+        <div class="impact-num"><span class="counter" data-target="8" data-suffix="">0</span></div>
+        <div class="impact-label">
+          <strong>Pays CEDEAO ciblés</strong>
+          Togo, Ghana, Côte d'Ivoire, Bénin, Sénégal, Burkina Faso, Niger, Mali
+        </div>
+      </div>
+
+      <div class="impact-card wide reveal reveal-delay-3">
+        <div class="impact-icon">📈</div>
+        <div>
+          <div class="impact-num">+25<span style="font-size:2rem">%</span></div>
+          <div class="impact-label">
+            <strong>Hausse des revenus producteurs</strong>
+            grâce à la transparence des prix et la réduction des intermédiaires frauduleux — un impact direct sur 40 000
+            familles togolaises dès la première phase.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================
+     EUDR
+========================================================= -->
+  <section id="eudr" class="section">
+    <div class="container">
+      <div class="eudr-inner">
+        <!-- Timeline -->
+        <div class="reveal">
+          <div class="section-label">Réglementation européenne</div>
+          <h2 class="section-title">Le règlement EUDR :<br>une urgence pour le Togo</h2>
+          <p class="section-sub">L'Union Européenne impose désormais une traçabilité prouvée pour tout produit importé.
+            Le Togo doit agir.</p>
+
+          <div class="eudr-timeline">
+            <div class="eudr-event">
+              <div class="eudr-dot past">✓</div>
+              <div class="eudr-event-content">
+                <div class="eudr-year">Juin 2023</div>
+                <h4>Adoption du règlement EUDR</h4>
+                <p>L'UE adopte le règlement sur la déforestation (EUDR). Toutes les filières cacao, café, bois, soja
+                  sont visées.</p>
+              </div>
+            </div>
+            <div class="eudr-event">
+              <div class="eudr-dot past">✓</div>
+              <div class="eudr-event-content">
+                <div class="eudr-year">Décembre 2024</div>
+                <h4>Première phase d'application</h4>
+                <p>Les grandes entreprises doivent prouver la conformité de leurs chaînes d'approvisionnement.</p>
+              </div>
+            </div>
+            <div class="eudr-event">
+              <div class="eudr-dot present">!</div>
+              <div class="eudr-event-content">
+                <div class="eudr-year">2025 — Maintenant</div>
+                <h4>Obligation généralisée en vigueur</h4>
+                <p>Toutes les exportations vers l'UE nécessitent une traçabilité géolocalisée prouvée. <strong
+                    style="color:var(--cacao)">Sans solution : blocage à la frontière.</strong></p>
+              </div>
+            </div>
+            <div class="eudr-event">
+              <div class="eudr-dot future">⚠</div>
+              <div class="eudr-event-content">
+                <div class="eudr-year">2026–2027</div>
+                <h4>Sanctions et amendes</h4>
+                <p>Les pays non conformes s'exposent à des amendes jusqu'à 4% du chiffre d'affaires UE et à l'exclusion
+                  des marchés européens.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risks + solution -->
+        <div class="reveal reveal-delay-2">
+          <div class="eudr-risks">
+            <h3>⚠ Risques pour le Togo sans ChainCacao</h3>
+            <div class="eudr-risk-item">
+              <div class="eudr-risk-icon">🚫</div>
+              <div class="eudr-risk-text">
+                <h5>Blocage des exportations</h5>
+                <p>Sans preuve de traçabilité, les lots togolais sont refusés aux frontières européennes dès maintenant.
+                </p>
+              </div>
+            </div>
+            <div class="eudr-risk-item">
+              <div class="eudr-risk-icon">💸</div>
+              <div class="eudr-risk-text">
+                <h5>Perte de parts de marché</h5>
+                <p>Le marché européen représente 65% des exportations de cacao togolais. Un risque commercial majeur.
+                </p>
+              </div>
+            </div>
+            <div class="eudr-risk-item">
+              <div class="eudr-risk-icon">📉</div>
+              <div class="eudr-risk-text">
+                <h5>Effondrement des prix producteurs</h5>
+                <p>Si les exportateurs perdent l'accès à l'UE, les prix aux producteurs s'effondrent en cascade.</p>
+              </div>
+            </div>
+            <div class="eudr-risk-item">
+              <div class="eudr-risk-icon">⚖️</div>
+              <div class="eudr-risk-text">
+                <h5>Amendes pour les exportateurs</h5>
+                <p>Les entreprises exportatrices togolaises s'exposent à des pénalités financières lourdes.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="eudr-solution-box">
+            <div class="icon">🛡️</div>
+            <div>
+              <p><strong>ChainCacao est la réponse.</strong> Notre solution génère automatiquement les preuves de
+                traçabilité exigées par l'EUDR, avec géolocalisation GPS, historique blockchain et certificats d'origine
+                exportables en un clic.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     SIMULATEUR
+========================================================= -->
+  <section id="simulateur">
+    <div class="sim-inner">
+      <div class="reveal">
+        <div class="section-label">Simulateur de traçabilité</div>
+        <h2 class="section-title">Vérifiez un lot en direct</h2>
+        <p class="section-sub">Entrez un identifiant de lot pour voir comment fonctionne la vérification blockchain
+          ChainCacao.</p>
+      </div>
+
+      <div class="sim-form reveal reveal-delay-1">
+        <input type="text" class="sim-input" id="simInput" placeholder="Ex: CC-TG-2025-004821" maxlength="30" />
+        <button class="btn btn-primary" id="btnSimulate">🔍 Vérifier</button>
+      </div>
+
+      <div class="sim-examples reveal reveal-delay-2">
+        <span>Essayez :</span>
+        <button class="sim-example-btn" data-sim-id="CC-TG-2025-004821">CC-TG-2025-004821</button>
+        <button class="sim-example-btn" data-sim-id="CC-TG-2025-001337">CC-TG-2025-001337</button>
+        <button class="sim-example-btn" data-sim-id="CC-TG-2025-009999">CC-TG-2025-009999</button>
+        <button class="sim-example-btn" data-sim-id="CC-CF-2025-000042">CC-CF-2025-000042</button>
+      </div>
+
+      <div class="sim-result" id="simResult"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     EQUIPE
+========================================================= -->
+  <section id="equipe" class="section">
+    <div class="container">
+      <div style="text-align:center" class="reveal">
+        <div class="section-label">Notre équipe</div>
+        <h2 class="section-title">Les bâtisseurs de ChainCacao</h2>
+        <p class="section-sub" style="margin:0 auto">Une équipe togolaise passionnée, réunie au Hackathon MIABE 2026
+          pour transformer les filières agricoles d'Afrique de l'Ouest.</p>
+      </div>
+
+      <div class="team-grid">
+
+        <div class="team-card reveal">
+          <div class="team-photo">
+            <div class="team-photo-decoration"></div>
+            <img src="./WhatsApp Image 2026-05-14 at 09.43.40.jpeg" alt="Kwame Assigbey" class="team-photo-avatar" />
+          </div>
+          <div class="team-body">
+            <div class="team-name">Kwame Assigbey</div>
+            <div class="team-role">CEO &amp; Product Lead</div>
+            <div class="team-bio">Expert en chaînes d'approvisionnement agricoles. 8 ans d'expérience dans les filières
+              cacao togolaises et ghanéennes.</div>
+            <div class="team-socials">
+              <div class="team-social">in</div>
+              <div class="team-social">𝕏</div>
+              <div class="team-social">✉</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card reveal reveal-delay-1">
+          <div class="team-photo">
+            <div class="team-photo-decoration"></div>
+            <img src="./WhatsApp Image 2026-04-11 at 06.54.12.jpeg" alt="Afi Mensah" class="team-photo-avatar" />
+          </div>
+          <div class="team-body">
+            <div class="team-name">Afi Mensah</div>
+            <div class="team-role">Lead Blockchain Dev</div>
+            <div class="team-bio">Développeuse blockchain spécialisée en smart contracts. Diplômée de l'Université de
+              Lomé, certifiée Ethereum.</div>
+            <div class="team-socials">
+              <div class="team-social">in</div>
+              <div class="team-social">⌨</div>
+              <div class="team-social">✉</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card reveal reveal-delay-2">
+          <div class="team-photo">
+            <div class="team-photo-decoration"></div>
+            <img src="./WhatsApp Image 2026-05-14 at 09.43.40.jpeg" alt="Yao Koffi" class="team-photo-avatar" />
+          </div>
+          <div class="team-body">
+            <div class="team-name">Yao Koffi</div>
+            <div class="team-role">UX / UI Designer</div>
+            <div class="team-bio">Designer centré utilisateur avec 5 ans d'expérience sur des produits agri-tech en
+              Afrique subsaharienne.</div>
+            <div class="team-socials">
+              <div class="team-social">in</div>
+              <div class="team-social">🎨</div>
+              <div class="team-social">✉</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card reveal reveal-delay-3">
+          <div class="team-photo">
+            <div class="team-photo-decoration"></div>
+<img src="./image/EQUIPE/TRESOR HALALOUNA.png" alt="Etonam Sunu" class="team-photo-avatar" />
+          </div>
+          <div class="team-body">
+            <div class="team-name">Etonam Sunu</div>
+            <div class="team-role">Agri Business &amp; Impact</div>
+            <div class="team-bio">Spécialiste en développement rural et accès aux marchés. Coordinatrice de 12
+              coopératives dans la région des Plateaux.</div>
+            <div class="team-socials">
+              <div class="team-social">in</div>
+              <div class="team-social">𝕏</div>
+              <div class="team-social">✉</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     TELECHARGEMENTS
+========================================================= -->
+  <section id="telechargements">
+    <div class="dl-inner">
+      <div class="reveal">
+        <div class="section-label" style="justify-content:center">Accès à la plateforme</div>
+        <h2 class="section-title">Rejoignez la filière tracée</h2>
+        <p class="section-sub" style="margin:0 auto">Producteurs, coopératives, exportateurs — accédez à ChainCacao
+          depuis votre smartphone ou votre poste de travail.</p>
+      </div>
+
+      <div class="dl-cards">
+        <div class="dl-card dl-card-app reveal">
+          <div class="dl-card-icon">📱</div>
+          <div class="dl-card-title">Application Mobile</div>
+          <div class="dl-card-desc">Pour les producteurs et coopératives. Enregistrez vos lots, scannez les QR codes et
+            suivez vos ventes — même sans connexion internet stable.</div>
+          <div class="dl-badges">
+            <div class="dl-badge">Android</div>
+            <div class="dl-badge">iOS</div>
+            <div class="dl-badge">Hors ligne</div>
+          </div>
+          <a href="#" class="btn btn-white" id="downloadApkLink" data-download="apk">⬇ Télécharger l'application</a>
+        </div>
+
+        <div class="dl-card dl-card-dash reveal reveal-delay-2">
+          <div class="dl-card-icon">🖥️</div>
+          <div class="dl-card-title">Dashboard Web</div>
+          <div class="dl-card-desc">Pour les exportateurs et institutions. Gérez l'ensemble de la filière, générez les
+            certificats EUDR et accédez aux analytics en temps réel.</div>
+          <div class="dl-badges">
+            <div class="dl-badge">Web</div>
+            <div class="dl-badge">Multi-lots</div>
+            <div class="dl-badge">EUDR Ready</div>
+          </div>
+<a href="/" class="btn btn-white" id="openDashboardBtn">🚀 Accéder au dashboard</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+     FOOTER
+========================================================= -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="./chaincacao_logo_light.png" alt="ChainCacao Logo" />
+        </div>
+        <p class="footer-tagline">La première solution blockchain de traçabilité pour les filières cacao et café
+          togolaises. Transparente, infalsifiable, conforme EUDR.</p>
+        <div class="footer-hackathon">🏆 MIABE Hackathon 2026 · Togo</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Solution</h4>
+        <ul>
+          <li><a href="#comment-ca-marche">Comment ça marche</a></li>
+          <li><a href="#pour-qui">Pour qui ?</a></li>
+          <li><a href="#simulateur">Simulateur de lot</a></li>
+          <li><a href="#telechargements">Téléchargements</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Enjeux</h4>
+        <ul>
+          <li><a href="#eudr">Règlement EUDR</a></li>
+          <li><a href="#impact">Impact CEDEAO</a></li>
+          <li><a href="#chiffres">Chiffres clés</a></li>
+          <li><a href="#equipe">Notre équipe</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact">
+          <p style="margin-bottom:8px">📧 <a href="mailto:contact@chaincacao.tg">contact@chaincacao.tg</a></p>
+          <p style="margin-bottom:8px">📍 Lomé, Togo</p>
+          <p style="margin-bottom:8px">🌐 cacaochain.netlify.app</p>
+          <p style="margin-top:16px;font-size:.78rem;color:rgba(255,255,255,.35)">Projet développé dans le cadre du
+            Hackathon MIABE 2026, organisé au Togo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 ChainCacao &amp; Café — Tous droits réservés</p>
+      <p class="made-with">Construit avec ❤️ au Togo · MIABE Hackathon 2026</p>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+  <script src="./script.js"></script>
+
+</body>
+
+</html>
