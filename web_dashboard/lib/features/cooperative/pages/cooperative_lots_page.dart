@@ -306,6 +306,14 @@ class _CooperativeLotsPageState extends State<CooperativeLotsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (_isRefreshing)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: LinearProgressIndicator(
+                  backgroundColor: AppColors.creme,
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.orChaud),
+                ),
+              ),
             Row(
               children: [
                 Text('Mes lots', style: AppTextStyles.h1),
@@ -602,8 +610,8 @@ class _CooperativeLotsPageState extends State<CooperativeLotsPage> {
                   : () async {
                       Navigator.pop(ctx);
                     await ApiClient.mergeLots(selected);
-                    _loadLots();
                       if (mounted) {
+                        _loadLots();
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text(

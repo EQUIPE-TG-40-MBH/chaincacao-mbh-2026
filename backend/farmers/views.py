@@ -79,14 +79,30 @@ class FarmerDetailView(generics.RetrieveUpdateAPIView):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def farmer_by_qr(request, farmer_id):
+    """Endpoint utilisé par l'agriculteur après scan du QR.
+    Le QR contient farmer_id. Répond avec les infos nécessaires côté mobile.
+    """
     try:
         farmer = Farmer.objects.get(farmer_id=farmer_id)
-        return Response(FarmerSerializer(farmer).data)
+        return Response({
+            'farmer': FarmerSerializer(farmer).data,
+            'auth': {
+                'ok': True,
+                'message': 'QR valide'
+            }
+        })
     except Farmer.DoesNotExist:
         return Response(
-            {'error': 'Agriculteur non trouvé'},
+            {
+                'auth': {
+                    'ok': False,
+                    'message': 'QR invalide'
+                },
+                'error': 'Agriculteur non trouvé'
+            },
             status=status.HTTP_404_NOT_FOUND
         )
+
 
 
 @api_view(['DELETE'])

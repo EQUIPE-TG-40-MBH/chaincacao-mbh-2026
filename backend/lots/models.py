@@ -38,6 +38,15 @@ class Lot(models.Model):
     blockchain_hash = models.CharField(max_length=200, null=True, blank=True)
     fraud_alert = models.BooleanField(default=False)
     fraud_details = models.TextField(null=True, blank=True)
+
+    # Qualité / Contrôle CCFCC
+    recent_treatments = models.TextField(null=True, blank=True)
+    quality_observation = models.TextField(null=True, blank=True)
+    rot_rate_percent = models.FloatField(null=True, blank=True)
+    humidity_percent = models.FloatField(null=True, blank=True)
+    sanitary_status = models.CharField(max_length=20, null=True, blank=True)
+    visual_observation = models.TextField(null=True, blank=True)
+
     registered_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -53,7 +62,9 @@ class Lot(models.Model):
         if self.weight_verified and self.weight_declared:
             diff = abs(self.weight_declared - self.weight_verified)
             percentage = (diff / self.weight_declared) * 100
-            if percentage > 5:
+            # Règle métier (scénario): détecter une fraude si l'écart dépasse 2%.
+            # Ex: 65kg déclaré -> 62.5kg vérifié => 3.85% => FRAUD_ALERT.
+            if percentage > 2:
                 self.fraud_alert = True
                 self.status = 'FRAUD_ALERT'
                 self.fraud_details = (

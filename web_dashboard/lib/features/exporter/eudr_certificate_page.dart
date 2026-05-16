@@ -90,8 +90,7 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
           ),
         ),
       ],
-      child: AnimatedAppear(
-        index: 0,
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -130,7 +129,7 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
+                    color: Colors.black.withOpacity(0.06),
                     blurRadius: 12,
                   ),
                 ],
@@ -161,7 +160,7 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
+                    color: Colors.black.withOpacity(0.06),
                     blurRadius: 12,
                   ),
                 ],

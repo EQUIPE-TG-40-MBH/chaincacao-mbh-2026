@@ -35,9 +35,10 @@ class EntityAccount {
 
   String get homeRoute {
     return switch (role) {
-      'cooperative' => '/cooperative',
-      'exportateur' => '/exportateur',
-      'verificateur' => '/verifier',
+      'cooperative' => '/cooperative/lots',
+      'exportateur' => '/exporter/dashboard',
+      'verificateur' => '/regulator/dashboard',
+      'importateur' => '/importer/reception',
       _ => '/',
     };
   }
@@ -70,13 +71,14 @@ class EntityAccount {
 }
 
 class AuthService {
-  static const String baseUrl = String.fromEnvironment('API_URL', defaultValue: 'http://127.0.0.1:8000/api');
+  static const String baseUrl = String.fromEnvironment('API_URL', defaultValue: 'https://chaincacao-api.onrender.com/api');
   static const _accountsKey = 'chaincacao_entity_accounts_v1';
   static const _currentEmailKey = 'email';
   static const _currentRoleKey = 'role';
   static const _currentNameKey = 'entity_name';
-    static const _currentRegistrationIdKey = 'registration_id'; // Nouvelle clé
+  static const _currentRegistrationIdKey = 'registration_id'; // Nouvelle clé
   static const _tokenKey = 'token';
+
 
   static Future<List<EntityAccount>> getAccounts() async {
     final prefs = await SharedPreferences.getInstance();

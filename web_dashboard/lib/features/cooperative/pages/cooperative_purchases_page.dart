@@ -238,6 +238,9 @@ class _CooperativePurchasesPageState extends State<CooperativePurchasesPage> {
                     if (double.tryParse(value) == null) {
                       return 'Valeur invalide';
                     }
+                    if (double.parse(value) <= 0) {
+                      return 'Le poids doit être supérieur à 0';
+                    }
                     return null;
                   },
                 ),

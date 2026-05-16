@@ -158,14 +158,18 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PremiumCard(
-      child: Row(
-        children: [
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
           Container(
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
+              color: color.withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 28),
@@ -180,6 +184,7 @@ class _StatCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }
@@ -308,7 +313,7 @@ class _ExportActionBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: AppColors.cacao.withValues(alpha: 0.25),
+              color: AppColors.cacao.withOpacity(0.25),
               blurRadius: 32,
               offset: const Offset(0, 8),
             ),

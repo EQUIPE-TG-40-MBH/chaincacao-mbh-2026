@@ -7,10 +7,10 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "chaincacao-super-secure-production-key-2026-jwt-blockchain"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback-insecure-key-for-dev")
 
 DEBUG = False
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "api.chaincacao.tg,localhost").split(",")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -117,6 +117,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CONTRACT_ADDRESS = os.getenv('CONTRACT_ADDRESS')
 AMOY_RPC_URL = os.getenv('AMOY_RPC_URL')
+BLOCKCHAIN_PRIVATE_KEY = os.getenv('BLOCKCHAIN_PRIVATE_KEY')
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -13,6 +13,45 @@ def login(request):
     password = request.data.get('password')
 
     demo_accounts = {
+        # Comptes dédiés pour simuler les acteurs du workflow (Étapes 1..8)
+        'kodjo@chaincacao.tg': {
+            'password': 'demo123',
+            'role': 'farmer',
+            'name': 'KODJO Mensah',
+            'cooperative_id': 'COOP-TG-001'
+        },
+        'haho@chaincacao.tg': {
+            'password': 'demo123',
+            'role': 'cooperative',
+            'name': 'Haho Cacao Union',
+            'cooperative_id': 'COOP-TG-001'
+        },
+        'ccfcc@chaincacao.tg': {
+            'password': 'demo123',
+            'role': 'ccfcc',
+            'name': 'CCFCC',
+            'cooperative_id': None
+        },
+        'lawson@chaincacao.tg': {
+            'password': 'demo123',
+            'role': 'exporter',
+            'name': 'Cacao-Togo SARL / Lawson',
+            'cooperative_id': None
+        },
+        'otr@chaincacao.tg': {
+            'password': 'demo123',
+            'role': 'otr',
+            'name': 'OTR Douanes',
+            'cooperative_id': None
+        },
+        'bioeurope@chaincacao.tg': {
+            'password': 'demo123',
+            'role': 'importer',
+            'name': 'BioEurope',
+            'cooperative_id': None
+        },
+
+        # Comptes existants (compat)
         'cooperative@chaincacao.tg': {
             'password': 'demo123',
             'role': 'cooperative',
