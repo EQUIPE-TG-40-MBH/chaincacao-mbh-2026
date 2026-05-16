@@ -46,8 +46,8 @@ chaincacao-mbh-2026/
 | Plateforme | URL |
 |---|---|
 | Site vitrine | https://chaincacao.netlify.app |
-| App agriculteur | https://chaincacao.netlify.app/app |
-| Dashboard web | https://chaincacao.netlify.app/dashboard |
+| App agriculteur | https://chaincacao-mobile.vercel.app |
+| Dashboard web | https://chaincacao-dashboard.vercel.app |
 | Vérification publique | https://chaincacao.netlify.app/verifier |
 | API backend | https://api.chaincacao.tg |
 | Contrat Polygon Amoy | [0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc](https://amoy.polygonscan.com/address/0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc) |
@@ -76,7 +76,7 @@ chaincacao-mbh-2026/
 | Base de données | PostgreSQL |
 | Blockchain | Solidity · Polygon Amoy Testnet |
 | USSD / SMS | AfricasTalking |
-| Hébergement frontend | Netlify |
+| Hébergement frontend | Vercel (Dashboard) & Netlify (Vitrine) |
 | Hébergement backend | Railway |
 
 ---
