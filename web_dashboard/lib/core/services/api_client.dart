@@ -3,10 +3,16 @@ import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 
 class ApiClient {
-  static const String baseUrl = String.fromEnvironment('API_URL', defaultValue: 'http://127.0.0.1:8000/api');
-  
+  static const String baseUrl = String.fromEnvironment(
+    'API_URL',
+    defaultValue: AuthService.baseUrl,
+  );
+
   // Pour accéder aux médias (QR codes, photos) sans passer par /api/
-  static const String serverUrl = String.fromEnvironment('SERVER_URL', defaultValue: 'http://127.0.0.1:8000');
+  static const String serverUrl = String.fromEnvironment(
+    'SERVER_URL',
+    defaultValue: 'https://chaincacao-api.onrender.com',
+  );
 
   static Future<Map<String, String>> _getHeaders() async {
     final token = await AuthService.getToken();

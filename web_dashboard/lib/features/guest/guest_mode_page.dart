@@ -75,7 +75,7 @@ class _GuestModePageState extends State<GuestModePage> {
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<String>(
-                        value: _selectedRole,
+                        initialValue: _selectedRole,
                         decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.person_outline),
                           border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
@@ -152,13 +152,16 @@ class _GuestModePageState extends State<GuestModePage> {
                                 homeRoute = '/exportateur';
                                 break;
                               case 'ccfcc':
-                                homeRoute = '/ccfcc'; // Assure-toi que cette route existe
+                                homeRoute = '/ccfcc';
                                 break;
                               case 'otr':
-                                homeRoute = '/otr'; // Assure-toi que cette route existe
+                                homeRoute = '/otr';
+                                break;
+                              case 'importateur':
+                                homeRoute = '/importer/reception';
                                 break;
                               default:
-                                homeRoute = '/'; // Fallback
+                                homeRoute = '/';
                             }
                             Navigator.pushReplacementNamed(context, homeRoute);
                           },

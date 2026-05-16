@@ -43,8 +43,8 @@ class EntityAccount {
       case 'exportateur': return '/exportateur';
       case 'ccfcc': return '/ccfcc';
       case 'otr': return '/otr';
-      case 'verificateur': return '/verifier'; // Ou une page spécifique
-      case 'importateur': return '/importer/reception'; // Ou une page spécifique
+      case 'verificateur': return '/verifier';
+      case 'importateur': return '/importer/reception';
       default: return '/';
     }
   }

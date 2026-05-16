@@ -5,8 +5,7 @@ import '../../../core/services/api_client.dart';
 import '../../../core/services/auth_service.dart';
 
 class RegulatorDashboardPage extends StatefulWidget {
-  final EntityAccount? account;
-  const RegulatorDashboardPage({super.key, required this.account});
+  const RegulatorDashboardPage({super.key});
 
   @override
   State<RegulatorDashboardPage> createState() => _RegulatorDashboardPageState();
@@ -15,6 +14,7 @@ class RegulatorDashboardPage extends StatefulWidget {
 class _RegulatorDashboardPageState extends State<RegulatorDashboardPage> {
   List<Map<String, dynamic>> _lots = [];
   bool _loading = true;
+  EntityAccount? _account;
 
   @override
   void initState() {
@@ -24,10 +24,12 @@ class _RegulatorDashboardPageState extends State<RegulatorDashboardPage> {
 
   Future<void> _loadData() async {
     setState(() => _loading = true);
+    final account = await AuthService.currentAccount();
     final data = await ApiClient.getLots();
     if (mounted) {
       setState(() {
-        final isOTR = widget.account?.entityName.contains('OTR') ?? false;
+        _account = account;
+        final isOTR = account?.entityName.contains('OTR') ?? false;
         _lots = data.where((l) => isOTR ? l['status'] == 'EXPORTED' : l['status'] == 'REGISTERED').toList();
         _loading = false;
       });
@@ -36,7 +38,7 @@ class _RegulatorDashboardPageState extends State<RegulatorDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final entityName = widget.account?.entityName ?? 'Régulateur';
+    final entityName = _account?.entityName ?? 'Régulateur';
     final isOTR = entityName.contains('OTR');
 
     return Scaffold(
