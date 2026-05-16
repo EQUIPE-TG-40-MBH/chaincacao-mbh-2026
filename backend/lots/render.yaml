@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: chaincacao-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: "postgresql://postgres:Chaincacao2026!@db.mmvktgvhrigvlsgjqkhb.supabase.co:5432/postgres"
+      - key: ALLOWED_HOSTS
+        value: "chaincacao-api.onrender.com"
+      - key: AMOY_RPC_URL
+        value: "https://rpc-amoy.polygon.technology"
+      - key: CONTRACT_ADDRESS
+        value: "0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc"
+      - key: BLOCKCHAIN_PRIVATE_KEY
+        sync: false
+      - key: PORT
+        value: "8000"
+    dockerCommand: gunicorn chaincacao.wsgi:application --bind 0.0.0.0:$PORT
+    preDeployCommand: python manage.py migrate
