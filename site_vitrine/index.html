@@ -11,6 +11,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
+  <link rel="icon" type="image/png" href="./chaincacao_logo_light.png" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 
@@ -63,14 +64,27 @@
           </div>
 
           <div class="hero-notes">
-            <span>40 000 familles couvertes</span>
-            <span>100% traçabilité blockchain</span>
-            <span>Conformité EUDR</span>
+            <span><strong>40 000</strong> familles couvertes</span>
+            <span><strong>100%</strong> traçabilité blockchain</span>
+            <span><strong>EUDR</strong> prête pour l’export</span>
           </div>
         </div>
 
         <div class="hero-visual reveal reveal-delay-2">
-          <img src="./image/Cocoa_Plantation.jpg" alt="Plantation de cacao" />
+          <div class="hero-carousel" id="heroCarousel">
+            <div class="carousel-track">
+              <div class="carousel-slide">
+                <img src="./image/Cocoa_Plantation.jpg" alt="Plantation de cacao" />
+              </div>
+              <div class="carousel-slide">
+                <img src="./image/Feves_de_cacao.jpg" alt="Fèves de cacao" />
+              </div>
+              <div class="carousel-slide">
+                <img src="./image/WhatsApp_Image.jpeg" alt="Transport de cacao" />
+              </div>
+            </div>
+            <div class="carousel-dots" id="heroCarouselDots"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -85,21 +99,63 @@
 
         <div class="solution-grid">
           <article class="solution-card reveal">
-            <div class="solution-icon">🔗</div>
+            <div class="solution-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.343 12.343a4 4 0 0 1 0-5.657l2.828-2.828a4 4 0 0 1 5.657 5.657l-.828.828a1 1 0 0 1-1.414-1.414l.828-.828a2 2 0 0 0-2.828-2.828L8.171 8.757a2 2 0 0 0 2.828 2.828l.828-.828a1 1 0 0 1 1.414 1.414l-.828.828a4 4 0 0 1-5.657 0z"/></svg>
+            </div>
             <h3>Registre blockchain</h3>
             <p>Un registre infalsifiable qui scelle l'authenticité des données de la récolte à l'exportation.</p>
           </article>
 
           <article class="solution-card reveal reveal-delay-1">
-            <div class="solution-icon">🛡️</div>
+            <div class="solution-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l7 4v6.5c0 4.97-3.58 9.45-8.5 10.4a1 1 0 0 1-.5 0C8.58 21.95 5 17.47 5 12.5V6l7-4zm0 2.18L7 6.5v6c0 3.75 2.7 7.17 6 7.97 3.3-.8 6-4.22 6-7.97v-6l-5-2.32zM10.25 11.5l-1.5-1.5 1.06-1.06L10.25 9.38l4.99-4.99 1.06 1.06L10.25 11.5z"/></svg>
+            </div>
             <h3>Conformité EUDR</h3>
             <p>Certificats automatiques et preuves de diligence requises pour le marché européen.</p>
           </article>
 
           <article class="solution-card reveal reveal-delay-2">
-            <div class="solution-icon">📍</div>
+            <div class="solution-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+            </div>
             <h3>Géo-cartographie</h3>
             <p>Traçabilité GPS des parcelles pour prouver l'origine et l'absence de déforestation.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="equipe" class="section">
+      <div class="container">
+        <div class="reveal text-center">
+          <div class="section-label">Équipe</div>
+          <h2 class="section-title">Notre équipe locale au service de la filière</h2>
+          <p class="section-sub">Quatre talents togolais réunis autour de la traçabilité, de la blockchain et du terrain.</p>
+        </div>
+
+        <div class="team-grid">
+          <article class="team-card reveal">
+            <img class="team-avatar" src="./image/EQUIPE/EKOE FELICIO.png" alt="Ekoué Felicio" />
+            <h3>Ekoué Felicio</h3>
+            <p>Lead produit et design, responsable de l'expérience utilisateur pour les agriculteurs et les coopératives.</p>
+          </article>
+
+          <article class="team-card reveal reveal-delay-1">
+            <img class="team-avatar" src="./image/EQUIPE/Georges GNANLE.png" alt="Georges Gnanlé" />
+            <h3>Georges Gnanlé</h3>
+            <p>Architecte technique, garant de la fiabilité de la plateforme et de l'intégration blockchain.</p>
+          </article>
+
+          <article class="team-card reveal reveal-delay-2">
+            <img class="team-avatar" src="./image/EQUIPE/KOMBATE JACQUES.png" alt="Kombaté Jacques" />
+            <h3>Kombaté Jacques</h3>
+            <p>Responsable opérations, terrain et coordination avec les coopératives pour sécuriser la collecte des données.</p>
+          </article>
+
+          <article class="team-card reveal reveal-delay-3">
+            <img class="team-avatar" src="./image/EQUIPE/TRESOR HALALOUNA.png" alt="Trésor Halalouna" />
+            <h3>Trésor Halalouna</h3>
+            <p>Expert conformité, en charge de l'adaptation aux exigences EUDR et aux marchés d'exportation.</p>
           </article>
         </div>
       </div>
@@ -115,17 +171,23 @@
 
         <div class="impact-grid container">
           <div class="impact-card reveal">
-            <div class="impact-icon">👨‍🌾</div>
+            <div class="impact-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
             <div class="impact-num"><span class="counter" data-target="40000" data-suffix="+">0</span></div>
             <div class="impact-label"><strong>Familles suivies</strong> sur la plateforme.</div>
           </div>
           <div class="impact-card reveal reveal-delay-1">
-            <div class="impact-icon">📦</div>
+            <div class="impact-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 8h-3V6c0-1.1-.9-2-2-2H9C7.9 4 7 4.9 7 6v2H4c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2zm-9 9.5l-4-4 1.41-1.41L11 14.67l5.59-5.59L18 10.5l-7 7z"/></svg>
+            </div>
             <div class="impact-num"><span class="counter" data-target="24000" data-suffix=" t">0</span></div>
             <div class="impact-label"><strong>Tonnes exportées</strong> tracées en 2025.</div>
           </div>
           <div class="impact-card reveal reveal-delay-2">
-            <div class="impact-icon">✅</div>
+            <div class="impact-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
             <div class="impact-num">100<span style="font-size:2rem">%</span></div>
             <div class="impact-label"><strong>Traçabilité blockchain</strong> pour les lots enregistrés.</div>
           </div>
@@ -143,19 +205,25 @@
 
         <div class="role-access-grid">
           <a href="#" class="role-access-card reveal" data-solution-route="dashboard">
-            <span class="role-icon">DASH</span>
+            <span class="role-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 13h8V3H3v10zm10 8h8V3h-8v18zm-10 0h8v-6H3v6z"/></svg>
+            </span>
             <h3>Dashboard</h3>
             <p>Accédez à l’interface de gestion et à la supervision des lots.</p>
             <strong>Ouvrir le dashboard</strong>
           </a>
           <a href="#" class="role-access-card reveal reveal-delay-1" data-solution-route="app">
-            <span class="role-icon">APP</span>
+            <span class="role-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v12H4V6zm2 2v8h12V8H6zm-2 12h20v2H2v-2z"/></svg>
+            </span>
             <h3>Application</h3>
             <p>Téléchargez l’application pour les producteurs et les coopératives.</p>
             <strong>Télécharger l'app</strong>
           </a>
           <a href="#" class="role-access-card reveal reveal-delay-2" data-solution-route="verifier">
-            <span class="role-icon">VER</span>
+            <span class="role-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 7a5.98 5.98 0 0 1-4.24-1.76L12 11.5l4.24 4.24A5.98 5.98 0 0 1 12 18z"/></svg>
+            </span>
             <h3>Vérification</h3>
             <p>Scannez ou saisissez un lot pour vérifier son origine en temps réel.</p>
             <strong>Vérifier un lot</strong>
