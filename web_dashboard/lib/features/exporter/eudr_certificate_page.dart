@@ -39,10 +39,12 @@ class _EudrCertificatePageState extends State<EudrCertificatePage> {
         lots: widget.lots,
         totalKg: widget.totalKg,
       );
-    setState(() {
-      _generating = false;
-      _generated = true;
-    });
+      if (mounted) {
+        setState(() {
+          _generating = false;
+          _generated = true;
+        });
+      }
     } else {
       setState(() => _generating = false);
       if (mounted) {
