@@ -1,284 +1,429 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ChainCacao est la plateforme blockchain togolaise de traçabilité cacao-café, conforme EUDR et connectant producteurs, coopératives et exportateurs." />
-  <title>ChainCacao & Café – Traçabilité blockchain du cacao togolais</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChainCacao & Café – Traçabilité du cacao et café togolais</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" />
-  <link rel="icon" type="image/png" href="./chaincacao_logo_light.png" />
-  <link rel="stylesheet" href="./style.css" />
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <!-- =========================================================
-     NAVIGATION
-========================================================= -->
-  <nav id="navbar">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <img src="./chaincacao_logo_light.png" alt="ChainCacao Logo" />
-      </a>
-      <ul class="nav-links">
-        <li><a href="#hero">Accueil</a></li>
-        <li><a href="#solutions">Solutions</a></li>
-        <li><a href="#impact">Impact</a></li>
-        <li><a href="#telechargements">Accès</a></li>
-        <li><a href="https://web-tresor1hs-projects.vercel.app">Dashboard</a></li>
-      </ul>
-      <a href="https://web-tresor1hs-projects.vercel.app" class="btn btn-primary nav-cta">Accéder</a>
-      <div class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </div>
+
+  <nav>
+    <div class="nav-logo">Chain<span>Cacao</span></div>
+    <ul id="nav-list">
+      <li><a href="#probleme">Problème</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#processus">Processus</a></li>
+      <li><a href="#acteurs">Acteurs</a></li>
+      <li><a href="#verifier">Vérifier</a></li>
+      <li><a href="#membres">Membres</a></li>
+      <li><a href="#impact" class="nav-cta">Impact</a></li>
+    </ul>
+    <div class="menu-toggle" id="mobile-menu">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
   </nav>
 
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#hero">Accueil</a>
-    <a href="#solutions">Solutions</a>
-    <a href="#impact">Impact</a>
-    <a href="#telechargements">Accès</a>
-    <a href="https://web-tresor1hs-projects.vercel.app">Dashboard</a>
-  </div>
-
-  <main>
-    <section id="hero">
-      <div class="hero-pattern"></div>
-      <div class="hero-orb hero-orb-1"></div>
-      <div class="hero-orb hero-orb-2"></div>
-
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <div class="hero-badge">ChainCacao · MIABE Hackathon 2026</div>
-          <h1 class="hero-title">De la fève à la tablette,<br>en toute transparence.</h1>
-          <p class="hero-text">La plateforme blockchain togolaise qui sécurise l'origine, la qualité et la conformité EUDR du cacao et du café.</p>
-
-          <div class="hero-actions">
-            <a href="https://web-tresor1hs-projects.vercel.app" class="btn btn-primary">Accéder au dashboard</a>
-            <a href="https://drive.google.com/uc?export=download&id=1yqeNHY1xuwYdyQgRzzNIwYxd6z_wXClu" class="btn btn-outline">Télécharger l'application</a>
-          </div>
-
-          <div class="hero-notes">
-            <span><strong>40 000</strong> familles couvertes</span>
-            <span><strong>100%</strong> traçabilité blockchain</span>
-            <span><strong>EUDR</strong> prête pour l’export</span>
-          </div>
-        </div>
-
-        <div class="hero-visual reveal reveal-delay-2">
-          <div class="hero-carousel" id="heroCarousel">
-            <div class="carousel-track">
-              <div class="carousel-slide">
-                <img src="./image/Cocoa_Plantation.jpg" alt="Plantation de cacao" />
-              </div>
-              <div class="carousel-slide">
-                <img src="./image/Feves_de_cacao.jpg" alt="Fèves de cacao" />
-              </div>
-              <div class="carousel-slide">
-                <img src="./image/WhatsApp_Image.jpeg" alt="Transport de cacao" />
-              </div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg">
+      <img src="image/Cocoa_Plantation.jpg" alt="Plantation en Afrique" onerror="this.style.display='none'">
+    </div>
+    <div class="hero-text">
+      <div class="hero-badge">?? Hackathon 2026 · Togo</div>
+      <h1>Tracer le cacao et le café togolais,<br><em>restaurer la confiance</em></h1>
+      <p class="hero-desc">Une solution blockchain qui connecte chaque lot de cacao et de café du producteur à
+        l'acheteur — transparente, infalsifiable, certifiée.</p>
+      <div class="hero-actions">
+        <a href="#solution" class="btn-primary">Découvrir la solution</a>
+        <a href="#acteurs" class="btn-ghost">Les acteurs</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-carousel">
+        <div class="carousel-slides">
+          <div class="carousel-slide active">
+            <img src="image/Feves_de_cacao.jpg" alt="Plantation de cacao"> 
+            <div class="carousel-caption">
+              <span>Cacao et Café togolais — Région des Plateaux</span>
             </div>
-            <div class="carousel-dots" id="heroCarouselDots"></div>
+          </div>
+          <div class="carousel-slide">
+            <img src="image/cacao.jpeg" alt="Fèves de cacao en gros plan">
+            <div class="carousel-caption">
+              <span>Fèves et grains séchés · Grade A · Export certifié</span>
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <img src="image/Cocoa_Plantation.jpg" alt="Plantation de café et cacao">
+            <div class="carousel-caption">
+              <span>Plantation certifiée · Kpalimé, Togo</span>
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <img src="image/historique.png" alt="Scan QR code sur smartphone">
+            <div class="carousel-caption">
+              <span>Producteur enregistré · Traçabilité garantie</span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section id="solutions" class="section">
-      <div class="container">
-        <div class="reveal">
-          <div class="section-label">Solutions</div>
-          <h2 class="section-title">Ce que nous avons construit pour la filière</h2>
-          <p class="section-sub">Des outils concrets pour tracer chaque lot, satisfaire les acheteurs européens et protéger la valeur des producteurs togolais.</p>
-        </div>
-
-        <div class="solution-grid">
-          <article class="solution-card reveal">
-            <div class="solution-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.343 12.343a4 4 0 0 1 0-5.657l2.828-2.828a4 4 0 0 1 5.657 5.657l-.828.828a1 1 0 0 1-1.414-1.414l.828-.828a2 2 0 0 0-2.828-2.828L8.171 8.757a2 2 0 0 0 2.828 2.828l.828-.828a1 1 0 0 1 1.414 1.414l-.828.828a4 4 0 0 1-5.657 0z"/></svg>
-            </div>
-            <h3>Registre blockchain</h3>
-            <p>Un registre infalsifiable qui scelle l'authenticité des données de la récolte à l'exportation.</p>
-          </article>
-
-          <article class="solution-card reveal reveal-delay-1">
-            <div class="solution-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l7 4v6.5c0 4.97-3.58 9.45-8.5 10.4a1 1 0 0 1-.5 0C8.58 21.95 5 17.47 5 12.5V6l7-4zm0 2.18L7 6.5v6c0 3.75 2.7 7.17 6 7.97 3.3-.8 6-4.22 6-7.97v-6l-5-2.32zM10.25 11.5l-1.5-1.5 1.06-1.06L10.25 9.38l4.99-4.99 1.06 1.06L10.25 11.5z"/></svg>
-            </div>
-            <h3>Conformité EUDR</h3>
-            <p>Certificats automatiques et preuves de diligence requises pour le marché européen.</p>
-          </article>
-
-          <article class="solution-card reveal reveal-delay-2">
-            <div class="solution-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
-            </div>
-            <h3>Géo-cartographie</h3>
-            <p>Traçabilité GPS des parcelles pour prouver l'origine et l'absence de déforestation.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="equipe" class="section">
-      <div class="container">
-        <div class="reveal text-center">
-          <div class="section-label">Équipe</div>
-          <h2 class="section-title">Notre équipe locale au service de la filière</h2>
-          <p class="section-sub">Quatre talents togolais réunis autour de la traçabilité, de la blockchain et du terrain.</p>
-        </div>
-
-        <div class="team-grid">
-          <article class="team-card reveal">
-            <img class="team-avatar" src="./image/EQUIPE/EKOE FELICIO.png" alt="Ekoué Felicio" />
-            <h3>Ekoué Felicio</h3>
-            <p>Lead produit et design, responsable de l'expérience utilisateur pour les agriculteurs et les coopératives.</p>
-          </article>
-
-          <article class="team-card reveal reveal-delay-1">
-            <img class="team-avatar" src="./image/EQUIPE/Georges GNANLE.png" alt="Georges Gnanlé" />
-            <h3>Georges Gnanlé</h3>
-            <p>Architecte technique, garant de la fiabilité de la plateforme et de l'intégration blockchain.</p>
-          </article>
-
-          <article class="team-card reveal reveal-delay-2">
-            <img class="team-avatar" src="./image/EQUIPE/KOMBATE JACQUES.png" alt="Kombaté Jacques" />
-            <h3>Kombaté Jacques</h3>
-            <p>Responsable opérations, terrain et coordination avec les coopératives pour sécuriser la collecte des données.</p>
-          </article>
-
-          <article class="team-card reveal reveal-delay-3">
-            <img class="team-avatar" src="./image/EQUIPE/TRESOR HALALOUNA.png" alt="Trésor Halalouna" />
-            <h3>Trésor Halalouna</h3>
-            <p>Expert conformité, en charge de l'adaptation aux exigences EUDR et aux marchés d'exportation.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="impact" class="section">
-      <div class="container">
-        <div class="impact-header reveal">
-          <div class="section-label">Impact</div>
-          <h2 class="section-title">Un effet réel pour le Togo et les exportations</h2>
-          <p class="section-sub">Nous transformons les chaînes de valeur en levant les risques et en stimulant la confiance des acheteurs.</p>
-        </div>
-
-        <div class="impact-grid container">
-          <div class="impact-card reveal">
-            <div class="impact-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            </div>
-            <div class="impact-num"><span class="counter" data-target="40000" data-suffix="+">0</span></div>
-            <div class="impact-label"><strong>Familles suivies</strong> sur la plateforme.</div>
-          </div>
-          <div class="impact-card reveal reveal-delay-1">
-            <div class="impact-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 8h-3V6c0-1.1-.9-2-2-2H9C7.9 4 7 4.9 7 6v2H4c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2zm-9 9.5l-4-4 1.41-1.41L11 14.67l5.59-5.59L18 10.5l-7 7z"/></svg>
-            </div>
-            <div class="impact-num"><span class="counter" data-target="24000" data-suffix=" t">0</span></div>
-            <div class="impact-label"><strong>Tonnes exportées</strong> tracées en 2025.</div>
-          </div>
-          <div class="impact-card reveal reveal-delay-2">
-            <div class="impact-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-            </div>
-            <div class="impact-num">100<span style="font-size:2rem">%</span></div>
-            <div class="impact-label"><strong>Traçabilité blockchain</strong> pour les lots enregistrés.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="telechargements" class="section">
-      <div class="container">
-        <div class="reveal">
-          <div class="section-label">Accès</div>
-          <h2 class="section-title">Commencez dès maintenant</h2>
-          <p class="section-sub">Ouvrez le dashboard, téléchargez l'application mobile ou vérifiez un lot en direct.</p>
-        </div>
-
-        <div class="role-access-grid">
-          <a href="#" class="role-access-card reveal" data-solution-route="dashboard">
-            <span class="role-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 13h8V3H3v10zm10 8h8V3h-8v18zm-10 0h8v-6H3v6z"/></svg>
-            </span>
-            <h3>Dashboard</h3>
-            <p>Accédez à l’interface de gestion et à la supervision des lots.</p>
-            <strong>Ouvrir le dashboard</strong>
-          </a>
-          <a href="#" class="role-access-card reveal reveal-delay-1" data-solution-route="app">
-            <span class="role-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v12H4V6zm2 2v8h12V8H6zm-2 12h20v2H2v-2z"/></svg>
-            </span>
-            <h3>Application</h3>
-            <p>Téléchargez l’application pour les producteurs et les coopératives.</p>
-            <strong>Télécharger l'app</strong>
-          </a>
-          <a href="#" class="role-access-card reveal reveal-delay-2" data-solution-route="verifier">
-            <span class="role-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 7a5.98 5.98 0 0 1-4.24-1.76L12 11.5l4.24 4.24A5.98 5.98 0 0 1 12 18z"/></svg>
-            </span>
-            <h3>Vérification</h3>
-            <p>Scannez ou saisissez un lot pour vérifier son origine en temps réel.</p>
-            <strong>Vérifier un lot</strong>
-          </a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <img src="./chaincacao_logo_light.png" alt="ChainCacao Logo" />
-        </div>
-        <p class="footer-tagline">La plateforme blockchain togolaise pour des exportations cacao-café sécurisées.</p>
-        <div class="footer-hackathon">MIABE Hackathon 2026 · Togo</div>
-      </div>
-
-      <div class="footer-col">
-        <h4>Navigation</h4>
-        <ul>
-          <li><a href="#hero">Accueil</a></li>
-          <li><a href="#solutions">Solutions</a></li>
-          <li><a href="#impact">Impact</a></li>
-          <li><a href="#telechargements">Accès</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4>Plateforme</h4>
-        <ul>
-          <li><a href="https://web-tresor1hs-projects.vercel.app">Dashboard</a></li>
-          <li><a href="https://chaincacao.tech/login">Connexion</a></li>
-          <li><a href="https://chaincacao.tech/register">Inscription</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <div class="footer-contact">
-          <p><a href="mailto:contact@chaincacao.tg">contact@chaincacao.tg</a></p>
-          <p>Lomé, Togo</p>
+        <div class="carousel-badge">ChainCacao & Café · Blockchain</div>
+        <div class="carousel-dots">
+          <span class="dot active" onclick="goToSlide(0)"></span>
+          <span class="dot" onclick="goToSlide(1)"></span>
+          <span class="dot" onclick="goToSlide(2)"></span>
+          <span class="dot" onclick="goToSlide(3)"></span>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="footer-bottom">
-      <p>© 2026 ChainCacao &amp; Café — Tous droits réservés</p>
-      <p class="made-with">Conçu pour la filière cacao-café togolaise.</p>
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" data-target="40000" data-format="thousands" data-suffix="+">0</div>
+      <div class="stat-label">Producteurs au Togo</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="35" data-format="number" data-suffix="%">0</div>
+      <div class="stat-label">Pertes estimées / fraude</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="2027" data-format="number">0</div>
+      <div class="stat-label">Deadline réglementation UE</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-target="100" data-format="number" data-suffix="%">0</div>
+      <div class="stat-label">Traçabilité garantie</div>
+    </div>
+  </div>
+
+  <section id="probleme">
+    <div class="problem-img-row fade-up">
+      <div class="problem-img-wrap">
+        <img src="image/Feves_de_cacao.jpg" alt="Fèves de cacao et café sans traçabilité"
+          onerror="this.src='image/Feves_de_cacao.jpg'">
+        <div class="problem-img-caption"> Fèves et grains — sans traçabilité, leur origine reste opaque pour
+          l'acheteur final</div>
+      </div>
+      <div>
+        <div class="section-tag">Le défi</div>
+        <h2 class="section-title">Une filière opaque qui fragilise tous les acteurs</h2>
+        <p class="section-sub">Les filières cacao et café togolaises font face à des défis structurels qui menacent leur
+          accès aux marchés internationaux.</p>
+        <div class="problem-cards">
+          <div class="problem-card">
+            <div class="prob-title">Chaîne non traçable</div>
+            <div class="prob-desc">Impossible de retracer l'origine d'un lot du producteur à l'exportateur. Aucun
+              historique fiable.</div>
+          </div>
+          <div class="problem-card">
+            <div class="prob-title">Fraudes sur la pesée</div>
+            <div class="prob-desc">Les manipulations de poids sont fréquentes et non détectables sans vérification
+              indépendante.</div>
+          </div>
+          <div class="problem-card">
+            <div class="prob-title">Revenus faibles pour les producteurs</div>
+            <div class="prob-desc">L'opacité des prix prive les agriculteurs de tout levier de négociation factuel.
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="prob-title">Risque d'exclusion du marché européen</div>
+            <div class="prob-desc">La réglementation EUDR 2027 exige une traçabilité prouvée. Sans solution, l'accès est
+              menacé.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-section">
+    <div class="cta-content">
+      <h2>Prêt à transformer les filières cacao et café ?</h2>
+      <p>Rejoignez les premières coopératives pilotes et bâtissez un modèle de traçabilité durable pour le Togo.</p>
+      <a href="#processus" class="btn-primary">Découvrir la solution</a>
+    </div>
+  </div>
+
+
+
+  <section id="solution">
+    <div class="section-tag">Notre réponse</div>
+    <h2 class="section-title">Une traçabilité bout en bout, infalsifiable</h2>
+    <p class="section-sub">ChainCacao & Café enregistre chaque étape dans un registre transparent, accessible à tous les
+      acteurs en temps réel.</p>
+    <div class="solution-grid fade-up">
+      <div class="solution-card">
+        <div class="solution-card-img">
+          <img src="image/producteurs.png" alt="Enregistrement - Producteurs" onerror="this.parentElement.style.background='#3b1f0a'">
+        </div>
+        <div class="solution-card-body">
+          <div class="sol-title">Enregistrement des lots</div>
+          <div class="sol-desc">Chaque lot reçoit un identifiant unique horodaté dès la récolte. Poids, qualité, GPS —
+            tout est capturé.</div>
+        </div>
+      </div>
+      <div class="solution-card">
+        <div class="solution-card-img">
+          <img src="image/double validation.png" alt="Double validation" onerror="this.parentElement.style.background='#2d5a27'">
+        </div>
+        <div class="solution-card-body">
+          <div class="sol-title">Double validation</div>
+          <div class="sol-desc">Coopérative + exportateur valident chaque étape. Aucune modification sans consensus des
+            parties.</div>
+        </div>
+      </div>
+      <div class="solution-card">
+        <div class="solution-card-img">
+          <img src="image/QR_codes.png" alt="QR Code unique" onerror="this.parentElement.style.background='#c9892a'">
+        </div>
+        <div class="solution-card-body">
+          <div class="sol-title">QR Code unique</div>
+          <div class="sol-desc">Un QR code par lot permet à tout acheteur de vérifier l'authenticité et l'historique
+            complet en secondes.</div>
+        </div>
+      </div>
+      <div class="solution-card">
+        <div class="solution-card-img">
+          <img src="image/historique.png" alt="Historique complet" onerror="this.parentElement.style.background='#6b3f1e'">
+        </div>
+        <div class="solution-card-body">
+          <div class="sol-title">Historique complet</div>
+          <div class="sol-desc">Chaque transaction, pesée et validation est enregistrée de façon permanente et
+            consultable par tous.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="processus">
+    <div class="process-bg">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Cacao-pod-k4600.jpg/1600px-Cacao-pod-k4600.jpg"
+        alt="Cacao et Café">
+    </div>
+    <div class="process-content">
+      <div class="section-tag">Fonctionnement</div>
+      <h2 class="section-title">4 étapes, une traçabilité complète</h2>
+      <p class="section-sub">Du champ togolais jusqu'à l'acheteur européen, chaque maillon est documenté et certifié.
+      </p>
+      <div class="flow fade-up">
+        <div class="flow-step" data-img="image/illustrations/create.svg" data-title="Création du lot" data-desc="Le producteur enregistre sa récolte avec poids et coordonnées GPS.">
+          <div class="flow-illustration-wrap">
+            <img class="flow-illustration" src="image/illustrations/create.svg" alt="Création du lot">
+          </div>
+          <div class="flow-label">Création du lot</div>
+          <div class="flow-desc">Le producteur enregistre sa récolte avec poids et coordonnées GPS.</div>
+        </div>
+        <div class="flow-step" data-img="image/illustrations/validation.svg" data-title="Validation" data-desc="La coopérative vérifie et cosigne le lot sur la plateforme.">
+          <div class="flow-illustration-wrap">
+            <img class="flow-illustration" src="image/illustrations/validation.svg" alt="Validation">
+          </div>
+          <div class="flow-label">Validation</div>
+          <div class="flow-desc">La coopérative vérifie et cosigne le lot sur la plateforme.</div>
+        </div>
+        <div class="flow-step" data-img="image/illustrations/transport.svg" data-title="Transport" data-desc="Chaque transfert physique génère un nouveau point de traçabilité.">
+          <div class="flow-illustration-wrap">
+            <img class="flow-illustration" src="image/illustrations/transport.svg" alt="Transport">
+          </div>
+          <div class="flow-label">Transport</div>
+          <div class="flow-desc">Chaque transfert physique génère un nouveau point de traçabilité.</div>
+        </div>
+        <div class="flow-step" data-img="image/illustrations/verify.svg" data-title="Vérification" data-desc="L'acheteur scanne le QR code et accède à l'historique complet.">
+          <div class="flow-illustration-wrap">
+            <img class="flow-illustration" src="image/illustrations/verify.svg" alt="Vérification">
+          </div>
+          <div class="flow-label">Vérification</div>
+          <div class="flow-desc">L'acheteur scanne le QR code et accède à l'historique complet.</div>
+        </div>
+      </div>
+
+      <!-- Modal pour afficher l'illustration + détails (dynamique) -->
+      <div id="flow-modal" class="flow-modal" aria-hidden="true">
+        <div class="flow-modal-content">
+          <button class="flow-modal-close" aria-label="Fermer">×</button>
+          <img src="" alt="" class="flow-modal-img">
+          <h3 class="flow-modal-title"></h3>
+          <p class="flow-modal-desc"></p>
+        </div>
+      </div>
+      <div class="flow-cta fade-up">
+        <a href="#acteurs" class="btn-primary">Voir les acteurs</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="acteurs">
+    <div class="section-tag">Écosystème</div>
+    <h2 class="section-title">Chaque acteur a son rôle</h2>
+    <p class="section-sub">ChainCacao & Café connecte toute la filière autour d'une donnée commune, transparente et de
+      confiance.</p>
+    <div class="actors-grid fade-up">
+      <div class="actor-card">
+        <div class="actor-photo">
+          <img src="image/producteurs.png" alt="Producteur" onerror="this.parentElement.style.background='#2d5a27'; this.style.display='none'">
+          <div class="actor-photo-overlay"></div>
+          <div class="actor-photo-label">Producteurs</div>
+        </div>
+        <div class="actor-body">
+          <div class="actor-desc">Enregistrent leurs lots et accèdent à un historique de leurs ventes pour mieux
+            négocier.</div>
+          <a href="https://drive.google.com/file/d/1yqeNHY1xuwYdyQgRzzNIwYxd6z_wXClu/view" class="actor-btn" target="_blank">Télécharger l'app</a>
+        </div>
+      </div>
+      <div class="actor-card">
+        <div class="actor-photo">
+          <img src="image/cooperatives.png" alt="Coopérative" onerror="this.parentElement.style.background='#6b3f1e'; this.style.display='none'">
+          <div class="actor-photo-overlay"></div>
+          <div class="actor-photo-label">Coopératives</div>
+        </div>
+        <div class="actor-body">
+          <a href="https://web-tresor1hs-projects.vercel.app/#/cooperative" class="actor-btn" target="_blank">Accéder au dashboard</a>
+        </div>
+      </div>
+      <div class="actor-card">
+        <div class="actor-photo">
+          <img src="image/cacao.jpeg" alt="Exportateur" onerror="this.parentElement.style.background='#1a4a8a'; this.style.display='none'">
+          <div class="actor-photo-overlay"></div>
+          <div class="actor-photo-label">Exportateurs</div>
+        </div>
+        <div class="actor-body">
+          <div class="actor-desc">Consolident les lots et génèrent les certificats d'origine pour les acheteurs
+            internationaux.</div>
+          <a href="https://web-tresor1hs-projects.vercel.app/#/exportateur" class="actor-btn" target="_blank">Accéder au dashboard</a>
+        </div>
+      </div>
+      <div class="actor-card">
+        <div class="actor-photo">
+          <img src="image/acheteurs.png" alt="Acheteurs" onerror="this.parentElement.style.background='#3b1f0a'; this.style.display='none'">
+          <div class="actor-photo-overlay"></div>
+          <div class="actor-photo-label">Acheteurs</div>
+        </div>
+        <div class="actor-body">
+          <div class="actor-desc">Vérifient l'authenticité et l'éthique de chaque lot en scannant un simple QR code.
+          <a href="#verifier" class="actor-btn">Vérifier un lot</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="membres">
+    <div class="section-tag">Équipe</div>
+    <h2 class="section-title">Session des membres</h2>
+    <p class="section-sub">Quatre talents togolais responsables de la blockchain, du mobile, du backend et de la vitrine.</p>
+    <div class="team-grid fade-up">
+      <article class="team-card">
+        <div class="team-avatar-wrap">
+          <img class="team-avatar" src="image/EQUIPE/TRESOR HALALOUNA.png" alt="HALALOUNA Trésor">
+        </div>
+        <h3>HALALOUNA Trésor</h3>
+        <p class="team-role">Chef de projet, développeur Blockchain & Flutter Web</p>
+        <p class="team-desc">Développement du Smart Contract LotRegistry.sol sur Polygon, création du dashboard web et de la
+          page de vérification publique, coordination de l'équipe et validation du dépôt GitHub.</p>
+      </article>
+      <article class="team-card">
+        <div class="team-avatar-wrap">
+          <img class="team-avatar" src="image/EQUIPE/Georges GNANLE.png" alt="Georges GNANLE">
+        </div>
+        <h3>Georges GNANLE</h3>
+        <p class="team-role">Développeur mobile</p>
+        <p class="team-desc">Développement de l'application mobile agriculteur en Flutter, intégration d'une assistance
+          vocale Éwé/Kabiyè et capture automatique des coordonnées GPS.</p>
+      </article>
+      <article class="team-card">
+        <div class="team-avatar-wrap">
+          <img class="team-avatar" src="image/EQUIPE/KOMBATE JACQUES.png" alt="Jacques KOMBATE">
+        </div>
+        <h3>Jacques KOMBATE</h3>
+        <p class="team-role">Développeur Backend API</p>
+        <p class="team-desc">Création de l'API Django REST, intégration USSD/SMS AfricasTalking, stockage Supabase/PostgreSQL,
+          et logique métier JWT / transferts de lots / certificats EUDR.</p>
+      </article>
+      <article class="team-card">
+        <div class="team-avatar-wrap">
+          <img class="team-avatar" src="image/EQUIPE/EKOE FELICIO.png" alt="EKOE Félicio">
+        </div>
+        <h3>EKOE Félicio</h3>
+        <p class="team-role">Développeur Web / Site Vitrine</p>
+        <p class="team-desc">Conception et développement du site vitrine en HTML/CSS/JS pour présenter le projet,
+          le problème et la solution ChainCacao.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="impact">
+    <div class="section-tag">Résultats attendus</div>
+    <h2 class="section-title">Un impact concret pour toute la filière</h2>
+    <div class="impact-photo-strip fade-up">
+      <div class="strip-img"><img src="image/impact.png" alt="Qualité" onerror="this.parentElement.style.background='#3b1f0a'"></div>
+      <div class="strip-img"><img src="image/impact (2).png" alt="Producteur" onerror="this.parentElement.style.background='#2d5a27'"></div>
+      <div class="strip-img"><img src="image/impact (3).png" alt="Culture" onerror="this.parentElement.style.background='#c9892a'"></div>
+    </div>
+    <div class="impact-grid fade-up">
+      <div class="impact-card">
+        <div class="impact-num">+25%</div>
+        <div class="impact-label">Revenus producteurs</div>
+        <div class="impact-desc">Transparence des prix et réduction des intermédiaires frauduleux.</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">-90%</div>
+        <div class="impact-label">Fraudes détectées</div>
+        <div class="impact-desc">La double validation rend toute falsification immédiatement visible.</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">100%</div>
+        <div class="impact-label">Conformité EUDR 2027</div>
+        <div class="impact-desc">Traçabilité complète conforme aux exigences du marché européen.</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">8</div>
+        <div class="impact-label">Transparence totale</div>
+        <div class="impact-desc">Historique permanent et immuable de chaque lot, accessible à tout moment.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="verifier">
+    <div class="section-tag">Vérification</div>
+    <h2 class="section-title">Vérifier un lot</h2>
+    <p class="section-sub">Entrez l'identifiant de votre lot pour accéder à son historique complet et authentifier son origine.
+    </p>
+    <div class="verifier-container fade-up">
+      <div class="verifier-form">
+        <label for="lot-id">ID du lot</label>
+        <input type="text" id="lot-id" placeholder="Ex: LOT-2026-001234" class="verifier-input">
+        <button class="btn-primary" onclick="handleVerifyLot()">Vérifier</button>
+        <p class="verifier-info">Vous pouvez trouver l'ID du lot sur l'étiquette QR ou sur votre certificat d'authenticité.</p>
+        <div class="verifier-demo">
+          <p class="verifier-demo-hint">ID de test : <strong>LOT-DEMO-2026-0001</strong></p>
+        </div>
+      </div>
+      <div class="verifier-details">
+        <img src="image/historique.png" alt="QR Code" class="verifier-image" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">ChainCacao</div>
+    <div class="footer-text">© 2026 ChainCacao · Hackathon Togo</div>
+    <div class="footer-links">
+      <a href="#probleme">Problème</a>
+      <a href="#solution">Solution</a>
+      <a href="#acteurs">Acteurs</a>
+      <a href="#membres">Membres</a>
     </div>
   </footer>
 
-  <script src="./script.js"></script>
-
+  <script src="script.js"></script>
 </body>
+
 </html>
 

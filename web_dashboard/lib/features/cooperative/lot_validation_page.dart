@@ -223,21 +223,24 @@ class _LotDetailsCard extends StatelessWidget {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Fiche du lot', style: AppTextStyles.h2),
-          const Divider(height: 32),
-          _InfoRow('ID Lot', lot['lot_id']),
-          _InfoRow('Agriculteur', lot['farmer_name']),
-          _InfoRow('Culture', lot['culture_type']),
-          _InfoRow('Poids declare', '${lot['weight_declared']} kg'),
-          _InfoRow('GPS',
-              '${lot['gps_latitude']?.toStringAsFixed(4)}, ${lot['gps_longitude']?.toStringAsFixed(4)}'),
-          _InfoRow('Enregistre le', lot['registered_at']),
-          _InfoRow('Hash blockchain',
-              lot['blockchain_hash'] != null ? '${lot['blockchain_hash'].toString().substring(0, 10)}...' : 'En attente'),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Fiche du lot', style: AppTextStyles.h2, textAlign: TextAlign.center),
+            const Divider(height: 32),
+            _InfoRow('ID Lot', lot['lot_id']),
+            _InfoRow('Agriculteur', lot['farmer_name']),
+            _InfoRow('Culture', lot['culture_type']),
+            _InfoRow('Poids declare', '${lot['weight_declared']} kg'),
+            _InfoRow('GPS',
+                '${lot['gps_latitude']?.toStringAsFixed(4)}, ${lot['gps_longitude']?.toStringAsFixed(4)}'),
+            _InfoRow('Enregistre le', lot['registered_at']),
+            _InfoRow('Hash blockchain',
+                lot['blockchain_hash'] != null ? '${lot['blockchain_hash'].toString().substring(0, 10)}...' : 'En attente'),
+          ],
+        ),
       ),
     );
   }
@@ -265,76 +268,85 @@ class _WeightFormCard extends StatelessWidget {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Controle de reception', style: AppTextStyles.h2),
-          const SizedBox(height: 8),
-          Text(
-            'Saisissez le poids reel pese avant validation blockchain.',
-            style: AppTextStyles.bodySecondary,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Poids verifie a la cooperative',
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: weightController,
-            keyboardType: TextInputType.number,
-            onChanged: (_) => onChanged(),
-            decoration: const InputDecoration(
-              hintText: 'Entrez le poids reel pese',
-              suffixText: 'kg',
-              prefixIcon: Icon(Icons.scale_outlined),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Controle de reception', style: AppTextStyles.h2, textAlign: TextAlign.center),
+            const SizedBox(height: 8),
+            Text(
+              'Saisissez le poids reel pese avant validation blockchain.',
+              style: AppTextStyles.bodySecondary,
+              textAlign: TextAlign.center,
             ),
-          ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: rangeError != null
-                ? Padding(
-                    key: const ValueKey('range'),
-                    padding: const EdgeInsets.only(top: 16),
-                    child: _AlertBox(
-                      color: AppColors.orangeAlerte,
-                      text: rangeError!,
-                    ),
-                  )
-                : hasFraud
-                ? Padding(
-                    key: const ValueKey('fraud'),
-                    padding: const EdgeInsets.only(top: 16),
-                    child: _AlertBox(
-                      color: AppColors.rougeErreur,
-                      text:
-                          'Alerte fraude detectee - ecart superieur a 5% entre poids declare et poids verifie.',
-                    ),
-                  )
-                : const SizedBox.shrink(key: ValueKey('empty')),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: weightController.text.isEmpty || loading
-                ? null
-                : onValidate,
-            icon: loading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      color: AppColors.blanc,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.link),
-            label: Text(
-              loading
-                  ? 'Validation en cours...'
-                  : 'Valider le transfert sur blockchain',
+            const SizedBox(height: 24),
+            Text(
+              'Poids verifie a la cooperative',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            TextField(
+              controller: weightController,
+              keyboardType: TextInputType.number,
+              onChanged: (_) => onChanged(),
+              textAlign: TextAlign.center,
+              decoration: const InputDecoration(
+                hintText: 'Entrez le poids reel pese',
+                suffixText: 'kg',
+                prefixIcon: Icon(Icons.scale_outlined),
+              ),
+            ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: rangeError != null
+                  ? Padding(
+                      key: const ValueKey('range'),
+                      padding: const EdgeInsets.only(top: 16),
+                      child: _AlertBox(
+                        color: AppColors.orangeAlerte,
+                        text: rangeError!,
+                      ),
+                    )
+                  : hasFraud
+                  ? Padding(
+                      key: const ValueKey('fraud'),
+                      padding: const EdgeInsets.only(top: 16),
+                      child: _AlertBox(
+                        color: AppColors.rougeErreur,
+                        text:
+                            'Alerte fraude detectee - ecart superieur a 5% entre poids declare et poids verifie.',
+                      ),
+                    )
+                  : const SizedBox.shrink(key: ValueKey('empty')),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: weightController.text.isEmpty || loading
+                    ? null
+                    : onValidate,
+                icon: loading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: AppColors.blanc,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.link),
+                label: Text(
+                  loading
+                      ? 'Validation en cours...'
+                      : 'Valider le transfert sur blockchain',
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -386,74 +398,77 @@ class _SuccessView extends StatelessWidget {
         child: Card(
           elevation: 4,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeOutBack,
-                builder: (context, value, child) {
-                  return Transform.scale(scale: value, child: child);
-                },
-                child: Container(
-                  width: 88,
-                  height: 88,
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: 1),
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeOutBack,
+                  builder: (context, value, child) {
+                    return Transform.scale(scale: value, child: child);
+                  },
+                  child: Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      color: AppColors.vertFeuille,
+                      borderRadius: BorderRadius.circular(44),
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      color: AppColors.blanc,
+                      size: 52,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text('Lot valide !', style: AppTextStyles.h1, textAlign: TextAlign.center),
+                const SizedBox(height: 8),
+                Text(
+                  'Transaction enregistree sur la blockchain Polygon',
+                  style: AppTextStyles.bodySecondary,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.vertFeuille,
-                    borderRadius: BorderRadius.circular(44),
+                    color: AppColors.creme,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
-                    Icons.check,
-                    color: AppColors.blanc,
-                    size: 52,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hash de transaction',
+                        style: AppTextStyles.body.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(hash, style: AppTextStyles.hashBlockchain),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Voir sur Polygonscan',
+                        style: AppTextStyles.body.copyWith(
+                          color: AppColors.bleuTransit,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Text('Lot valide !', style: AppTextStyles.h1),
-              const SizedBox(height: 8),
-              Text(
-                'Transaction enregistree sur la blockchain Polygon',
-                style: AppTextStyles.bodySecondary,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.creme,
-                  borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Retour au dashboard'),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hash de transaction',
-                      style: AppTextStyles.body.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(hash, style: AppTextStyles.hashBlockchain),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Voir sur Polygonscan',
-                      style: AppTextStyles.body.copyWith(
-                        color: AppColors.bleuTransit,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Retour au dashboard'),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
