@@ -1,4 +1,4 @@
-﻿const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+const slides = Array.from(document.querySelectorAll('.carousel-slide'));
 const dots = Array.from(document.querySelectorAll('.dot'));
 let currentSlide = 0;
 let slideTimer = null;
@@ -99,7 +99,7 @@ function initWelcomeModal() {
 
   if (!modal || !btn) return;
 
-  // Affichage automatique après 0.6s
+  // Affichage automatique (s'affiche à chaque actualisation)
   setTimeout(() => {
     modal.classList.add('show');
   }, 600);
