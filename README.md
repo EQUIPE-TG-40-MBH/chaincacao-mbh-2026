@@ -40,7 +40,7 @@ ChainCacao enregistre chaque lot sur la blockchain **Polygon Amoy** — de la pa
 | Plateforme | URL |
 |---|---|
 | 🌐 Application principale | [chaincacao-mbh-2026.vercel.app](https://chaincacao-mbh-2026.vercel.app) |
-| 🔍 Vérification publique | [chaincacao-mbh-2026.vercel.app/verifier](https://chaincacao-mbh-2026.vercel.app/verifier) |
+| 🔍 Vérification publique | [chaincacao-mbh-2026.vercel.app/verifier](https://chaincacao-mbh-2026.vercel.app/#verifier) |
 | 📡 Smart Contract Polygon Amoy | [`0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc`](https://amoy.polygonscan.com/address/0x72c5B32758000C6B6CbA364Cb4ef53aEF92948dc) |
 
 ---
